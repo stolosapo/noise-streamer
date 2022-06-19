@@ -5,10 +5,10 @@ bin_PROGRAMS = noisestreamer
 
 mainincludedir = $(includedir)/noisestreamer
 maininclude_HEADERS = \
-    all_header_files.h
+    NoiseStreamer.h
 
 common_sources = \
-    all_source_files.cpp
+    NoiseStreamer.cpp
 
 noisestreamer_SOURCES = main.cpp $(common_sources)
 noisestreamer_LDADD = libnoisestreamer.la
