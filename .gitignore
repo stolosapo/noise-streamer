@@ -27,7 +27,7 @@
 *.exe
 *.out
 *.app
-<autotoolscpplibtemplate>
+noisestreamer
 tester
 example
 
