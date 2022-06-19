@@ -1,22 +1,22 @@
 AUTOMAKE_OPTIONS = subdir-objects
 ACLOCAL_AMFLAGS = $(ACLOCAL_FLAGS)
 
-bin_PROGRAMS = <autotoolscpplibtemplate>
+bin_PROGRAMS = noisestreamer
 
-mainincludedir = $(includedir)/<autotoolscpplibtemplate>
+mainincludedir = $(includedir)/noisestreamer
 maininclude_HEADERS = \
-    all_header_files.h
+    NoiseStreamer.h
 
 common_sources = \
-    all_source_files.cpp
+    NoiseStreamer.cpp
 
-<autotoolscpplibtemplate>_SOURCES = main.cpp $(common_sources)
-<autotoolscpplibtemplate>_LDADD = lib<autotoolscpplibtemplate>.la
-<autotoolscpplibtemplate>_CXXFLAGS = $(AM_CXXFLAGS)
+noisestreamer_SOURCES = main.cpp $(common_sources)
+noisestreamer_LDADD = libnoisestreamer.la
+noisestreamer_CXXFLAGS = $(AM_CXXFLAGS)
 
-lib_LTLIBRARIES = lib<autotoolscpplibtemplate>.la
-lib<autotoolscpplibtemplate>_la_LDFLAGS = -version-info 1:0:0 -pthread
-lib<autotoolscpplibtemplate>_la_CXXFLAGS = $(AM_CXXFLAGS) -pthread
-lib<autotoolscpplibtemplate>_la_SOURCES = $(common_sources)
+lib_LTLIBRARIES = libnoisestreamer.la
+libnoisestreamer_la_LDFLAGS = -version-info 1:0:0 -pthread
+libnoisestreamer_la_CXXFLAGS = $(AM_CXXFLAGS) -pthread
+libnoisestreamer_la_SOURCES = $(common_sources)
 
-TESTS = <autotoolscpplibtemplate>
+TESTS = noisestreamer

@@ -45,8 +45,8 @@ jobs:
       with:
         name: test-suit-logs
         path: |
-            src/<autotoolscpplibtemplate>.log
-            src/<autotoolscpplibtemplate>.trs
+            src/noisestreamer.log
+            src/noisestreamer.trs
             src/test-suite.log
             tests/test_results.log
 
@@ -65,7 +65,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: dist
-        path: <autotoolscpplibtemplate>-*.tar.gz
+        path: noisestreamer-*.tar.gz
 
     - name: Download dist
       uses: actions/download-artifact@v3

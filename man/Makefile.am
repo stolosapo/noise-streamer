@@ -1,2 +1,2 @@
-EXTRA_DIST = <autotoolscpplibtemplate>.1
-man_MANS = <autotoolscpplibtemplate>.1
+EXTRA_DIST = noisestreamer.1
+man_MANS = noisestreamer.1

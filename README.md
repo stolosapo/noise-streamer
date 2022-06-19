@@ -1,15 +1,7 @@
-# <autotools-cpp-lib-template>
-A Template Repository for C++ Libraries using Autotools
+# noise-streamer
+A remotely controlled client for the Icecast Streaming Server. Can stream mp3 playlists providing good control of what is playing. 
 
-### TODO: Replace this across the project..
-```
-<repo-owner>                 = the GitHub owner
-<owner-email>                = the owner contact email
-<autotools-cpp-lib-template> = the current repository name
-<autotoolscpplibtemplate>    = the library name, to be installed
-```
-
-![Build](https://github.com/<repo-owner>/<autotools-cpp-lib-template>/actions/workflows/makefile.yml/badge.svg) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/<repo-owner>/<autotools-cpp-lib-template>)
+![Build](https://github.com/stolosapo/noise-streamer/actions/workflows/makefile.yml/badge.svg) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/stolosapo/noise-streamer)
 
 
 ### Prepare compilation
@@ -32,7 +24,7 @@ sudo make uninstall
 
 ### Run
 ```bash
-<autotoolscpplibtemplate>
+noisestreamer
 ```
 
 ## Clean all untracked files
@@ -41,5 +33,5 @@ git clean -xdf
 ```
 
 ### Use Library
-If everything installed fine then pass `-l<autotoolscpplibtemplate>` parameter in linker, when build your application.
+If everything installed fine then pass `-lnoisestreamer` parameter in linker, when build your application.
 Then use it in your app like in `examples/`.
