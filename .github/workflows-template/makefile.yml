@@ -1,0 +1,73 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install NoiseTest library
+      run: |
+        wget https://github.com/stolosapo/noise-test/releases/download/v1.0.0/noisetest-1.0.0.tar.gz
+        tar -zxvf noisetest-1.0.0.tar.gz
+        cd noisetest-1.0.0
+        ./configure
+        make
+        sudo make install
+        sudo ldconfig /usr/local/lib
+
+    - name: autogen
+      run: ./autogen.sh
+
+    - name: configure
+      run: ./configure
+
+    - name: Install dependencies
+      run: make
+
+    - name: Run check
+      run: make check
+
+    - name: Run tests
+      run: |
+        cd tests
+        ./tester.sh > test_results.log
+
+    - name: Archive Test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-suit-logs
+        path: |
+            src/<autotoolscpplibtemplate>.log
+            src/<autotoolscpplibtemplate>.trs
+            src/test-suite.log
+            tests/test_results.log
+
+    - name: Download Test results
+      uses: actions/download-artifact@v3
+      with:
+        name: test-suit-logs
+
+    - name: Run distcheck
+      run: make distcheck
+
+    - name: Run dist
+      run: make dist
+
+    - name: Archive dist
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path: <autotoolscpplibtemplate>-*.tar.gz
+
+    - name: Download dist
+      uses: actions/download-artifact@v3
+      with:
+        name: dist

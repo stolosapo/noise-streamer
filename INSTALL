@@ -1,0 +1,12 @@
+Prerequisites
+-------------
+
+Building
+--------
+
+./configure 
+make
+
+Installation
+------------
+(as root) make install
