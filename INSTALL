@@ -1,10 +1,13 @@
 Prerequisites
 -------------
 
+libshout - the library that streams audio data to Icecast Server
+    (can found here: https://www.icecast.org/download/)
+
 Building
 --------
 
-./configure 
+./configure
 make
 
 Installation
