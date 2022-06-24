@@ -23,11 +23,11 @@ common_sources = \
 
 noisestreamer_SOURCES = main.cpp $(common_sources)
 noisestreamer_LDADD = libnoisestreamer.la
-noisestreamer_CXXFLAGS = $(AM_CXXFLAGS) -lshout
+noisestreamer_CXXFLAGS = $(AM_CXXFLAGS) -lshout -lnoisekernel
 
 lib_LTLIBRARIES = libnoisestreamer.la
-libnoisestreamer_la_LDFLAGS = -version-info 1:0:0 -pthread -lshout
-libnoisestreamer_la_CXXFLAGS = $(AM_CXXFLAGS) -pthread -lshout
+libnoisestreamer_la_LDFLAGS = -version-info 1:0:0 -pthread -lshout -lnoisekernel
+libnoisestreamer_la_CXXFLAGS = $(AM_CXXFLAGS) -pthread -lshout -lnoisekernel
 libnoisestreamer_la_SOURCES = $(common_sources)
 
 TESTS = noisestreamer
