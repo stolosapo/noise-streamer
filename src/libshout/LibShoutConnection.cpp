@@ -1,5 +1,9 @@
 #include "LibShout.h"
 #include "../utils/StringHelper.h"
+#include <noisekernel/Exception.h>
+#include "../exception/NoiseStreamerException.h"
+
+using namespace NoiseKernel;
 
 int LibShout::shoutOpen()
 {
@@ -26,7 +30,7 @@ void LibShout::setHost(string host)
 {
     if (shout_set_host(shout, host.c_str()) != SHOUTERR_SUCCESS)
     {
-        // throw DomainException(NoiseStreamerDomainErrorCode::NSS0003, getError());
+        throw DomainException(NSS0002, getError());
     }
 }
 
@@ -39,7 +43,7 @@ void LibShout::setPort(unsigned short port)
 {
     if (shout_set_port(shout, port) != SHOUTERR_SUCCESS)
     {
-        // throw DomainException(NoiseStreamerDomainErrorCode::NSS0004, getError());
+        throw DomainException(NSS0003, getError());
     }
 }
 
@@ -52,7 +56,7 @@ void LibShout::setUser(string username)
 {
     if (shout_set_user(shout, username.c_str()) != SHOUTERR_SUCCESS)
     {
-        // throw DomainException(NoiseStreamerDomainErrorCode::NSS0006, getError());
+        throw DomainException(NSS0005, getError());
     }
 }
 
@@ -60,7 +64,7 @@ void LibShout::setPassword(string password)
 {
     if (shout_set_password(shout, password.c_str()) != SHOUTERR_SUCCESS)
     {
-        // throw DomainException(NoiseStreamerDomainErrorCode::NSS0007, getError());
+        throw DomainException(NSS0006, getError());
     }
 }
 
@@ -68,7 +72,7 @@ void LibShout::setMount(string mount)
 {
     if (shout_set_mount(shout, mount.c_str()) != SHOUTERR_SUCCESS)
     {
-        // throw DomainException(NoiseStreamerDomainErrorCode::NSS0008, getError());
+        throw DomainException(NSS0007, getError());
     }
 }
 

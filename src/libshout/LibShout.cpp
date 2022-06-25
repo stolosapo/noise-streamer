@@ -1,8 +1,12 @@
 #include <unistd.h>
 #include <fstream>
+#include <noisekernel/Exception.h>
 
 #include "LibShout.h"
+#include "../exception/NoiseStreamerException.h"
 #include "../utils/StringHelper.h"
+
+using namespace NoiseKernel;
 
 LibShout::LibShout(
     LogService *logSrv,
@@ -54,8 +58,8 @@ void LibShout::startShout()
 
     if (ret != SHOUTERR_CONNECTED)
     {
-        // DomainException err(NoiseStreamerDomainErrorCode::NSS0020, getError());
-        // logSrv->warn(handle(err));
+        DomainException err(NSS0019, getError());
+        logSrv->warn(handle(err));
         restartShout();
     }
     else

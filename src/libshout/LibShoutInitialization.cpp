@@ -1,4 +1,8 @@
 #include "LibShout.h"
+#include <noisekernel/Exception.h>
+#include "../exception/NoiseStreamerException.h"
+
+using namespace NoiseKernel;
 
 void LibShout::shoutInit()
 {
@@ -29,7 +33,7 @@ void LibShout::shoutNew()
 {
     if (!(shout = shout_new()))
     {
-        // throw DomainException(NoiseStreamerDomainErrorCode::NSS0002);
+        throw DomainException(NSS0001);
     }
 }
 

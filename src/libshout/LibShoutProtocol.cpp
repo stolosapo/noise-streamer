@@ -1,10 +1,14 @@
 #include "LibShout.h"
+#include <noisekernel/Exception.h>
+#include "../exception/NoiseStreamerException.h"
+
+using namespace NoiseKernel;
 
 void LibShout::setProtocol(unsigned int protocol)
 {
     if (shout_set_protocol(shout, protocol) != SHOUTERR_SUCCESS)
     {
-        // throw DomainException(NoiseStreamerDomainErrorCode::NSS0018, getError());
+        throw DomainException(NSS0017, getError());
     }
 }
 
