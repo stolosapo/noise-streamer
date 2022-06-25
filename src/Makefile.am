@@ -10,9 +10,14 @@ maininclude_HEADERS = \
 common_sources = \
     NoiseStreamer.cpp \
     \
+    config/NoiseStreamerConfig.h \
+    \
     logger/Logger.h logger/Logger.cpp \
     \
     exception/NoiseStreamerException.h exception/NoiseStreamerException.cpp \
+    \
+    audio/AudioBitrate.h \
+    audio/AudioBitrateConverter.h audio/AudioBitrateConverter.cpp \
     \
     libshout/LibShout.h libshout/LibShout.cpp \
     libshout/LibShoutAudio.cpp \

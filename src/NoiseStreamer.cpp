@@ -4,8 +4,9 @@ const char* NoiseStreamer::USER_AGENT = "noisestreamer";
 
 NoiseStreamer::NoiseStreamer(
     LogService *logSrv,
-    SignalAdapter* sigAdapter
-): logSrv(logSrv), sigAdapter(sigAdapter)
+    SignalAdapter* sigAdapter,
+    NoiseStreamerConfig* config
+): logSrv(logSrv), sigAdapter(sigAdapter), config(config)
 {
 }
 
