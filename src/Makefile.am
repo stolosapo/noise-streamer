@@ -5,19 +5,23 @@ bin_PROGRAMS = noisestreamer
 
 mainincludedir = $(includedir)/noisestreamer
 maininclude_HEADERS = \
-    NoiseStreamer.h
+    NoiseStreamer.h \
+    exception/NoiseStreamerException.h \
+    config/NoiseStreamerConfig.h \
+    audio/AudioBitrate.h \
+    audio/AudioSourceType.h \
+    audio/AudioSource.h
+
 
 common_sources = \
     NoiseStreamer.cpp \
     \
-    config/NoiseStreamerConfig.h \
-    \
     logger/Logger.h logger/Logger.cpp \
     \
-    exception/NoiseStreamerException.h exception/NoiseStreamerException.cpp \
+    exception/NoiseStreamerException.cpp \
     \
-    audio/AudioBitrate.h \
-    audio/AudioBitrateConverter.h audio/AudioBitrateConverter.cpp \
+    audio/AudioBitrate.cpp \
+    audio/AudioSource.cpp \
     \
     libshout/LibShout.h libshout/LibShout.cpp \
     libshout/LibShoutAudio.cpp \

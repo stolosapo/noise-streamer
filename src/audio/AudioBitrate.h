@@ -1,7 +1,6 @@
 #ifndef AudioBitrate_h__
 #define AudioBitrate_h__
 
-
 enum AudioBitrate
 {
     NO_BR = 0,
@@ -43,5 +42,7 @@ enum AudioBitrate
     BR_320kbps = 320
 };
 
+AudioBitrate convert(int number);
+int convert(AudioBitrate bitrate);
 
 #endif // AudioBitrate_h__

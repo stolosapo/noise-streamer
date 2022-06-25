@@ -5,7 +5,9 @@
 #include <noisekernel/Logger.h>
 #include <noisekernel/Signal.h>
 
+#include "libshout/LibShout.h"
 #include "config/NoiseStreamerConfig.h"
+#include "audio/AudioSource.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -17,8 +19,14 @@ private:
 
     LogService* logSrv;
     SignalAdapter* sigAdapter;
-
     NoiseStreamerConfig* config;
+
+    LibShout* libShout;
+    AudioSource* audioSource;
+
+    void initializeShout();
+    void connectShout();
+	void finilizeShout();
 
 public:
     NoiseStreamer(
@@ -27,6 +35,8 @@ public:
         NoiseStreamerConfig* config
     );
     virtual ~NoiseStreamer();
+
+    string userAgent();
 };
 
 #endif // NoiseStreamer_h__
