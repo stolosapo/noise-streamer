@@ -12,7 +12,7 @@ common_sources = \
     \
     logger/Logger.h logger/Logger.cpp \
     \
-    exception/NoiseStreamerException.h exception/NoiseStreamerException.cpp
+    exception/NoiseStreamerException.h exception/NoiseStreamerException.cpp \
     \
     libshout/LibShout.h libshout/LibShout.cpp \
     libshout/LibShoutAudio.cpp \
