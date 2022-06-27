@@ -1,6 +1,7 @@
 #include "NoiseStreamerException.h"
 
 const DomainErrorCode GNR0001 = DomainErrorCode("GNR0001", "Cannot open file '%s'");
+const DomainErrorCode GNR0002 = DomainErrorCode("GNR0002", "Invalid file line number '%s'");
 
 const DomainErrorCode NSS0001 = DomainErrorCode("NSS0001", "Could not allocate shout_t");
 const DomainErrorCode NSS0002 = DomainErrorCode("NSS0002", "Error setting hostname: '%s'");
