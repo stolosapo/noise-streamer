@@ -34,7 +34,8 @@ common_sources = \
     libshout/LibShoutMetadata.cpp \
     libshout/LibShoutProtocol.cpp \
     \
-    utils/StringHelper.h utils/StringHelper.cpp
+    utils/StringHelper.h utils/StringHelper.cpp \
+    utils/FileHelper.h utils/FileHelper.cpp
 
 noisestreamer_SOURCES = main.cpp $(common_sources)
 noisestreamer_LDADD = libnoisestreamer.la
