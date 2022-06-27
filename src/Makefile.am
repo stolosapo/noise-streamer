@@ -9,8 +9,10 @@ maininclude_HEADERS = \
     exception/NoiseStreamerException.h \
     config/NoiseStreamerConfig.h \
     audio/AudioBitrate.h \
+    audio/AudioEncodeMode.h \
     audio/AudioSourceType.h \
-    audio/AudioSource.h
+    audio/AudioSource.h \
+    audio/tag/AudioTag.h \
 
 
 common_sources = \
@@ -22,6 +24,8 @@ common_sources = \
     \
     audio/AudioBitrate.cpp \
     audio/AudioSource.cpp \
+    audio/tag/AudioTag.cpp \
+    audio/tag/AudioTagReader.h audio/tag/AudioTagReader.cpp \
     \
     libshout/LibShout.h libshout/LibShout.cpp \
     libshout/LibShoutAudio.cpp \
