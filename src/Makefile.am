@@ -10,8 +10,8 @@ maininclude_HEADERS = \
     config/NoiseStreamerConfig.h \
     audio/AudioBitrate.h \
     audio/AudioEncodeMode.h \
-    audio/AudioSourceType.h \
-    audio/AudioSource.h \
+    audio/source/AudioSourceType.h \
+    audio/source/AudioSource.h \
     audio/tag/AudioTag.h \
     audio/playlist/PlaylistStrategyType.h
 
@@ -24,7 +24,7 @@ common_sources = \
     exception/NoiseStreamerException.cpp \
     \
     audio/AudioBitrate.cpp \
-    audio/AudioSource.cpp \
+    audio/source/AudioSource.cpp \
     audio/tag/AudioTag.cpp \
     audio/tag/AudioTagReader.h audio/tag/AudioTagReader.cpp \
     audio/playlist/PlaylistHandler.h audio/playlist/PlaylistHandler.cpp \

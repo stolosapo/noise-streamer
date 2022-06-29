@@ -7,7 +7,7 @@
 
 #include "libshout/LibShout.h"
 #include "config/NoiseStreamerConfig.h"
-#include "audio/AudioSource.h"
+#include "audio/source/AudioSource.h"
 
 using namespace std;
 using namespace NoiseKernel;
