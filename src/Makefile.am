@@ -13,6 +13,7 @@ maininclude_HEADERS = \
     audio/AudioSourceType.h \
     audio/AudioSource.h \
     audio/tag/AudioTag.h \
+    audio/playlist/PlaylistStrategyType.h
 
 
 common_sources = \
@@ -26,6 +27,12 @@ common_sources = \
     audio/AudioSource.cpp \
     audio/tag/AudioTag.cpp \
     audio/tag/AudioTagReader.h audio/tag/AudioTagReader.cpp \
+    audio/playlist/PlaylistHandler.h audio/playlist/PlaylistHandler.cpp \
+    audio/playlist/PlaylistItem.h audio/playlist/PlaylistItem.cpp \
+    audio/playlist/PlaylistStrategy.h audio/playlist/PlaylistStrategy.cpp \
+    audio/playlist/PlaylistStrategyFactory.h audio/playlist/PlaylistStrategyFactory.cpp \
+    audio/playlist/RandomOncePlaylistStrategy.h audio/playlist/RandomOncePlaylistStrategy.cpp \
+    audio/playlist/SimplePlaylistStrategy.h audio/playlist/SimplePlaylistStrategy.cpp \
     \
     libshout/LibShout.h libshout/LibShout.cpp \
     libshout/LibShoutAudio.cpp \
