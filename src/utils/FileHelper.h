@@ -8,8 +8,6 @@
 
 using namespace std;
 
-static const char* FILE_DELIMITTER;
-
 void createFile(string filename);
 
 FILE* openFile(string filename, const char* mode);

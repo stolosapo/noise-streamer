@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const char* FILE_DELIMITTER = "/";
+static const char* FILE_DELIMITTER = "/";
 
 FILE* openFile(string filename, const char* mode)
 {
