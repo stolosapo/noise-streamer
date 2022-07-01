@@ -19,8 +19,7 @@ struct NoiseStreamerConfig
     string description;
     string url;
     string isPublic;
-    string bitrate;
-    AudioBitrate typedBitrate;
+    AudioBitrate bitrate;
     string samplerate;
     string channels;
 };

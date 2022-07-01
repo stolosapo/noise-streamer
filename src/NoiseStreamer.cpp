@@ -55,7 +55,7 @@ void NoiseStreamer::initializeShout()
     libShout->setGenre(config->genre);
     libShout->setDescription(config->description);
 
-    libShout->setAudioInfoBitrate(config->bitrate);
+    libShout->setAudioInfoBitrate(convertToString(config->bitrate));
     libShout->setAudioInfoSamplerate(config->samplerate);
     libShout->setAudioInfoChannels(config->channels);
 

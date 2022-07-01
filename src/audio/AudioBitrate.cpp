@@ -1,4 +1,5 @@
 #include "AudioBitrate.h"
+#include "utils/StringHelper.h"
 
 AudioBitrate convert(int number)
 {
@@ -69,4 +70,9 @@ AudioBitrate convert(int number)
 int convert(AudioBitrate bitrate)
 {
     return (int) bitrate;
+}
+
+string convertToString(AudioBitrate bitrate)
+{
+    return numberToString<int>(convert(bitrate));
 }

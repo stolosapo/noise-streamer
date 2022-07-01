@@ -8,6 +8,7 @@ maininclude_HEADERS = \
     NoiseStreamer.h \
     exception/NoiseStreamerException.h \
     config/NoiseStreamerConfig.h \
+    config/PlaylistAudioSourceConfig.h \
     audio/AudioBitrate.h \
     audio/AudioEncodeMode.h \
     audio/source/AudioSourceType.h \
@@ -24,7 +25,12 @@ common_sources = \
     exception/NoiseStreamerException.cpp \
     \
     audio/AudioBitrate.cpp \
+    audio/source/AudioMetadataChangedEventArgs.h audio/source/AudioMetadataChangedEventArgs.cpp \
     audio/source/AudioSource.cpp \
+    audio/source/PlaylistAudioSource.h audio/source/PlaylistAudioSource.cpp \
+    audio/source/PlaylistAudioSourceItem.h audio/source/PlaylistAudioSourceItem.cpp \
+    audio/source/PlaylistAudioSourceItemContext.h \
+    audio/source/PlaylistAudioSourceNavigator.h audio/source/PlaylistAudioSourceNavigator.cpp \
     audio/tag/AudioTag.cpp \
     audio/tag/AudioTagReader.h audio/tag/AudioTagReader.cpp \
     audio/playlist/PlaylistHandler.h audio/playlist/PlaylistHandler.cpp \
@@ -47,7 +53,9 @@ common_sources = \
     \
     utils/StringHelper.h utils/StringHelper.cpp \
     utils/FileHelper.h utils/FileHelper.cpp \
-    utils/File.h utils/File.cpp
+    utils/File.h utils/File.cpp \
+    utils/SynchronizedQueue.h \
+    utils/SynchronizedPQueue.h
 
 noisestreamer_SOURCES = main.cpp $(common_sources)
 noisestreamer_LDADD = libnoisestreamer.la

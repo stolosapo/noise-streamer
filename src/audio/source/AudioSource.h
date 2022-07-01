@@ -2,10 +2,12 @@
 #define AudioSource_h__
 
 #include <string>
+#include <noisekernel/Observer.h>
 
 #include "AudioSourceType.h"
 
 using namespace std;
+using namespace NoiseKernel;
 
 class AudioSource
 {
@@ -13,6 +15,9 @@ private:
     const AudioSourceType type;
 
 public:
+    Event ErrorAppeared;
+    Event AudioMetadataChanged;
+
     AudioSource(const AudioSourceType type);
     virtual ~AudioSource();
 

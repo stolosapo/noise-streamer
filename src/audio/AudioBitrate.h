@@ -1,6 +1,10 @@
 #ifndef AudioBitrate_h__
 #define AudioBitrate_h__
 
+#include <string>
+
+using namespace std;
+
 enum AudioBitrate
 {
     NO_BR = 0,
@@ -44,5 +48,6 @@ enum AudioBitrate
 
 AudioBitrate convert(int number);
 int convert(AudioBitrate bitrate);
+string convertToString(AudioBitrate bitrate);
 
 #endif // AudioBitrate_h__
