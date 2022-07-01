@@ -1,24 +1,23 @@
 #include "NoiseStreamer.h"
+#include "exception/NoiseStreamerException.h"
+#include "audio/source/PlaylistAudioSource.h"
 #include "utils/StringHelper.h"
+
+using namespace NoiseKernel;
 
 const char* NoiseStreamer::USER_AGENT = "noisestreamer";
 
 NoiseStreamer::NoiseStreamer(
     LogService *logSrv,
     SignalAdapter* sigAdapter,
-    NoiseStreamerConfig* config
-): logSrv(logSrv), sigAdapter(sigAdapter), config(config)
+    NoiseStreamerConfig* config,
+    AudioSource* audioSource
+): logSrv(logSrv), sigAdapter(sigAdapter), config(config), audioSource(audioSource)
 {
-    audioSource = NULL;
 }
 
 NoiseStreamer::~NoiseStreamer()
 {
-    if (audioSource != NULL)
-    {
-        delete audioSource;
-    }
-
     finilizeShout();
 }
 
@@ -74,5 +73,78 @@ void NoiseStreamer::finilizeShout()
         libShout->finilizeShout();
         delete libShout;
         libShout = NULL;
+    }
+}
+
+void NoiseStreamer::streamAudioSource()
+{
+    const int AUDIO_SIZE = 4096;
+
+    unsigned char buff[AUDIO_SIZE * 100];
+    long read;
+
+    while (!sigAdapter->gotSigInt())
+    {
+        // checkIfErrorCounterThresholdReached();
+
+        read = audioSource->readNextMp3Data(buff, AUDIO_SIZE);
+        // read = ((PlaylistAudioSource*) audioSource)->readNextEncodedMp3Data(buff);
+
+        if (read <= 0)
+        {
+            break;
+        }
+
+        if (!libShout->isConnected())
+        {
+            string connStr = numberToString<int>(libShout->getConnected());
+            throw DomainException(NSS0019, "Connection status '" + connStr + "'");
+        }
+
+        libShout->shoutSend(buff, read);
+
+        // setShoutQueueLenth(libShout->shoutQueuelen());
+        // checkIfShoutQueueLengthThresholdReached();
+
+        libShout->shoutSync();
+    }
+}
+
+void NoiseStreamer::initialize()
+{
+    // Initialize Audio Source
+    // audioSource->AudioMetadataChanged += audioMetadataChangedEventHandler;
+    // audioSource->ErrorAppeared += errorAppearedEventHandler;
+    audioSource->initialize();
+}
+
+void NoiseStreamer::connect()
+{
+    initializeShout();
+
+    connectShout();
+}
+
+void NoiseStreamer::disconnect()
+{
+    finilizeShout();
+}
+
+void NoiseStreamer::shutdown()
+{
+    audioSource->shutdownAudioSource();
+}
+
+void NoiseStreamer::stream()
+{
+    try
+    {
+        // resetErrorCounter();
+
+        streamAudioSource();
+    }
+    catch(DomainException& e)
+    {
+        logSrv->error(handle(e));
     }
 }

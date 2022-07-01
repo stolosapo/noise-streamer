@@ -27,16 +27,23 @@ private:
     void initializeShout();
     void connectShout();
 	void finilizeShout();
+    void streamAudioSource();
 
 public:
     NoiseStreamer(
         LogService *logSrv,
         SignalAdapter* sigAdapter,
-        NoiseStreamerConfig* config
-    );
+        NoiseStreamerConfig* config,
+        AudioSource* audioSource);
     virtual ~NoiseStreamer();
 
     string userAgent();
+
+    void initialize();
+    void connect();
+    void disconnect();
+    void shutdown();
+    void stream();
 };
 
 #endif // NoiseStreamer_h__
