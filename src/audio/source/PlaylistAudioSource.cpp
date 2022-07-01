@@ -94,7 +94,7 @@ PlaylistAudioSourceItem* PlaylistAudioSource::createPlaylistAudioSourceItem(Play
 
 PlaylistAudioSourceItem* PlaylistAudioSource::fetchNextPlaylistItem()
 {
-    if (!mainQueue.hasNext())
+    if (sigSrv->gotSigInt() || !mainQueue.hasNext())
     {
         // Playlist has no more items
         return NULL;
