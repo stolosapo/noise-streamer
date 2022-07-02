@@ -8,6 +8,7 @@
 #include "libshout/LibShout.h"
 #include "config/NoiseStreamerConfig.h"
 #include "audio/source/AudioSource.h"
+#include "health/NoiseStreamerHealthPolicy.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -20,9 +21,11 @@ private:
     LogService* logSrv;
     SignalAdapter* sigAdapter;
     NoiseStreamerConfig* config;
+    AudioSource* audioSource;
+    NoiseStreamerHealthPolicy* healthPolicy;
 
     LibShout* libShout;
-    AudioSource* audioSource;
+    
 
     void initializeShout();
     void connectShout();
@@ -34,7 +37,8 @@ public:
         LogService *logSrv,
         SignalAdapter* sigAdapter,
         NoiseStreamerConfig* config,
-        AudioSource* audioSource);
+        AudioSource* audioSource,
+        NoiseStreamerHealthPolicy* healthPolicy);
     virtual ~NoiseStreamer();
 
     string userAgent();

@@ -11,8 +11,13 @@ NoiseStreamer::NoiseStreamer(
     LogService *logSrv,
     SignalAdapter* sigAdapter,
     NoiseStreamerConfig* config,
-    AudioSource* audioSource
-): logSrv(logSrv), sigAdapter(sigAdapter), config(config), audioSource(audioSource)
+    AudioSource* audioSource,
+    NoiseStreamerHealthPolicy* healthPolicy)
+    : logSrv(logSrv), 
+    sigAdapter(sigAdapter), 
+    config(config), 
+    audioSource(audioSource),
+    healthPolicy(healthPolicy)
 {
 }
 
@@ -85,11 +90,10 @@ void NoiseStreamer::streamAudioSource()
 
     while (!sigAdapter->gotSigInt())
     {
-        // checkIfErrorCounterThresholdReached();
+        healthPolicy->assertErrorCounterThresholdReached();
 
         read = audioSource->readNextMp3Data(buff, AUDIO_SIZE);
         // read = ((PlaylistAudioSource*) audioSource)->readNextEncodedMp3Data(buff);
-
         if (read <= 0)
         {
             break;
@@ -103,8 +107,8 @@ void NoiseStreamer::streamAudioSource()
 
         libShout->shoutSend(buff, read);
 
-        // setShoutQueueLenth(libShout->shoutQueuelen());
-        // checkIfShoutQueueLengthThresholdReached();
+        healthPolicy->setShoutQueueLenth(libShout->shoutQueuelen());
+        healthPolicy->assertErrorCounterThresholdReached();
 
         libShout->shoutSync();
     }
@@ -139,7 +143,7 @@ void NoiseStreamer::stream()
 {
     try
     {
-        // resetErrorCounter();
+        healthPolicy->resetErrorCounter();
 
         streamAudioSource();
     }
