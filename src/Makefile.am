@@ -40,7 +40,7 @@ common_sources = \
     audio/playlist/RandomOncePlaylistStrategy.h audio/playlist/RandomOncePlaylistStrategy.cpp \
     audio/playlist/SimplePlaylistStrategy.h audio/playlist/SimplePlaylistStrategy.cpp \
     \
-    health/NoiseStreamerHealthPolice.h health/NoiseStreamerHealthPolice.cpp \ 
+    health/NoiseStreamerHealthPolicy.h health/NoiseStreamerHealthPolicy.cpp \ 
     \
     libshout/LibShout.h libshout/LibShout.cpp \
     libshout/LibShoutAudio.cpp \
