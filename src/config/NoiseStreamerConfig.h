@@ -3,6 +3,7 @@
 
 #include <string>
 #include "../audio/AudioBitrate.h"
+#include "../argument/NoiseStreamerArgument.h"
 
 using namespace std;
 
@@ -23,5 +24,7 @@ struct NoiseStreamerConfig
     string samplerate;
     string channels;
 };
+
+NoiseStreamerConfig buildNoiseStreamerConfig(NoiseStreamerArgument* args);
 
 #endif // NoiseStreamerConfig_h__

@@ -19,6 +19,8 @@ maininclude_HEADERS = \
 
 common_sources = \
     NoiseStreamer.cpp \
+    config/NoiseStreamerConfig.cpp \
+    config/PlaylistAudioSourceConfig.cpp \
     \
     logger/Logger.h logger/Logger.cpp \
     \
@@ -33,6 +35,7 @@ common_sources = \
     audio/source/PlaylistAudioSourceNavigator.h audio/source/PlaylistAudioSourceNavigator.cpp \
     audio/tag/AudioTag.cpp \
     audio/tag/AudioTagReader.h audio/tag/AudioTagReader.cpp \
+    audio/playlist/PlaylistStrategyType.cpp \
     audio/playlist/PlaylistHandler.h audio/playlist/PlaylistHandler.cpp \
     audio/playlist/PlaylistItem.h audio/playlist/PlaylistItem.cpp \
     audio/playlist/PlaylistStrategy.h audio/playlist/PlaylistStrategy.cpp \
@@ -40,7 +43,7 @@ common_sources = \
     audio/playlist/RandomOncePlaylistStrategy.h audio/playlist/RandomOncePlaylistStrategy.cpp \
     audio/playlist/SimplePlaylistStrategy.h audio/playlist/SimplePlaylistStrategy.cpp \
     \
-    health/NoiseStreamerHealthPolicy.h health/NoiseStreamerHealthPolicy.cpp \ 
+    health/NoiseStreamerHealthPolicy.h health/NoiseStreamerHealthPolicy.cpp \
     \
     libshout/LibShout.h libshout/LibShout.cpp \
     libshout/LibShoutAudio.cpp \
@@ -52,6 +55,9 @@ common_sources = \
     libshout/LibShoutInitialization.cpp \
     libshout/LibShoutMetadata.cpp \
     libshout/LibShoutProtocol.cpp \
+    \
+    argument/NoiseStreamerArgument.h argument/NoiseStreamerArgument.cpp \
+    argument/PlaylistAudioSourceArgument.h argument/PlaylistAudioSourceArgument.cpp \
     \
     utils/StringHelper.h utils/StringHelper.cpp \
     utils/FileHelper.h utils/FileHelper.cpp \
