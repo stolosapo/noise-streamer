@@ -50,6 +50,7 @@ public:
         PlaylistAudioSourceConfig* config);
 	virtual ~PlaylistAudioSource();
 
+    virtual void shutdownAudioSource();
     virtual void initialize();
     virtual int readNextMp3Data(unsigned char* mp3OutBuffer, size_t buffer_size);
     virtual int readNextEncodedMp3Data(unsigned char* mp3OutBuffer);

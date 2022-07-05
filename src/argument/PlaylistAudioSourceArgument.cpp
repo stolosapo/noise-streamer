@@ -1,4 +1,5 @@
 #include "PlaylistAudioSourceArgument.h"
+#include "../exception/NoiseStreamerException.h"
 
 const string PlaylistAudioSourceArgument::PLAYLISTFILEPATH = "playlistfile";
 const string PlaylistAudioSourceArgument::HISTORYFILEPATH = "historyfile";
@@ -37,12 +38,22 @@ void PlaylistAudioSourceArgument::registerArguments()
 
 string PlaylistAudioSourceArgument::getPlaylistFilePath()
 {
-    return getStringValue(PLAYLISTFILEPATH);
+    string s = getStringValue(PLAYLISTFILEPATH);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, PLAYLISTFILEPATH);
+    }
+    return s;
 }
 
 string PlaylistAudioSourceArgument::getHistoryFilePath()
 {
-    return getStringValue(HISTORYFILEPATH);
+    string s = getStringValue(HISTORYFILEPATH);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, HISTORYFILEPATH);
+    }
+    return s;
 }
 
 string PlaylistAudioSourceArgument::getStrategyType()

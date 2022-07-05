@@ -13,12 +13,13 @@ NoiseStreamer::NoiseStreamer(
     NoiseStreamerConfig* config,
     AudioSource* audioSource,
     NoiseStreamerHealthPolicy* healthPolicy)
-    : logSrv(logSrv), 
-    sigAdapter(sigAdapter), 
-    config(config), 
+    : logSrv(logSrv),
+    sigAdapter(sigAdapter),
+    config(config),
     audioSource(audioSource),
     healthPolicy(healthPolicy)
 {
+    libShout = NULL;
 }
 
 NoiseStreamer::~NoiseStreamer()

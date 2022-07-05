@@ -27,8 +27,7 @@ public:
         string playlistFile,
         string historyFile,
         PlaylistStrategyType strategyType,
-        bool repeat
-    );
+        bool repeat);
     virtual ~PlaylistHandler();
 
     void load();

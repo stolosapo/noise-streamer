@@ -1,5 +1,6 @@
 #include "PlaylistAudioSource.h"
 #include <time.h>
+#include <iostream>
 #include <noisekernel/Exception.h>
 #include "AudioSourceType.h"
 #include "AudioMetadataChangedEventArgs.h"
@@ -7,12 +8,18 @@
 #include "../../utils/StringHelper.h"
 #include "../../utils/FileHelper.h"
 
+using namespace std;
 using namespace NoiseKernel;
 
 PlaylistAudioSource::PlaylistAudioSource(
     LogService* logSrv,
     SignalAdapter* sigSrv,
-    PlaylistAudioSourceConfig* config): AudioSource(SOURCE_PLAYLIST), PlaylistAudioSourceNavigator()
+    PlaylistAudioSourceConfig* config)
+    : AudioSource(SOURCE_PLAYLIST),
+    PlaylistAudioSourceNavigator(),
+    logSrv(logSrv),
+    sigSrv(sigSrv),
+    config(config)
 {
     playlistHandler = NULL;
     numberOfPlayedTracks = 0;
@@ -185,6 +192,11 @@ void PlaylistAudioSource::finilizeCurrentPlayingTrack()
         fclose(currentMp3File);
         currentMp3File = NULL;
     }
+}
+
+void PlaylistAudioSource::shutdownAudioSource()
+{
+
 }
 
 void PlaylistAudioSource::initialize()

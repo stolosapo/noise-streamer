@@ -1,4 +1,5 @@
 #include "NoiseStreamerArgument.h"
+#include "../exception/NoiseStreamerException.h"
 
 const string NoiseStreamerArgument::HOSTNAME = "hostname";
 const string NoiseStreamerArgument::PORT = "port";
@@ -49,27 +50,52 @@ void NoiseStreamerArgument::registerArguments()
 
 string NoiseStreamerArgument::getHostname()
 {
-    return getStringValue(HOSTNAME);
+    string s = getStringValue(HOSTNAME);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, HOSTNAME);
+    }
+    return s;
 }
 
 string NoiseStreamerArgument::getPort()
 {
-    return getStringValue(PORT);
+    string s = getStringValue(PORT);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, PORT);
+    }
+    return s;
 }
 
 string NoiseStreamerArgument::getUsername()
 {
-    return getStringValue(USERNAME);
+    string s = getStringValue(USERNAME);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, USERNAME);
+    }
+    return s;
 }
 
 string NoiseStreamerArgument::getPassword()
 {
-    return getStringValue(PASSWORD);
+    string s = getStringValue(PASSWORD);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, PASSWORD);
+    }
+    return s;
 }
 
 string NoiseStreamerArgument::getMountpoint()
 {
-    return getStringValue(MOUNTPOINT);
+    string s = getStringValue(MOUNTPOINT);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, MOUNTPOINT);
+    }
+    return s;
 }
 
 string NoiseStreamerArgument::getName()
@@ -99,15 +125,30 @@ bool NoiseStreamerArgument::getIsPublic()
 
 int NoiseStreamerArgument::getBitrate()
 {
-    return getIntValue(BITRATE);
+    int s = getIntValue(BITRATE);
+    if (s == 0)
+    {
+        throw DomainException(ARG0001, BITRATE);
+    }
+    return s;
 }
 
 string NoiseStreamerArgument::getSamplerate()
 {
-    return getStringValue(SAMPLERATE);
+    string s = getStringValue(SAMPLERATE);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, SAMPLERATE);
+    }
+    return s;
 }
 
 string NoiseStreamerArgument::getChannels()
 {
-    return getStringValue(CHANNELS);
+    string s = getStringValue(CHANNELS);
+    if (s == "")
+    {
+        throw DomainException(ARG0001, CHANNELS);
+    }
+    return s;
 }

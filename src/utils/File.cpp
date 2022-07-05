@@ -52,6 +52,11 @@ void File::loadLast(int count)
 
 void File::loadRestOf(int count)
 {
+    if (count <= 0)
+    {
+        return;
+    }
+
     int fileSize = lineCount(filename.c_str());
     int rest = fileSize % count;
     loadLast(rest);
