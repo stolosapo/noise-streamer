@@ -94,7 +94,6 @@ void NoiseStreamer::streamAudioSource()
         healthPolicy->assertErrorCounterThresholdReached();
 
         read = audioSource->readNextMp3Data(buff, AUDIO_SIZE);
-        // read = ((PlaylistAudioSource*) audioSource)->readNextEncodedMp3Data(buff);
         if (read <= 0)
         {
             break;

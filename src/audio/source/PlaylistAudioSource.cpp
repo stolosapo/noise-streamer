@@ -24,6 +24,7 @@ PlaylistAudioSource::PlaylistAudioSource(
     playlistHandler = NULL;
     numberOfPlayedTracks = 0;
     currentMp3File = NULL;
+    currentPlaylistItem = NULL;
     currentTrackStartTime = 0;
     encodePool = new ThreadPool(5);
 }
@@ -192,6 +193,34 @@ void PlaylistAudioSource::finilizeCurrentPlayingTrack()
         fclose(currentMp3File);
         currentMp3File = NULL;
     }
+
+    if (currentPlaylistItem != NULL)
+    {
+        archiveTrack(currentPlaylistItem);
+        currentPlaylistItem = NULL;
+    }
+}
+
+void PlaylistAudioSource::archiveTrack(PlaylistAudioSourceItem* item)
+{
+    playlistHandler->archiveTrack(item->getTrack());
+
+    /* Return the encode thread back to pool */
+    if (item->getEncodeThread() != NULL)
+    {
+        encodePool->putBack(item->getEncodeThread());
+    }
+
+    // /* Dispose the encode context */
+    // if (item->getContext() != NULL)
+    // {
+    //     delete item->getContext();
+    // }
+
+    /* Dispose item reference */
+    delete item;
+
+    numberOfPlayedTracks++;
 }
 
 void PlaylistAudioSource::shutdownAudioSource()
@@ -249,7 +278,6 @@ int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buf
         }
     }
 
-    // long read = fread(mp3OutBuffer, 1, sizeof(mp3OutBuffer), currentMp3File);
     long read = fread(mp3OutBuffer, sizeof(char), buffer_size, currentMp3File);
     if (read > 0)
     {

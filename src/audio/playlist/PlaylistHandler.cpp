@@ -11,7 +11,7 @@ PlaylistHandler::PlaylistHandler(
     bool repeat): logSrv(logSrv)
 {
     playlist = new File(playlistFile);
-    history = new File(playlistFile);
+    history = new File(historyFile);
     strategy = createPlaylistStrategy(strategyType, logSrv, playlist, history, repeat);
 }
 
@@ -66,7 +66,8 @@ bool PlaylistHandler::hasNext()
 
 PlaylistItem PlaylistHandler::nextTrack()
 {
-    return strategy->nextTrack(currentTrack);
+    currentTrack = strategy->nextTrack(currentTrack);
+    return currentTrack;
 }
 
 void PlaylistHandler::archiveTrack(PlaylistItem track)

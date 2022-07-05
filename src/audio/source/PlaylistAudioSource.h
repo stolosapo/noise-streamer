@@ -42,6 +42,7 @@ private:
     bool loadNextPlaylistItem();
     void prepareNextTrack();
     void finilizeCurrentPlayingTrack();
+    void archiveTrack(PlaylistAudioSourceItem* item);
 
 public:
 	PlaylistAudioSource(
