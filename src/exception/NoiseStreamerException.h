@@ -10,6 +10,8 @@ extern const DomainErrorCode GNR0002;
 
 extern const DomainErrorCode ARG0001;
 
+extern const DomainErrorCode ENC0001;
+
 extern const DomainErrorCode NSS0001;
 extern const DomainErrorCode NSS0002;
 extern const DomainErrorCode NSS0003;
