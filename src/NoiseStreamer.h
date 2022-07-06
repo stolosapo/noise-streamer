@@ -15,6 +15,26 @@ using namespace NoiseKernel;
 
 class NoiseStreamer
 {
+    class ErrorAppearedEventHandler: public EventHandler
+    {
+    private:
+        NoiseStreamer *noiseStreamer;
+    public:
+        ErrorAppearedEventHandler(NoiseStreamer *noiseStreamer);
+        virtual ~ErrorAppearedEventHandler();
+        virtual void onEvent(void* sender, EventArgs* e);
+    };
+
+    class AudioMetadataChangedEventHandler: public EventHandler
+    {
+    private:
+        NoiseStreamer *noiseStreamer;
+    public:
+        AudioMetadataChangedEventHandler(NoiseStreamer *noiseStreamer);
+        virtual ~AudioMetadataChangedEventHandler();
+        virtual void onEvent(void* sender, EventArgs* e);
+    };
+
 private:
     static const char* USER_AGENT;
 
@@ -25,7 +45,8 @@ private:
     NoiseStreamerHealthPolicy* healthPolicy;
 
     LibShout* libShout;
-    
+    AudioMetadataChangedEventHandler* audioMetadataChangedEventHandler;
+    ErrorAppearedEventHandler* errorAppearedEventHandler;
 
     void initializeShout();
     void connectShout();
