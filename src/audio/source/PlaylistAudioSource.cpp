@@ -274,6 +274,7 @@ int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buf
         bool hasNext = loadNextPlaylistItem();
         if (!hasNext)
         {
+            logSrv->info("Playlist finished!");
             return 0;
         }
     }
