@@ -91,7 +91,6 @@ void NoiseStreamer::AudioMetadataChangedEventHandler::onEvent(void* sender, Even
         }
 
         noiseStreamer->libShout->updateMetadata(metadata);
-        noiseStreamer->logSrv->trace("libshout audio metadata updated: " + metadata);
     }
     catch(DomainException& e)
     {
