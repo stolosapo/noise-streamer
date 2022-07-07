@@ -2,7 +2,6 @@
 #include "exception/NoiseStreamerException.h"
 #include "audio/source/PlaylistAudioSource.h"
 #include "audio/source/AudioMetadataChangedEventArgs.h"
-#include "audio/encode/NoiseStreamerEncoder.h"
 #include "audio/encode/EncodeContext.h"
 #include "utils/StringHelper.h"
 
@@ -25,6 +24,8 @@ NoiseStreamer::NoiseStreamer(
     libShout = NULL;
     audioMetadataChangedEventHandler = NULL;
     errorAppearedEventHandler = NULL;
+    encoder = NULL;
+    decoder = NULL;
 }
 
 NoiseStreamer::~NoiseStreamer()
@@ -39,6 +40,16 @@ NoiseStreamer::~NoiseStreamer()
     if (errorAppearedEventHandler != NULL)
     {
         delete errorAppearedEventHandler;
+    }
+
+    if (encoder != NULL)
+    {
+        delete encoder;
+    }
+
+    if (decoder != NULL)
+    {
+        delete decoder;
     }
 }
 
@@ -175,20 +186,10 @@ void NoiseStreamer::streamAudioSource()
 
     unsigned char mp3Buffer[AUDIO_SIZE];
     unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
+
     long read;
     int decodeRead;
     int encodeWrite;
-
-    EncodeContext context;
-    context.bitrate = (int) config->bitrate;
-    context.samplerate = stringToNumber<int>(config->samplerate);
-    context.encodeMode = VBR;
-    context.quality = 3;
-    NoiseStreamerEncoder encoder;
-    encoder.initForEncode(&context);
-
-    NoiseStreamerEncoder decoder;
-    decoder.initForDecode();
 
     while (!sigAdapter->gotSigInt())
     {
@@ -200,13 +201,13 @@ void NoiseStreamer::streamAudioSource()
             break;
         }
 
-        decodeRead = decoder.decode(mp3Buffer, read, pcmL, pcmR);
+        decodeRead = decoder->decode(mp3Buffer, read, pcmL, pcmR);
         if (decodeRead <= 0)
         {
             continue;
         }
 
-        encodeWrite = encoder.encode(pcmL, pcmR, decodeRead, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
+        encodeWrite = encoder->encode(pcmL, pcmR, decodeRead, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         if (encodeWrite <= 0)
         {
             logSrv->warn("Could not encode sample, returned " + numberToString<int>(encodeWrite));
@@ -227,9 +228,6 @@ void NoiseStreamer::streamAudioSource()
 
         libShout->shoutSync();
     }
-
-    decoder.finilizeDecode();
-    encoder.finilizeEncode();
 }
 
 void NoiseStreamer::initialize()
@@ -257,6 +255,19 @@ void NoiseStreamer::initialize()
     audioSource->ErrorAppeared -= errorAppearedEventHandler;
     audioSource->ErrorAppeared += errorAppearedEventHandler;
     audioSource->initialize();
+
+    // Initialize Encoder Decoder
+    EncodeContext context;
+    context.bitrate = (int) config->bitrate;
+    context.samplerate = stringToNumber<int>(config->samplerate);
+    context.encodeMode = VBR;
+    context.quality = 3;
+
+    encoder = new NoiseStreamerEncoder;
+    encoder->initForEncode(&context);
+
+    decoder = new NoiseStreamerEncoder;
+    decoder->initForDecode();
 }
 
 void NoiseStreamer::connect()
@@ -274,6 +285,8 @@ void NoiseStreamer::disconnect()
 void NoiseStreamer::shutdown()
 {
     audioSource->shutdownAudioSource();
+    encoder->finilizeEncode();
+    decoder->finilizeDecode();
 }
 
 void NoiseStreamer::stream()

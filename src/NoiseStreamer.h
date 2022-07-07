@@ -9,6 +9,7 @@
 #include "config/NoiseStreamerConfig.h"
 #include "audio/source/AudioSource.h"
 #include "health/NoiseStreamerHealthPolicy.h"
+#include "audio/encode/NoiseStreamerEncoder.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -47,6 +48,8 @@ private:
     LibShout* libShout;
     AudioMetadataChangedEventHandler* audioMetadataChangedEventHandler;
     ErrorAppearedEventHandler* errorAppearedEventHandler;
+    NoiseStreamerEncoder* encoder;
+    NoiseStreamerEncoder* decoder;
 
     void initializeShout();
     void connectShout();
