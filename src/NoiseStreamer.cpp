@@ -2,6 +2,8 @@
 #include "exception/NoiseStreamerException.h"
 #include "audio/source/PlaylistAudioSource.h"
 #include "audio/source/AudioMetadataChangedEventArgs.h"
+#include "audio/encode/NoiseStreamerEncoder.h"
+#include "audio/encode/EncodeContext.h"
 #include "utils/StringHelper.h"
 
 using namespace NoiseKernel;
@@ -165,17 +167,49 @@ void NoiseStreamer::finilizeShout()
 
 void NoiseStreamer::streamAudioSource()
 {
-    const int AUDIO_SIZE = 4096;
+    const int AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE;
+    const int ENCODE_AUDIO_SIZE = AUDIO_SIZE * 2;
 
-    unsigned char buff[AUDIO_SIZE * 100];
+    short pcmL[NoiseStreamerEncoder::PCM_SIZE];
+    short pcmR[NoiseStreamerEncoder::PCM_SIZE];
+
+    unsigned char mp3Buffer[AUDIO_SIZE];
+    unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
     long read;
+    int decodeRead;
+    int encodeWrite;
+
+    EncodeContext context;
+    context.bitrate = (int) config->bitrate;
+    context.samplerate = stringToNumber<int>(config->samplerate);
+    context.encodeMode = VBR;
+    context.quality = 3;
+    NoiseStreamerEncoder encoder;
+    encoder.initForEncode(&context);
+
+    NoiseStreamerEncoder decoder;
+    decoder.initForDecode();
 
     while (!sigAdapter->gotSigInt())
     {
         healthPolicy->assertErrorCounterThresholdReached();
 
-        read = audioSource->readNextMp3Data(buff, AUDIO_SIZE);
+        read = audioSource->readNextMp3Data(mp3Buffer, AUDIO_SIZE);
         if (read <= 0)
+        {
+            break;
+        }
+
+        decodeRead = decoder.decode(mp3Buffer, read, pcmL, pcmR);
+        // cout << "Read: " << read << ", Decode: " << decodeRead << ", L:" << sizeof(pcmL) << ", R: " << sizeof(pcmR) << endl;
+        if (decodeRead <= 0)
+        {
+            continue;
+        }
+
+        encodeWrite = encoder.encode(pcmL, pcmR, decodeRead, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
+        // cout << "DecodeRead: " << decodeRead << ", encodeWrite: " << encodeWrite << ", mp3:" << sizeof(mp3EncodedBuffer) << endl;
+        if (encodeWrite <= 0)
         {
             break;
         }
@@ -186,7 +220,8 @@ void NoiseStreamer::streamAudioSource()
             throw DomainException(NSS0019, "Connection status '" + connStr + "'");
         }
 
-        libShout->shoutSend(buff, read);
+        // libShout->shoutSend(mp3Buffer, read);
+        libShout->shoutSend(mp3EncodedBuffer, encodeWrite);
 
         healthPolicy->setShoutQueueLenth(libShout->shoutQueuelen());
         healthPolicy->assertErrorCounterThresholdReached();

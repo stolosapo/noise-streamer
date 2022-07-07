@@ -38,6 +38,7 @@ public:
     hip_t hipDecodeInit();
     void hipDecodeExit(hip_t hip);
 
+    int hipDecode(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_l[], short pcm_r[]);
     int hipDecode1Headers(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_l[], short pcm_r[], mp3data_struct* mp3data);
 #endif
 

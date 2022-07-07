@@ -2,6 +2,10 @@
 
 #include <stdio.h>
 #include <cstring>
+#include "../../utils/StringHelper.h"
+
+const int NoiseStreamerEncoder::MP3_SIZE = 4096;
+const int NoiseStreamerEncoder::PCM_SIZE = MP3_SIZE * 100;
 
 NoiseStreamerEncoder::NoiseStreamerEncoder()
 {
@@ -13,7 +17,97 @@ NoiseStreamerEncoder::~NoiseStreamerEncoder()
     if (lame != NULL)
     {
         delete lame;
+        lame = NULL;
     }
+}
+
+void NoiseStreamerEncoder::setId3Tag(AudioTag* settings)
+{
+    lame->id3tagInit();
+    lame->id3tagV2Only();
+
+    if (settings->getYear() != 0)
+    {
+        lame->id3tagSetYear(numberToString<int>(settings->getYear()));
+    }
+
+    lame->id3tagSetGenre(settings->getGenre());
+    lame->id3tagSetArtist(settings->getArtist());
+    lame->id3tagSetAlbum(settings->getAlbum());
+    lame->id3tagSetTitle(settings->getTitle());
+    lame->id3tagSetTrack(numberToString<int>(settings->getTrack()));
+    lame->id3tagSetComment(settings->getComments());
+    // lame->id3tagSetAlbumArt(...);
+
+    lame->setWriteId3tagAutomatic(false);
+}
+
+void NoiseStreamerEncoder::setChannels(int channels)
+{
+    if (channels == 1)
+    {
+        lame->setModeMono();
+        lame->setNumChannels(1);
+    }
+    else
+    {
+        lame->setModeJointStereo();
+        lame->setNumChannels(2);
+    }
+}
+
+void NoiseStreamerEncoder::setVbrTag(EncodeContext *context)
+{
+    lame->setBWriteVbrTag(true);
+
+    switch (context->encodeMode)
+    {
+        case ABR:
+            setEncodeModeABR(context->bitrate);
+            break;
+        case CBR:
+            setEncodeModeCBR(context->quality, context->bitrate);
+            break;
+        case VBR:
+            setEncodeModeVBR(context->quality);
+            break;
+        default:
+            break;
+    }
+}
+
+void NoiseStreamerEncoder::setEncodeModeABR(int bitrate)
+{
+    if(bitrate >= 8000)
+    {
+        bitrate = (bitrate + 500) / 1000;
+    }
+
+    if(bitrate > 320)
+    {
+        bitrate = 320;
+    }
+
+    if(bitrate < 8)
+    {
+        bitrate = 8;
+    }
+
+    lame->setVBR_ABR();
+    lame->setVBRMeanBitrateKbps(bitrate);
+}
+
+void NoiseStreamerEncoder::setEncodeModeCBR(int quality, int bitrate)
+{
+    lame->setVBR_OFF();
+    lame->setQuality(quality);
+    lame->setBrate(bitrate);
+}
+
+void NoiseStreamerEncoder::setEncodeModeVBR(int quality)
+{
+    lame->setVBR_MTRH();
+    lame->setVBRq(quality);
 }
 
 void NoiseStreamerEncoder::initForDecode()
@@ -38,14 +132,13 @@ int NoiseStreamerEncoder::decode(unsigned char* mp3Buffer, size_t mp3Len, short 
 {
     if (lame == NULL)
     {
-        return 0;
+        return -1;
     }
 
 #ifdef HAVE_LAME
-    int samples = lame->hipDecode1Headers(hip, mp3Buffer, mp3Len, pcmLeft, pcmRight, &mp3data);
-    return samples;
+    return lame->hipDecode(hip, mp3Buffer, mp3Len, pcmLeft, pcmRight);
 #else
-    return 0;
+    return -1;
 #endif
 }
 
@@ -62,17 +155,37 @@ void NoiseStreamerEncoder::finilizeDecode()
     lame->close();
 }
 
-void NoiseStreamerEncoder::initForEncode()
+void NoiseStreamerEncoder::initForEncode(EncodeContext* context)
 {
+    if (lame != NULL)
+    {
+        delete lame;
+    }
 
+    lame = new LibLame;
+    lame->init();
+
+    // lame->setInSamplerate(settings->getSamplerate());
+    lame->setOutSamplerate(context->samplerate);
+    lame->setFindReplayGain(true);
+
+    // setId3Tag(settings);
+    setChannels(context->channels);
+    setVbrTag(context);
+
+    lame->initParams();
 }
 
-void NoiseStreamerEncoder::encode()
+int NoiseStreamerEncoder::encode(short int *pcmLeft, short int *pcmRight, int samples, unsigned char* mp3Buffer, size_t mp3Len)
 {
-
+    return lame->encodeBuffer(pcmLeft, pcmRight, samples, mp3Buffer, mp3Len);
 }
 
 void NoiseStreamerEncoder::finilizeEncode()
 {
-
+    if (lame == NULL)
+    {
+        return;
+    }
+    lame->close();
 }

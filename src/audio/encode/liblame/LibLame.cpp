@@ -39,12 +39,10 @@ int LibLame::initParams()
 {
 #ifdef HAVE_LAME
     int r = lame_init_params(lame);
-
     if (r == -1)
     {
         throw DomainException(ENC0001);
     }
-
     return r;
 #endif
     return -1;
@@ -272,6 +270,11 @@ hip_t LibLame::hipDecodeInit()
 void LibLame::hipDecodeExit(hip_t hip)
 {
     hip_decode_exit(hip);
+}
+
+int LibLame::hipDecode(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_l[], short pcm_r[])
+{
+    return hip_decode(hip, mp3buf, len, pcm_l, pcm_r);
 }
 
 int LibLame::hipDecode1Headers(hip_t hip, unsigned char* mp3_buffer, size_t mp3_len, short pcm_l[], short pcm_r[], mp3data_struct* mp3data)
