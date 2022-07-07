@@ -168,7 +168,7 @@ void NoiseStreamer::finilizeShout()
 void NoiseStreamer::streamAudioSource()
 {
     const int AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE;
-    const int ENCODE_AUDIO_SIZE = AUDIO_SIZE * 2;
+    const int ENCODE_AUDIO_SIZE = AUDIO_SIZE * 10;
 
     short pcmL[NoiseStreamerEncoder::PCM_SIZE];
     short pcmR[NoiseStreamerEncoder::PCM_SIZE];
@@ -201,16 +201,15 @@ void NoiseStreamer::streamAudioSource()
         }
 
         decodeRead = decoder.decode(mp3Buffer, read, pcmL, pcmR);
-        // cout << "Read: " << read << ", Decode: " << decodeRead << ", L:" << sizeof(pcmL) << ", R: " << sizeof(pcmR) << endl;
         if (decodeRead <= 0)
         {
             continue;
         }
 
         encodeWrite = encoder.encode(pcmL, pcmR, decodeRead, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
-        // cout << "DecodeRead: " << decodeRead << ", encodeWrite: " << encodeWrite << ", mp3:" << sizeof(mp3EncodedBuffer) << endl;
         if (encodeWrite <= 0)
         {
+            logSrv->warn("Could not encode sample, returned " + numberToString<int>(encodeWrite));
             break;
         }
 
@@ -228,6 +227,9 @@ void NoiseStreamer::streamAudioSource()
 
         libShout->shoutSync();
     }
+
+    decoder.finilizeDecode();
+    encoder.finilizeEncode();
 }
 
 void NoiseStreamer::initialize()
