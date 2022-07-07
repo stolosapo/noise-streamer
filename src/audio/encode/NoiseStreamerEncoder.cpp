@@ -1,5 +1,8 @@
 #include "NoiseStreamerEncoder.h"
 
+#include <stdio.h>
+#include <cstring>
+
 NoiseStreamerEncoder::NoiseStreamerEncoder()
 {
     lame = NULL;
@@ -11,7 +14,6 @@ NoiseStreamerEncoder::~NoiseStreamerEncoder()
     {
         delete lame;
     }
-
 }
 
 void NoiseStreamerEncoder::initForDecode()
@@ -40,7 +42,7 @@ int NoiseStreamerEncoder::decode(unsigned char* mp3Buffer, size_t mp3Len, short 
     }
 
 #ifdef HAVE_LAME
-    samples = lame->hipDecode1Headers(hip, mp3Buffer, mp3Len, pcmLeft, pcmRight, &mp3data);
+    int samples = lame->hipDecode1Headers(hip, mp3Buffer, mp3Len, pcmLeft, pcmRight, &mp3data);
     return samples;
 #else
     return 0;

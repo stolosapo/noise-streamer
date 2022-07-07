@@ -43,6 +43,9 @@ common_sources = \
     audio/playlist/RandomOncePlaylistStrategy.h audio/playlist/RandomOncePlaylistStrategy.cpp \
     audio/playlist/SimplePlaylistStrategy.h audio/playlist/SimplePlaylistStrategy.cpp \
     \
+    audio/encode/liblame/LibLame.h audio/encode/liblame/LibLame.cpp \
+    audio/encode/NoiseStreamerEncoder.h audio/encode/NoiseStreamerEncoder.cpp \
+    \
     health/NoiseStreamerHealthPolicy.h health/NoiseStreamerHealthPolicy.cpp \
     \
     libshout/LibShout.h libshout/LibShout.cpp \
@@ -67,11 +70,11 @@ common_sources = \
 
 noisestreamer_SOURCES = main.cpp $(common_sources)
 noisestreamer_LDADD = libnoisestreamer.la
-noisestreamer_CXXFLAGS = $(AM_CXXFLAGS) -lshout -lnoisekernel
+noisestreamer_CXXFLAGS = $(AM_CXXFLAGS) -lshout -lnoisekernel -lmp3lame -DHAVE_LAME
 
 lib_LTLIBRARIES = libnoisestreamer.la
 libnoisestreamer_la_LDFLAGS = -version-info 1:0:0 -pthread -lshout -lnoisekernel
-libnoisestreamer_la_CXXFLAGS = $(AM_CXXFLAGS) -pthread -lshout -lnoisekernel
+libnoisestreamer_la_CXXFLAGS = $(AM_CXXFLAGS) -pthread -lshout -lnoisekernel -lmp3lame -DHAVE_LAME
 libnoisestreamer_la_SOURCES = $(common_sources)
 
 TESTS = noisestreamer
