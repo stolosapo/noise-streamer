@@ -38,8 +38,7 @@ public:
         LogService* logSrv,
         File* playlist,
         File* history,
-        bool repeat
-    );
+        bool repeat);
     virtual ~RandomOncePlaylistStrategy();
 
     virtual void load();

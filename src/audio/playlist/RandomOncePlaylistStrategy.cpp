@@ -9,11 +9,10 @@ RandomOncePlaylistStrategy::RandomOncePlaylistStrategy(
     LogService* logSrv,
     File* playlist,
     File* history,
-    bool repeat
-): PlaylistStrategy(logSrv, playlist, history, repeat)
+    bool repeat)
+    : PlaylistStrategy(logSrv, playlist, history, repeat)
 {
     _locker.init();
-
     srand(time(NULL));
 }
 
@@ -27,9 +26,7 @@ void RandomOncePlaylistStrategy::load()
     _locker.lock();
 
     clonePlaylist();
-
     removeHistory();
-
     checkRemainingMappings();
 
     _locker.unlock();
@@ -46,7 +43,6 @@ bool RandomOncePlaylistStrategy::checkRemainingMappings()
     int mappingsSize = trackToOriginalIndex.size();
 
     bool check = tracksSize == mappingsSize;
-
     if (!check)
     {
         logSrv->warn("Remaining Mappings has been diverged: remainingTracks=" + numberToString<int>(tracksSize) +  " trackToOriginalIndex=" + numberToString<int>(mappingsSize));
@@ -136,7 +132,6 @@ bool RandomOncePlaylistStrategy::hasNext(PlaylistItem currentTrack)
     _locker.lock();
 
     bool isEmpty = trackToOriginalIndex.empty();
-
     if (isEmpty)
     {
         logSrv->info("Playlist is empty, so clone playlist again..");
@@ -157,10 +152,8 @@ PlaylistItem RandomOncePlaylistStrategy::nextTrack(PlaylistItem currentTrack)
 
     PlaylistItem newTrack = currentTrack;
 
-
     /* Take a random index from the list of the remaining tracks */
     int remainingIndex = randomLine();
-
 
     bool exists = false;
     string randomTrack = "";
@@ -172,14 +165,11 @@ PlaylistItem RandomOncePlaylistStrategy::nextTrack(PlaylistItem currentTrack)
         /* Get the track based on this index */
         randomTrack = remainingTracks[remainingIndex];
 
-
         /* Check is this track exists in the remaining */
         exists = trackExist(randomTrack);
 
-
         /* remove this random index from remainings */
         removeFromRemainingTracks(remainingIndex);
-
 
         if (!exists)
         {
