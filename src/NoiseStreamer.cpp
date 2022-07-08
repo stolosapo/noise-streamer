@@ -212,6 +212,7 @@ void NoiseStreamer::streamAudioSource()
             }
             continue;
         }
+        decodeErrCnt = 0;
 
         encodeWrite = encoder->encode(pcmL, pcmR, decodeRead, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         if (encodeWrite <= 0)
