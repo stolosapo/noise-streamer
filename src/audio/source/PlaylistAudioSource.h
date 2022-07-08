@@ -36,7 +36,6 @@ private:
     PlaylistAudioSourceItem* currentPlaylistItem;
     time_t currentTrackStartTime;
 
-    bool needReEncode(PlaylistItem& item);
     PlaylistAudioSourceItem* createPlaylistAudioSourceItem(PlaylistItem item);
     PlaylistAudioSourceItem* fetchNextPlaylistItem();
     bool loadNextPlaylistItem();

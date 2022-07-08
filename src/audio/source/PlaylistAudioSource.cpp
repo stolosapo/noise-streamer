@@ -47,57 +47,9 @@ PlaylistAudioSource::~PlaylistAudioSource()
     delete encodePool;
 }
 
-bool PlaylistAudioSource::needReEncode(PlaylistItem& item)
-{
-    if (!config->reencode)
-    {
-        return false;
-    }
-
-    AudioTag* metadata = item.getMetadata();
-    int itemSamplerate = metadata->getSamplerate();
-    int itemChannels = metadata->getChannels();
-
-    int confSamplerate = config->samplerate;
-    int confChannels = config->channels;
-
-    return (itemSamplerate != confSamplerate) || (itemChannels != confChannels);
-}
-
 PlaylistAudioSourceItem* PlaylistAudioSource::createPlaylistAudioSourceItem(PlaylistItem item)
 {
-    PlaylistAudioSourceItem* playlistItem = NULL;
-
-    if (!needReEncode(item))
-    {
-        playlistItem = new PlaylistAudioSourceItem(item);
-    }
-    else if (encodePool->hasNext())
-    {
-        PlaylistAudioSourceItemContext context;
-        context.encodeThread = encodePool->getNext();
-        context.logSrv = logSrv;
-        context.pcmOutPath = config->pcmOutPath;
-        context.mp3OutPath = config->mp3OutPath;
-        context.encodeMode = VBR;
-        context.audioBitrate = config->bitrate;
-        context.samplerate = config->samplerate;
-        context.quality = 3;
-
-        playlistItem = new PlaylistAudioSourceItem(item, context);
-    }
-    else
-    {
-        logSrv->warn("Encode Pool has no more free threads, so encoding of track will be bypassed");
-        playlistItem = new PlaylistAudioSourceItem(item);
-    }
-
-    if (playlistItem != NULL)
-    {
-        playlistItem->prepare();
-    }
-
-    return playlistItem;
+    return new PlaylistAudioSourceItem(item);
 }
 
 PlaylistAudioSourceItem* PlaylistAudioSource::fetchNextPlaylistItem()

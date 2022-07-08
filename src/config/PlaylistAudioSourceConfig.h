@@ -14,13 +14,6 @@ struct PlaylistAudioSourceConfig
     string historyFilePath;
     PlaylistStrategyType strategyType;
     bool repeat;
-
-    bool reencode;
-    AudioBitrate bitrate;
-    int samplerate;
-    int channels;
-    string pcmOutPath;
-    string mp3OutPath;
 };
 
 PlaylistAudioSourceConfig buildPlaylistAudioSourceConfig(PlaylistAudioSourceArgument* args);

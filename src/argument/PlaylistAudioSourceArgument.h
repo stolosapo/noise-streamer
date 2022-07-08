@@ -14,9 +14,6 @@ private:
     static const string HISTORYFILEPATH;
     static const string STRATEGYTYPE;
     static const string REPEAT;
-    static const string REENCODE;
-    static const string PCMOUTPATH;
-    static const string MP3OUTPATH;
 
 protected:
     virtual string title();
@@ -31,9 +28,6 @@ public:
     string getHistoryFilePath();
     string getStrategyType();
     bool getRepeat();
-    bool getReencode();
-    string getPcmOutPath();
-    string getMp3OutPath();
 };
 
 #endif // PlaylistAudioSourceArgument_h__

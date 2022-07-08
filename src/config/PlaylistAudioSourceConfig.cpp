@@ -8,9 +8,5 @@ PlaylistAudioSourceConfig buildPlaylistAudioSourceConfig(PlaylistAudioSourceArgu
     config.historyFilePath = args->getHistoryFilePath();
     config.strategyType = convertPlaylistStrateryType(args->getStrategyType());
     config.repeat = args->getRepeat();
-    config.reencode = args->getReencode();
-    config.pcmOutPath = args->getPcmOutPath();
-    config.mp3OutPath = args->getMp3OutPath();
-
     return config;
 }
