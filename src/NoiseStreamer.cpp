@@ -190,6 +190,7 @@ void NoiseStreamer::streamAudioSource()
     long read;
     int decodeRead;
     int encodeWrite;
+    int decodeErrCnt = 0;
 
     while (!sigAdapter->gotSigInt())
     {
@@ -204,6 +205,11 @@ void NoiseStreamer::streamAudioSource()
         decodeRead = decoder->decode(mp3Buffer, read, pcmL, pcmR);
         if (decodeRead <= 0)
         {
+            decodeErrCnt++;
+            if (decodeErrCnt % 10 == 0)
+            {
+                healthPolicy->incrementErrorCounter();
+            }
             continue;
         }
 
