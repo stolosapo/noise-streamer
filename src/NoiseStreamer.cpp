@@ -262,7 +262,7 @@ void NoiseStreamer::initialize()
     EncodeContext context;
     context.bitrate = (int) config->bitrate;
     context.samplerate = stringToNumber<int>(config->samplerate);
-    context.encodeMode = VBR;
+    context.encodeMode = CBR;
     context.quality = 3;
 
     encoder = new NoiseStreamerEncoder;
