@@ -228,6 +228,8 @@ void NoiseStreamer::streamAudioSource()
 
         libShout->shoutSync();
     }
+
+    logSrv->info("Streaming Audio Source stopped");
 }
 
 void NoiseStreamer::initialize()
