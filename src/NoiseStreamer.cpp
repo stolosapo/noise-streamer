@@ -205,6 +205,11 @@ void NoiseStreamer::streamAudioSource()
         decodeRead = decoder->decode(mp3Buffer, read, pcmL, pcmR);
         if (decodeRead <= 0)
         {
+            if (decodeRead < 0)
+            {
+                logSrv->warn("Decode error: " + numberToString<int>(decodeRead));
+            }
+
             decodeErrCnt++;
             if (decodeErrCnt % 10 == 0)
             {
