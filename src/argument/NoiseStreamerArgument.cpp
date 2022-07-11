@@ -28,7 +28,7 @@ NoiseStreamerArgument::~NoiseStreamerArgument()
 
 string NoiseStreamerArgument::title()
 {
-    return "noisestreamer help";
+    return "NoiseStreamer help";
 }
 
 void NoiseStreamerArgument::registerArguments()
