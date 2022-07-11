@@ -274,11 +274,21 @@ void LibLame::hipDecodeExit(hip_t hip)
 
 int LibLame::hipDecode(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_l[], short pcm_r[])
 {
+    /*
+    -1: decoding error
+     0: need more data before we can complete the decode
+    >0: returned 'nout' samples worth of data in pcm_l,pcm_r
+    */
     return hip_decode(hip, mp3buf, len, pcm_l, pcm_r);
 }
 
 int LibLame::hipDecode1Headers(hip_t hip, unsigned char* mp3_buffer, size_t mp3_len, short pcm_l[], short pcm_r[], mp3data_struct* mp3data)
 {
+    /*
+    -1: decoding error
+     0: need more data before we can complete the decode
+    >0: returned 'nout' samples worth of data in pcm_l,pcm_r
+    */
     return hip_decode1_headers(hip, mp3_buffer, mp3_len, pcm_l, pcm_r, mp3data);
 }
 #endif
@@ -295,6 +305,13 @@ int LibLame::encodeFlush(unsigned char* mp3_buffer, int size)
 int LibLame::encodeBuffer(short int* pcm_buffer_l, short int* pcm_buffer_r, int num_samples, unsigned char* mp3_buffer, int mp3_buffer_size)
 {
 #ifdef HAVE_LAME
+    /*
+    * return code number of bytes output in mp3buf. Can be 0
+    *             -1:  mp3buf was too small
+    *             -2:  malloc() problem
+    *             -3:  lame_init_params() not called
+    *             -4:  psycho acoustic problems
+    */
     return lame_encode_buffer(lame, pcm_buffer_l, pcm_buffer_r, num_samples, mp3_buffer, mp3_buffer_size);
 #endif
     return -1;
