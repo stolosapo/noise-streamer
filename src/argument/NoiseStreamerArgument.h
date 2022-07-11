@@ -32,6 +32,7 @@ public:
     virtual ~NoiseStreamerArgument();
 
     virtual void registerArguments();
+    bool noArgs();
 
     string getHostname();
     string getPort();

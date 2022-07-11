@@ -31,8 +31,12 @@ int main(int argc, char* argv[])
         noiseStreamerArgs.registerArguments();
         playlistAudioSourceArgs.registerArguments();
 
-        cout << noiseStreamerArgs.help() << endl;
-        cout << playlistAudioSourceArgs.help() << endl;
+        if (noiseStreamerArgs.noArgs() || provider.hasArg("help"))
+        {
+            cout << noiseStreamerArgs.help() << endl;
+            cout << playlistAudioSourceArgs.help() << endl;
+            exit(0);
+        }
 
         // Setup Signals
         SignalAdapter signalAdapter;

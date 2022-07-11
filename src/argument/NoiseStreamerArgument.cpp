@@ -48,6 +48,23 @@ void NoiseStreamerArgument::registerArguments()
     registerArg(CHANNELS, "The Mountpoint Number of channels");
 }
 
+bool NoiseStreamerArgument::noArgs()
+{
+    return !(hasArg(HOSTNAME) ||
+        hasArg(PORT) ||
+        hasArg(USERNAME) ||
+        hasArg(PASSWORD) ||
+        hasArg(MOUNTPOINT) ||
+        hasArg(NAME) ||
+        hasArg(GENRE) ||
+        hasArg(DESCRIPTION) ||
+        hasArg(URL) ||
+        hasArg(ISPUBLIC) ||
+        hasArg(BITRATE) ||
+        hasArg(SAMPLERATE) ||
+        hasArg(CHANNELS));
+}
+
 string NoiseStreamerArgument::getHostname()
 {
     string s = getStringValue(HOSTNAME);
