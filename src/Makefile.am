@@ -45,7 +45,7 @@ common_sources = \
     \
     audio/encode/liblame/LibLame.h audio/encode/liblame/LibLame.cpp \
     audio/encode/NoiseStreamerEncoder.h audio/encode/NoiseStreamerEncoder.cpp \
-    audio/encode/EncoderContext.h \
+    audio/encode/EncodeContext.h \
     \
     health/NoiseStreamerHealthPolicy.h health/NoiseStreamerHealthPolicy.cpp \
     \
