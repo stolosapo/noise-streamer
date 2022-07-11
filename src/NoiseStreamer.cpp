@@ -196,28 +196,34 @@ void NoiseStreamer::streamAudioSource()
     {
         healthPolicy->assertErrorCounterThresholdReached();
 
-        read = audioSource->readNextMp3Data(mp3Buffer, AUDIO_SIZE);
-        if (read <= 0)
+        // read = audioSource->readNextMp3Data(mp3Buffer, AUDIO_SIZE);
+        // if (read <= 0)
+        // {
+        //     break;
+        // }
+
+        // decodeRead = decoder->decode(mp3Buffer, read, pcmL, pcmR);
+        // if (decodeRead <= 0)
+        // {
+        //     if (decodeRead < 0)
+        //     {
+        //         logSrv->warn("Decode error: " + numberToString<int>(decodeRead));
+        //     }
+
+        //     decodeErrCnt++;
+        //     if (decodeErrCnt % 10 == 0)
+        //     {
+        //         healthPolicy->incrementErrorCounter();
+        //     }
+        //     continue;
+        // }
+        // decodeErrCnt = 0;
+
+        decodeRead = audioSource->readNextPcmData(pcmL, pcmR);
+        if (decodeRead <= 0)
         {
             break;
         }
-
-        decodeRead = decoder->decode(mp3Buffer, read, pcmL, pcmR);
-        if (decodeRead <= 0)
-        {
-            if (decodeRead < 0)
-            {
-                logSrv->warn("Decode error: " + numberToString<int>(decodeRead));
-            }
-
-            decodeErrCnt++;
-            if (decodeErrCnt % 10 == 0)
-            {
-                healthPolicy->incrementErrorCounter();
-            }
-            continue;
-        }
-        decodeErrCnt = 0;
 
         encodeWrite = encoder->encode(pcmL, pcmR, decodeRead, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         if (encodeWrite <= 0)

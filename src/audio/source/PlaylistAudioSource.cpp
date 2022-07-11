@@ -27,6 +27,9 @@ PlaylistAudioSource::PlaylistAudioSource(
     currentPlaylistItem = NULL;
     currentTrackStartTime = 0;
     encodePool = new ThreadPool(5);
+    mp3Buffer = new unsigned char[NoiseStreamerEncoder::MP3_SIZE];
+    mp3Decoder = new NoiseStreamerEncoder;
+    mp3Decoder->initForDecode();
 }
 
 PlaylistAudioSource::~PlaylistAudioSource()
@@ -45,6 +48,8 @@ PlaylistAudioSource::~PlaylistAudioSource()
     finilizeCurrentPlayingTrack();
 
     delete encodePool;
+    delete mp3Buffer;
+    delete mp3Decoder;
 }
 
 PlaylistAudioSourceItem* PlaylistAudioSource::createPlaylistAudioSourceItem(PlaylistItem item)
@@ -244,7 +249,37 @@ int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buf
     return readNextMp3Data(mp3OutBuffer, buffer_size);
 }
 
-int PlaylistAudioSource::readNextEncodedMp3Data(unsigned char* mp3OutBuffer)
+int PlaylistAudioSource::readNextPcmData(short *pcmLeft, short *pcmRight)
 {
-    return 0;
+    int read = readNextMp3Data(mp3Buffer, NoiseStreamerEncoder::MP3_SIZE);
+    if (read <= 0)
+    {
+        return read;
+    }
+
+    int decodeRead = mp3Decoder->decode(mp3Buffer, read, pcmLeft, pcmRight);
+    if (decodeRead <= 0)
+    {
+        if (decodeRead < 0)
+        {
+            logSrv->warn("Decode error: " + numberToString<int>(decodeRead));
+        }
+
+        decodeErrorCnt++;
+        if (decodeErrorCnt % 100 == 0)
+        {
+            // TODO: Maybe should log this problematic track
+            // to different playlist
+
+            // There is some problem
+            mp3Decoder->initForDecode();
+            next();
+        }
+
+        decodeRead = readNextPcmData(pcmLeft, pcmRight);
+    }
+
+    decodeErrorCnt = 0;
+
+    return decodeRead;
 }

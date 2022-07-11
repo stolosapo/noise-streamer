@@ -11,6 +11,7 @@
 #include "PlaylistAudioSourceItem.h"
 #include "PlaylistAudioSourceItemContext.h"
 #include "../playlist/PlaylistHandler.h"
+#include "../encode/NoiseStreamerEncoder.h"
 #include "../../config/PlaylistAudioSourceConfig.h"
 #include "../../utils/SynchronizedQueue.h"
 #include "../../utils/SynchronizedPQueue.h"
@@ -29,8 +30,11 @@ private:
     SynchronizedQueue<int> requestedTrackIndex;
     SynchronizedPQueue<PlaylistAudioSourceItem> mainQueue;
     ThreadPool* encodePool;
+    NoiseStreamerEncoder* mp3Decoder;
 
+    unsigned char *mp3Buffer;
     int numberOfPlayedTracks;
+    int decodeErrorCnt;
     FILE *currentMp3File;
     PlaylistItem currentTrack;
     PlaylistAudioSourceItem* currentPlaylistItem;
@@ -53,7 +57,7 @@ public:
     virtual void shutdownAudioSource();
     virtual void initialize();
     virtual int readNextMp3Data(unsigned char* mp3OutBuffer, size_t buffer_size);
-    virtual int readNextEncodedMp3Data(unsigned char* mp3OutBuffer);
+    virtual int readNextPcmData(short *pcmLeft, short *pcmRight);
 };
 
 #endif // PlaylistAudioSource_h__
