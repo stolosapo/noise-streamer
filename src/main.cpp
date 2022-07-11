@@ -13,6 +13,16 @@
 using namespace std;
 using namespace NoiseKernel;
 
+const char* header = "\n"
+"#     #                         #####                                                  \n"
+"##    #  ####  #  ####  ###### #     # ##### #####  ######   ##   #    # ###### #####  \n"
+"# #   # #    # # #      #      #         #   #    # #       #  #  ##  ## #      #    # \n"
+"#  #  # #    # #  ####  #####   #####    #   #    # #####  #    # # ## # #####  #    # \n"
+"#   # # #    # #      # #            #   #   #####  #      ###### #    # #      #####  \n"
+"#    ## #    # # #    # #      #     #   #   #   #  #      #    # #    # #      #   #  \n"
+"#     #  ####  #  ####  ######  #####    #   #    # ###### #    # #    # ###### #    # \n"
+"\n";
+
 void buildAndRunNoiseStreamer(
     LogService* logSrv,
     SignalAdapter* sigAdapter,
@@ -21,7 +31,7 @@ void buildAndRunNoiseStreamer(
 
 int main(int argc, char* argv[])
 {
-    cout << "noisestreamer" << endl << endl;
+    cout << header << endl << endl;
 
     try {
         // Parse Arguments
