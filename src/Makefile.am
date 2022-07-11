@@ -19,6 +19,9 @@ maininclude_HEADERS = \
 
 common_sources = \
     NoiseStreamer.cpp \
+    \
+    banner/Banner.h banner/Banner.cpp \
+    \
     config/NoiseStreamerConfig.cpp \
     config/PlaylistAudioSourceConfig.cpp \
     \

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <noisekernel/Signal.h>
 #include <noisekernel/Exception.h>
+#include "banner/Banner.h"
 #include "logger/Logger.h"
 #include "argument/NoiseStreamerArgument.h"
 #include "argument/PlaylistAudioSourceArgument.h"
@@ -13,16 +14,6 @@
 using namespace std;
 using namespace NoiseKernel;
 
-const char* header = "\n"
-"#     #                         #####                                                  \n"
-"##    #  ####  #  ####  ###### #     # ##### #####  ######   ##   #    # ###### #####  \n"
-"# #   # #    # # #      #      #         #   #    # #       #  #  ##  ## #      #    # \n"
-"#  #  # #    # #  ####  #####   #####    #   #    # #####  #    # # ## # #####  #    # \n"
-"#   # # #    # #      # #            #   #   #####  #      ###### #    # #      #####  \n"
-"#    ## #    # # #    # #      #     #   #   #   #  #      #    # #    # #      #   #  \n"
-"#     #  ####  #  ####  ######  #####    #   #    # ###### #    # #    # ###### #    # \n"
-"\n";
-
 void buildAndRunNoiseStreamer(
     LogService* logSrv,
     SignalAdapter* sigAdapter,
@@ -31,9 +22,10 @@ void buildAndRunNoiseStreamer(
 
 int main(int argc, char* argv[])
 {
-    cout << header << endl << endl;
-
     try {
+        Banner banner;
+        cout << banner.getRandom() << endl << endl;
+
         // Parse Arguments
         ArgumentProvider provider(argc, argv);
         NoiseStreamerArgument noiseStreamerArgs(&provider);
