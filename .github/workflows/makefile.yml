@@ -46,6 +46,16 @@ jobs:
         make
         sudo make install
 
+    - name: Install liblame
+      run: |
+        wget https://sourceforge.net/projects/lame/files/latest/download
+        mv download lame.tar.gz
+        tar -zxvf lame.tar.gz
+        cd lame-3.100
+        ./configure
+        make
+        sudo make install
+
     - name: Install NoiseKernel library
       run: |
         wget https://github.com/stolosapo/noise-kernel/releases/download/v1.0.0/noisekernel-1.0.0.tar.gz

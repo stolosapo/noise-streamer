@@ -2,10 +2,10 @@
 
 const char* LibShout::getError()
 {
-	return shout_get_error(shout);
+    return shout_get_error(shout);
 }
 
 int LibShout::getErrno()
 {
-	return shout_get_errno(shout);
+    return shout_get_errno(shout);
 }
