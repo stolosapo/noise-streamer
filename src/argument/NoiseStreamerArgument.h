@@ -3,6 +3,7 @@
 
 #include <string>
 #include <noisekernel/Argument.h>
+#include "../logger/Logger.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -10,6 +11,7 @@ using namespace NoiseKernel;
 class NoiseStreamerArgument: public ArgumentAdapter
 {
 private:
+    static const string LOGLEVEL;
     static const string HOSTNAME;
     static const string PORT;
     static const string USERNAME;
@@ -34,6 +36,7 @@ public:
     virtual void registerArguments();
     bool noArgs();
 
+    LogLevel getLogLevel();
     string getHostname();
     string getPort();
     string getUsername();

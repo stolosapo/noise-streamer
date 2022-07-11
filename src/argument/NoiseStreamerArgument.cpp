@@ -1,6 +1,7 @@
 #include "NoiseStreamerArgument.h"
 #include "../exception/NoiseStreamerException.h"
 
+const string NoiseStreamerArgument::LOGLEVEL = "loglevel";
 const string NoiseStreamerArgument::HOSTNAME = "hostname";
 const string NoiseStreamerArgument::PORT = "port";
 const string NoiseStreamerArgument::USERNAME = "username";
@@ -33,6 +34,7 @@ string NoiseStreamerArgument::title()
 
 void NoiseStreamerArgument::registerArguments()
 {
+    registerArg(LOGLEVEL, "The LogLevel: TRACE, DEBUG, INFO, WARN, ERROR, FATAL Default: INFO");
     registerArg(HOSTNAME, "The Icecast hostname");
     registerArg(PORT, "The Icecast port");
     registerArg(USERNAME, "The Mountpoint username");
@@ -50,7 +52,8 @@ void NoiseStreamerArgument::registerArguments()
 
 bool NoiseStreamerArgument::noArgs()
 {
-    return !(hasArg(HOSTNAME) ||
+    return !(hasArg(LOGLEVEL) ||
+        hasArg(HOSTNAME) ||
         hasArg(PORT) ||
         hasArg(USERNAME) ||
         hasArg(PASSWORD) ||
@@ -63,6 +66,12 @@ bool NoiseStreamerArgument::noArgs()
         hasArg(BITRATE) ||
         hasArg(SAMPLERATE) ||
         hasArg(CHANNELS));
+}
+
+LogLevel NoiseStreamerArgument::getLogLevel()
+{
+    string s = getStringValue(LOGLEVEL);
+    return convertLogLevelFromString(s);
 }
 
 string NoiseStreamerArgument::getHostname()

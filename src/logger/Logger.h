@@ -6,6 +6,27 @@
 
 using namespace std;
 
+enum LogLevel
+{
+    TRACE = 0,
+
+    DEBUG = 1,
+
+    INFO = 2,
+
+    WARN = 3,
+
+    ERROR = 4,
+
+    FATAL = 5
+};
+
+extern const LogLevel defaultLogLevel;
+extern LogLevel logLevel;
+
+LogLevel convertLogLevelFromString(string logLevel);
+string convertLogLevelToString(LogLevel logLevel);
+
 NoiseKernel::LogService buildLogService();
 
 void fatal(string message);

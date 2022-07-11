@@ -71,7 +71,7 @@ void RandomOncePlaylistStrategy::clonePlaylist()
     int tracksSize = remainingTracks.size();
     int mappingsSize = trackToOriginalIndex.size();
 
-    logSrv->info("Playlist cloned: remainingTracks=" + numberToString<int>(tracksSize) +  " trackToOriginalIndex=" + numberToString<int>(mappingsSize));
+    logSrv->debug("Playlist cloned: remainingTracks=" + numberToString<int>(tracksSize) +  " trackToOriginalIndex=" + numberToString<int>(mappingsSize));
 }
 
 void RandomOncePlaylistStrategy::removeHistory()

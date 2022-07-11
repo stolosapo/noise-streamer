@@ -47,7 +47,7 @@ void LibShout::startShout()
 
     if (ret == SHOUTERR_BUSY)
     {
-        logSrv->info("Connection to [" + server_url + "] is pending...");
+        logSrv->trace("Connection to [" + server_url + "] is pending...");
     }
 
     while (ret == SHOUTERR_BUSY && !sigAdapter->gotSigInt())

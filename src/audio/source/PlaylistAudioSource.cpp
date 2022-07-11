@@ -190,12 +190,12 @@ void PlaylistAudioSource::initialize()
         config->repeat);
 
     logSrv->info("NoiseStreamer playlist initialized!");
-    logSrv->info("NoiseStreamer playlist start loading..");
+    logSrv->trace("NoiseStreamer playlist start loading..");
 
     playlistHandler->load();
 
-    logSrv->info("Playlist: '" + config->playlistFilePath + "' loaded, with '" + numberToString<int>(playlistHandler->playlistSize()) + "' tracks");
-    logSrv->info("History: '" + config->historyFilePath + "' loaded, with '" + numberToString<int>(playlistHandler->historySize()) + "' tracks");
+    logSrv->debug("Playlist: '" + config->playlistFilePath + "' loaded, with '" + numberToString<int>(playlistHandler->playlistSize()) + "' tracks");
+    logSrv->debug("History: '" + config->historyFilePath + "' loaded, with '" + numberToString<int>(playlistHandler->historySize()) + "' tracks");
 
     /* Put the first track into the queue */
     prepareNextTrack();
