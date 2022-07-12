@@ -204,7 +204,6 @@ void NoiseStreamer::streamAudioSource()
             throw DomainException(NSS0019, "Connection status '" + connStr + "'");
         }
 
-        // libShout->shoutSend(mp3Buffer, read);
         libShout->shoutSend(mp3EncodedBuffer, encodeWrite);
 
         healthPolicy->setShoutQueueLenth(libShout->shoutQueuelen());
