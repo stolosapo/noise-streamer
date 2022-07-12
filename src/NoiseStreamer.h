@@ -49,7 +49,6 @@ private:
     AudioMetadataChangedEventHandler* audioMetadataChangedEventHandler;
     ErrorAppearedEventHandler* errorAppearedEventHandler;
     NoiseStreamerEncoder* encoder;
-    NoiseStreamerEncoder* decoder;
 
     void initializeShout();
     void connectShout();

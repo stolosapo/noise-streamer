@@ -25,7 +25,6 @@ NoiseStreamer::NoiseStreamer(
     audioMetadataChangedEventHandler = NULL;
     errorAppearedEventHandler = NULL;
     encoder = NULL;
-    decoder = NULL;
 }
 
 NoiseStreamer::~NoiseStreamer()
@@ -45,11 +44,6 @@ NoiseStreamer::~NoiseStreamer()
     if (encoder != NULL)
     {
         delete encoder;
-    }
-
-    if (decoder != NULL)
-    {
-        delete decoder;
     }
 }
 
@@ -178,54 +172,26 @@ void NoiseStreamer::finilizeShout()
 
 void NoiseStreamer::streamAudioSource()
 {
-    const int AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE;
-    const int ENCODE_AUDIO_SIZE = AUDIO_SIZE * 10;
-
     short pcmL[NoiseStreamerEncoder::PCM_SIZE];
     short pcmR[NoiseStreamerEncoder::PCM_SIZE];
 
-    unsigned char mp3Buffer[AUDIO_SIZE];
+    const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE * 10;
     unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
 
     long read;
-    int decodeRead;
     int encodeWrite;
-    int decodeErrCnt = 0;
 
     while (!sigAdapter->gotSigInt())
     {
         healthPolicy->assertErrorCounterThresholdReached();
 
-        // read = audioSource->readNextMp3Data(mp3Buffer, AUDIO_SIZE);
-        // if (read <= 0)
-        // {
-        //     break;
-        // }
-
-        // decodeRead = decoder->decode(mp3Buffer, read, pcmL, pcmR);
-        // if (decodeRead <= 0)
-        // {
-        //     if (decodeRead < 0)
-        //     {
-        //         logSrv->warn("Decode error: " + numberToString<int>(decodeRead));
-        //     }
-
-        //     decodeErrCnt++;
-        //     if (decodeErrCnt % 10 == 0)
-        //     {
-        //         healthPolicy->incrementErrorCounter();
-        //     }
-        //     continue;
-        // }
-        // decodeErrCnt = 0;
-
-        decodeRead = audioSource->readNextPcmData(pcmL, pcmR);
-        if (decodeRead <= 0)
+        read = audioSource->readNextPcmData(pcmL, pcmR);
+        if (read <= 0)
         {
             break;
         }
 
-        encodeWrite = encoder->encode(pcmL, pcmR, decodeRead, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
+        encodeWrite = encoder->encode(pcmL, pcmR, read, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         if (encodeWrite <= 0)
         {
             logSrv->warn("Could not encode sample, returned " + numberToString<int>(encodeWrite));
@@ -285,9 +251,6 @@ void NoiseStreamer::initialize()
 
     encoder = new NoiseStreamerEncoder;
     encoder->initForEncode(&context);
-
-    decoder = new NoiseStreamerEncoder;
-    decoder->initForDecode();
 }
 
 void NoiseStreamer::connect()
@@ -306,7 +269,6 @@ void NoiseStreamer::shutdown()
 {
     audioSource->shutdownAudioSource();
     encoder->finilizeEncode();
-    decoder->finilizeDecode();
 }
 
 void NoiseStreamer::stream()
