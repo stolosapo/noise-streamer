@@ -234,6 +234,9 @@ int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buf
             logSrv->info("Playlist finished!");
             return 0;
         }
+
+        // reset deocer
+        mp3Decoder->initForDecode();
     }
 
     long read = fread(mp3OutBuffer, sizeof(char), buffer_size, currentMp3File);
@@ -272,7 +275,6 @@ int PlaylistAudioSource::readNextPcmData(short *pcmLeft, short *pcmRight)
             // to different playlist
 
             // There is some problem
-            mp3Decoder->initForDecode();
             next();
         }
 
