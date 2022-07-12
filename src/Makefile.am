@@ -20,6 +20,7 @@ maininclude_HEADERS = \
 common_sources = \
     NoiseStreamer.cpp \
     \
+    excecutor/Excecutor.h excecutor/Excecutor.cpp \
     banner/Banner.h banner/Banner.cpp \
     \
     config/NoiseStreamerConfig.cpp \

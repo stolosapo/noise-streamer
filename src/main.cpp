@@ -2,6 +2,7 @@
 #include <noisekernel/Signal.h>
 #include <noisekernel/Exception.h>
 #include "banner/Banner.h"
+#include "excecutor/Excecutor.h"
 #include "logger/Logger.h"
 #include "argument/NoiseStreamerArgument.h"
 #include "argument/PlaylistAudioSourceArgument.h"
@@ -38,6 +39,13 @@ int main(int argc, char* argv[])
             cout << noiseStreamerArgs.help() << endl;
             cout << playlistAudioSourceArgs.help() << endl;
             exit(0);
+        }
+
+        if (noiseStreamerArgs.runOnBackground())
+        {
+            Excecutor exec(noiseStreamerArgs.pidFile());
+            // Start up new session, to lose old session and process group
+            exec.forkAndExit();
         }
 
         // Setup Signals

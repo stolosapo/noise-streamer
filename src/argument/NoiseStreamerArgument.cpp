@@ -2,6 +2,8 @@
 #include "../exception/NoiseStreamerException.h"
 
 const string NoiseStreamerArgument::LOGLEVEL = "loglevel";
+const string NoiseStreamerArgument::BACKGROUND = "background";
+const string NoiseStreamerArgument::PIDFILE = "pidfile";
 const string NoiseStreamerArgument::HOSTNAME = "hostname";
 const string NoiseStreamerArgument::PORT = "port";
 const string NoiseStreamerArgument::USERNAME = "username";
@@ -35,6 +37,8 @@ string NoiseStreamerArgument::title()
 void NoiseStreamerArgument::registerArguments()
 {
     registerArg(LOGLEVEL, "The LogLevel: TRACE, DEBUG, INFO, WARN, ERROR, FATAL. Default: INFO");
+    registerArg(BACKGROUND, "If want to run application in the background");
+    registerArg(PIDFILE, "The PID file that contains the background process id");
     registerArg(HOSTNAME, "The Icecast hostname. Default: '127.0.0.1'");
     registerArg(PORT, "The Icecast port. Default: '8000'");
     registerArg(USERNAME, "The Mountpoint username. Default: 'source'");
@@ -53,6 +57,8 @@ void NoiseStreamerArgument::registerArguments()
 bool NoiseStreamerArgument::noArgs()
 {
     return !(hasArg(LOGLEVEL) ||
+        hasArg(BACKGROUND) ||
+        hasArg(PIDFILE) ||
         hasArg(HOSTNAME) ||
         hasArg(PORT) ||
         hasArg(USERNAME) ||
@@ -72,6 +78,26 @@ LogLevel NoiseStreamerArgument::getLogLevel()
 {
     string s = getStringValue(LOGLEVEL);
     return convertLogLevelFromString(s);
+}
+
+bool NoiseStreamerArgument::runOnBackground()
+{
+    bool b = hasArg(BACKGROUND);
+    if (b && !hasArg(PIDFILE))
+    {
+        throw DomainException(ARG0001, PIDFILE);
+    }
+    return b;
+}
+
+string NoiseStreamerArgument::pidFile()
+{
+    string s = getStringValue(PIDFILE);
+    if (runOnBackground() && s == "")
+    {
+        throw DomainException(ARG0001, PIDFILE);
+    }
+    return s;
 }
 
 string NoiseStreamerArgument::getHostname()
