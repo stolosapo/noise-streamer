@@ -2,25 +2,29 @@
 #define LibLame_h__
 
 #include <string>
+#include <noisekernel/Logger.h>
 
 #ifdef HAVE_LAME
 #include <lame/lame.h>
 #endif
 
 using namespace std;
+using namespace NoiseKernel;
 
 class LibLame
 {
 private:
-
 #ifdef HAVE_LAME
     lame_global_flags* lame;
 #endif
 
 public:
-
 #ifdef HAVE_LAME
     static const int MAX_MP3_BUFFER = LAME_MAXMP3BUFFER;
+
+    static void decodeReportError(const char *format, va_list ap);
+    static void decodeReportDebug(const char *format, va_list ap);
+    static void decodeReportMessage(const char *format, va_list ap);
 #else
     static const int MAX_MP3_BUFFER = 0;
 #endif
@@ -39,6 +43,7 @@ public:
     void hipDecodeExit(hip_t hip);
 
     int hipDecode(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_l[], short pcm_r[]);
+    int hipDecodeHeaders(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_l[], short pcm_r[], mp3data_struct* mp3data);
     int hipDecode1Headers(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_l[], short pcm_r[], mp3data_struct* mp3data);
 #endif
 

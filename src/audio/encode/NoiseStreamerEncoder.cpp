@@ -114,6 +114,7 @@ void NoiseStreamerEncoder::initForDecode()
 {
     if (lame != NULL)
     {
+        finilizeDecode();
         delete lame;
     }
 
@@ -136,7 +137,107 @@ int NoiseStreamerEncoder::decode(unsigned char* mp3Buffer, size_t mp3Len, short 
     }
 
 #ifdef HAVE_LAME
-    return lame->hipDecode(hip, mp3Buffer, mp3Len, pcmLeft, pcmRight);
+    return lame->hipDecodeHeaders(hip, mp3Buffer, mp3Len, pcmLeft, pcmRight, &mp3data);
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedHeaderParsed()
+{
+#ifdef HAVE_LAME
+    // 1 if header was parsed and following data was computed
+    return mp3data.header_parsed;
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedStereo()
+{
+#ifdef HAVE_LAME
+    // number of channels
+    return mp3data.stereo;
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedSamplerate()
+{
+#ifdef HAVE_LAME
+    return mp3data.samplerate;
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedBitrate()
+{
+#ifdef HAVE_LAME
+    return mp3data.bitrate;
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedMode()
+{
+#ifdef HAVE_LAME
+    // mp3 frame type
+    return mp3data.mode;
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedModeExt()
+{
+#ifdef HAVE_LAME
+    // mp3 frame type
+    return mp3data.mode_ext;
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedFramesize()
+{
+#ifdef HAVE_LAME
+    // number of samples per mp3 frame
+    return mp3data.framesize;
+#else
+    return -1;
+#endif
+}
+
+unsigned long NoiseStreamerEncoder::getDecodedNumberOfSamples()
+{
+#ifdef HAVE_LAME
+    // this data is only computed if mpglib detects a Xing VBR header
+    // number of samples in mp3 file.
+    return mp3data.nsamp;
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedTotalFrames()
+{
+#ifdef HAVE_LAME
+    // total number of frames in mp3 file
+    return mp3data.totalframes;
+#else
+    return -1;
+#endif
+}
+
+int NoiseStreamerEncoder::getDecodedFrameNumber()
+{
+#ifdef HAVE_LAME
+    // this data is not currently computed by the mpglib routines
+    // frames decoded counter
+    return mp3data.framenum;
 #else
     return -1;
 #endif
