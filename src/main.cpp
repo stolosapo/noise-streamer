@@ -56,6 +56,8 @@ int main(int argc, char* argv[])
         // Setup Logger
         LogService logger = buildLogService();
         logLevel = noiseStreamerArgs.getLogLevel();
+        shouldLogOnFile = noiseStreamerArgs.shouldLogToFile();
+        logFile = noiseStreamerArgs.logFile();
         logger.info("LogLevel set to: " + convertLogLevelToString(logLevel));
 
         // Run

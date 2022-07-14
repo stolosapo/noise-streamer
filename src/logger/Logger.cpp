@@ -6,6 +6,8 @@ using namespace std;
 const LogLevel defaultLogLevel = INFO;
 LogLevel logLevel = defaultLogLevel;
 NoiseKernel::LogService rootLogService = buildLogService();
+bool shouldLogOnFile = false;
+string logFile = "";
 
 LogLevel convertLogLevelFromString(string logLevel)
 {

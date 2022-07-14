@@ -2,6 +2,7 @@
 #include "../exception/NoiseStreamerException.h"
 
 const string NoiseStreamerArgument::LOGLEVEL = "loglevel";
+const string NoiseStreamerArgument::LOGFILE = "logfile";
 const string NoiseStreamerArgument::BACKGROUND = "background";
 const string NoiseStreamerArgument::PIDFILE = "pidfile";
 const string NoiseStreamerArgument::HOSTNAME = "hostname";
@@ -37,6 +38,7 @@ string NoiseStreamerArgument::title()
 void NoiseStreamerArgument::registerArguments()
 {
     registerArg(LOGLEVEL, "The LogLevel: TRACE, DEBUG, INFO, WARN, ERROR, FATAL. Default: INFO");
+    registerArg(LOGFILE, "The file that should log. Leave blank if should log on console");
     registerArg(BACKGROUND, "If want to run application in the background");
     registerArg(PIDFILE, "The PID file that contains the background process id");
     registerArg(HOSTNAME, "The Icecast hostname. Default: '127.0.0.1'");
@@ -78,6 +80,22 @@ LogLevel NoiseStreamerArgument::getLogLevel()
 {
     string s = getStringValue(LOGLEVEL);
     return convertLogLevelFromString(s);
+}
+
+bool NoiseStreamerArgument::shouldLogToFile()
+{
+    return hasArg(LOGFILE);
+}
+
+string NoiseStreamerArgument::logFile()
+{
+    bool b = hasArg(LOGFILE);
+    string f = getStringValue(LOGFILE);
+    if (b && f == "")
+    {
+        throw DomainException(ARG0001, LOGFILE);
+    }
+    return f;
 }
 
 bool NoiseStreamerArgument::runOnBackground()
