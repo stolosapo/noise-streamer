@@ -23,7 +23,10 @@ InteractiveMode::InteractiveMode(
 
 InteractiveMode::~InteractiveMode()
 {
-
+    if (th != NULL)
+    {
+        delete th;
+    }
 }
 
 void* InteractiveMode::noiseStreamerThreadDelegate(void* data)
