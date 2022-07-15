@@ -34,6 +34,7 @@ void* InteractiveMode::noiseStreamerThreadDelegate(void* data)
     ns->stream();
     ns->disconnect();
     ns->shutdown();
+    return NULL;
 }
 
 void* InteractiveMode::help(void*)
