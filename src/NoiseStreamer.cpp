@@ -268,6 +268,7 @@ void NoiseStreamer::shutdown()
 {
     audioSource->shutdownAudioSource();
     encoder->finilizeEncode();
+    logSrv->info("NoiseStreamer is shutted down!")
 }
 
 void NoiseStreamer::stream()
