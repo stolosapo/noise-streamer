@@ -1,5 +1,7 @@
 #include "Logger.h"
 #include <iostream>
+#include "../utils/StringHelper.h"
+#include "../utils/FileHelper.h"
 
 using namespace std;
 
@@ -71,6 +73,13 @@ string convertLogLevelToString(LogLevel logLevel)
     }
 }
 
+string formatLogEntry(LogLevel logLevel, time_t time, string message)
+{
+    return "[" + convertLogLevelToString(logLevel) + "] " +
+    numberToString<time_t>(time) + " " +
+    message;
+}
+
 NoiseKernel::LogService buildLogService()
 {
     NoiseKernel::LogService logger;
@@ -86,7 +95,16 @@ NoiseKernel::LogService buildLogService()
 
 void fatal(string message)
 {
-    cout << "[FATAL] " << time(0) << " " << message << endl;
+    string logEntry = formatLogEntry(FATAL, time(0), message);
+    if (shouldLogOnFile)
+    {
+        appendLineFileToFile(logFile.c_str(), logEntry);
+    }
+    else
+    {
+        cout << logEntry << endl;
+    }
+    // cout << "[FATAL] " << time(0) << " " << message << endl;
 }
 
 void error(string message)
@@ -96,7 +114,16 @@ void error(string message)
         return;
     }
 
-    cout << "[ERROR] "  << time(0) << " " << message << endl;
+    string logEntry = formatLogEntry(ERROR, time(0), message);
+    if (shouldLogOnFile)
+    {
+        appendLineFileToFile(logFile.c_str(), logEntry);
+    }
+    else
+    {
+        cout << logEntry << endl;
+    }
+    // cout << "[ERROR] "  << time(0) << " " << message << endl;
 }
 
 void warn(string message)
@@ -106,7 +133,16 @@ void warn(string message)
         return;
     }
 
-    cout << "[WARN] "  << time(0) << " " << message << endl;
+    string logEntry = formatLogEntry(WARN, time(0), message);
+    if (shouldLogOnFile)
+    {
+        appendLineFileToFile(logFile.c_str(), logEntry);
+    }
+    else
+    {
+        cout << logEntry << endl;
+    }
+    // cout << "[WARN] "  << time(0) << " " << message << endl;
 }
 
 void info(string message)
@@ -116,7 +152,16 @@ void info(string message)
         return;
     }
 
-    cout << "[INFO] "  << time(0) << " " << message << endl;
+    string logEntry = formatLogEntry(INFO, time(0), message);
+    if (shouldLogOnFile)
+    {
+        appendLineFileToFile(logFile.c_str(), logEntry);
+    }
+    else
+    {
+        cout << logEntry << endl;
+    }
+    // cout << "[INFO] "  << time(0) << " " << message << endl;
 }
 
 void debug(string message)
@@ -126,7 +171,16 @@ void debug(string message)
         return;
     }
 
-    cout << "[DEBUG] "  << time(0) << " " << message << endl;
+    string logEntry = formatLogEntry(DEBUG, time(0), message);
+    if (shouldLogOnFile)
+    {
+        appendLineFileToFile(logFile.c_str(), logEntry);
+    }
+    else
+    {
+        cout << logEntry << endl;
+    }
+    // cout << "[DEBUG] "  << time(0) << " " << message << endl;
 }
 
 void trace(string message)
@@ -136,5 +190,14 @@ void trace(string message)
         return;
     }
 
-    cout << "[TRACE] "  << time(0) << " " << message << endl;
+    string logEntry = formatLogEntry(TRACE, time(0), message);
+    if (shouldLogOnFile)
+    {
+        appendLineFileToFile(logFile.c_str(), logEntry);
+    }
+    else
+    {
+        cout << logEntry << endl;
+    }
+    // cout << "[TRACE] "  << time(0) << " " << message << endl;
 }

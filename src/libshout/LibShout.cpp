@@ -58,9 +58,8 @@ void LibShout::startShout()
 
     if (ret != SHOUTERR_CONNECTED)
     {
-        DomainException err(NSS0019, getError());
-        logSrv->warn(handle(err));
-        restartShout();
+        // DomainException err(NSS0019, getError());
+        throw DomainException(NSS0019, getError());
     }
     else
     {

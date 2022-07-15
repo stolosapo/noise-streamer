@@ -92,27 +92,42 @@ void buildAndRunNoiseStreamer(
     NoiseStreamerArgument* noiseStreamerArgs,
     PlaylistAudioSourceArgument* playlistAudioSourceArgs)
 {
-    NoiseStreamerConfig noiseStremerConfig = buildNoiseStreamerConfig(noiseStreamerArgs);
-    PlaylistAudioSourceConfig playlistAudioSourceConfig = buildPlaylistAudioSourceConfig(playlistAudioSourceArgs);
-    NoiseStreamerHealthPolicy healthPolicy;
+    try
+    {
+        NoiseStreamerConfig noiseStremerConfig = buildNoiseStreamerConfig(noiseStreamerArgs);
+        PlaylistAudioSourceConfig playlistAudioSourceConfig = buildPlaylistAudioSourceConfig(playlistAudioSourceArgs);
+        NoiseStreamerHealthPolicy healthPolicy;
 
-    PlaylistAudioSource* playlistAudioSource = new PlaylistAudioSource(
-        logSrv,
-        sigAdapter,
-        &playlistAudioSourceConfig);
+        PlaylistAudioSource* playlistAudioSource = new PlaylistAudioSource(
+            logSrv,
+            sigAdapter,
+            &playlistAudioSourceConfig);
 
-    NoiseStreamer streamer(
-        logSrv,
-        sigAdapter,
-        &noiseStremerConfig,
-        (AudioSource*) playlistAudioSource,
-        &healthPolicy);
+        NoiseStreamer streamer(
+            logSrv,
+            sigAdapter,
+            &noiseStremerConfig,
+            (AudioSource*) playlistAudioSource,
+            &healthPolicy);
 
-    streamer.initialize();
-    streamer.connect();
-    streamer.stream();
-    streamer.disconnect();
-    streamer.shutdown();
+        streamer.initialize();
+        streamer.connect();
+        streamer.stream();
+        streamer.disconnect();
+        streamer.shutdown();
 
-    delete playlistAudioSource;
+        delete playlistAudioSource;
+    }
+    catch (DomainException &e)
+    {
+        logSrv->error(handle(e));
+    }
+    catch (RuntimeException &e)
+    {
+        logSrv->error(handle(e));
+    }
+    catch (exception &e)
+    {
+        throw e;
+    }
 }
