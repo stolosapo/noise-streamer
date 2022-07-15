@@ -92,17 +92,17 @@ void buildAndRunNoiseStreamer(
     NoiseStreamerArgument* noiseStreamerArgs,
     PlaylistAudioSourceArgument* playlistAudioSourceArgs)
 {
+    NoiseStreamerConfig noiseStremerConfig = buildNoiseStreamerConfig(noiseStreamerArgs);
+    PlaylistAudioSourceConfig playlistAudioSourceConfig = buildPlaylistAudioSourceConfig(playlistAudioSourceArgs);
+    NoiseStreamerHealthPolicy healthPolicy;
+
+    PlaylistAudioSource* playlistAudioSource = new PlaylistAudioSource(
+        logSrv,
+        sigAdapter,
+        &playlistAudioSourceConfig);
+
     try
     {
-        NoiseStreamerConfig noiseStremerConfig = buildNoiseStreamerConfig(noiseStreamerArgs);
-        PlaylistAudioSourceConfig playlistAudioSourceConfig = buildPlaylistAudioSourceConfig(playlistAudioSourceArgs);
-        NoiseStreamerHealthPolicy healthPolicy;
-
-        PlaylistAudioSource* playlistAudioSource = new PlaylistAudioSource(
-            logSrv,
-            sigAdapter,
-            &playlistAudioSourceConfig);
-
         NoiseStreamer streamer(
             logSrv,
             sigAdapter,
@@ -115,8 +115,6 @@ void buildAndRunNoiseStreamer(
         streamer.stream();
         streamer.disconnect();
         streamer.shutdown();
-
-        delete playlistAudioSource;
     }
     catch (DomainException &e)
     {
@@ -130,4 +128,6 @@ void buildAndRunNoiseStreamer(
     {
         throw e;
     }
+
+    delete playlistAudioSource;
 }
