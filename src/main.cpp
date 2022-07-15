@@ -11,15 +11,13 @@
 #include "config/PlaylistAudioSourceConfig.h"
 #include "health/NoiseStreamerHealthPolicy.h"
 #include "audio/source/PlaylistAudioSource.h"
+#include "runmode/InteractiveMode.h"
 
 using namespace std;
 using namespace NoiseKernel;
 
-void buildAndRunNoiseStreamer(
-    LogService* logSrv,
-    SignalAdapter* sigAdapter,
-    NoiseStreamerArgument* noiseStreamerArgs,
-    PlaylistAudioSourceArgument* playlistAudioSourceArgs);
+void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer);
+void runInteractive(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamer* noiseStreamer);
 
 int main(int argc, char* argv[])
 {
@@ -60,12 +58,30 @@ int main(int argc, char* argv[])
         logFile = noiseStreamerArgs.logFile();
         logger.info("LogLevel set to: " + convertLogLevelToString(logLevel));
 
-        // Run
-        buildAndRunNoiseStreamer(
+        // Build configs
+        NoiseStreamerConfig noiseStremerConfig = buildNoiseStreamerConfig(&noiseStreamerArgs);
+        PlaylistAudioSourceConfig playlistAudioSourceConfig = buildPlaylistAudioSourceConfig(&playlistAudioSourceArgs);
+        NoiseStreamerHealthPolicy healthPolicy;
+
+        PlaylistAudioSource* playlistAudioSource = new PlaylistAudioSource(
             &logger,
             &signalAdapter,
-            &noiseStreamerArgs,
-            &playlistAudioSourceArgs);
+            &playlistAudioSourceConfig);
+
+        // Build NoiseStreamer
+        NoiseStreamer noiseStreamer(
+            &logger,
+            &signalAdapter,
+            &noiseStremerConfig,
+            (AudioSource*) playlistAudioSource,
+            &healthPolicy);
+
+        // Run Standalone
+        runStandalone(&logger, &noiseStreamer);
+
+        // Run Interactive
+        // TODO: should now allowed to run on background
+        // runInteractive(&logger, &signalAdapter, &noiseStreamer);
     }
     catch (DomainException &e)
     {
@@ -86,35 +102,15 @@ int main(int argc, char* argv[])
     cout << "Bye Bye.." << endl;
 }
 
-void buildAndRunNoiseStreamer(
-    LogService* logSrv,
-    SignalAdapter* sigAdapter,
-    NoiseStreamerArgument* noiseStreamerArgs,
-    PlaylistAudioSourceArgument* playlistAudioSourceArgs)
+void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer)
 {
-    NoiseStreamerConfig noiseStremerConfig = buildNoiseStreamerConfig(noiseStreamerArgs);
-    PlaylistAudioSourceConfig playlistAudioSourceConfig = buildPlaylistAudioSourceConfig(playlistAudioSourceArgs);
-    NoiseStreamerHealthPolicy healthPolicy;
-
-    PlaylistAudioSource* playlistAudioSource = new PlaylistAudioSource(
-        logSrv,
-        sigAdapter,
-        &playlistAudioSourceConfig);
-
     try
     {
-        NoiseStreamer streamer(
-            logSrv,
-            sigAdapter,
-            &noiseStremerConfig,
-            (AudioSource*) playlistAudioSource,
-            &healthPolicy);
-
-        streamer.initialize();
-        streamer.connect();
-        streamer.stream();
-        streamer.disconnect();
-        streamer.shutdown();
+        noiseStreamer->initialize();
+        noiseStreamer->connect();
+        noiseStreamer->stream();
+        noiseStreamer->disconnect();
+        noiseStreamer->shutdown();
     }
     catch (DomainException &e)
     {
@@ -128,6 +124,28 @@ void buildAndRunNoiseStreamer(
     {
         throw e;
     }
+}
 
-    delete playlistAudioSource;
+void runInteractive(
+    LogService* logSrv,
+    SignalAdapter* sigSrv,
+    NoiseStreamer* noiseStreamer)
+{
+    try
+    {
+        InteractiveMode interactive(logSrv, sigSrv, noiseStreamer);
+        interactive.start();
+    }
+    catch (DomainException &e)
+    {
+        logSrv->error(handle(e));
+    }
+    catch (RuntimeException &e)
+    {
+        logSrv->error(handle(e));
+    }
+    catch (exception &e)
+    {
+        throw e;
+    }
 }

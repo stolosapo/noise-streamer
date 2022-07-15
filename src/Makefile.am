@@ -19,6 +19,10 @@ maininclude_HEADERS = \
 
 common_sources = \
     NoiseStreamer.cpp \
+    NoiseStreamerTask.h NoiseStreamerTask.cpp \
+    \
+    runmode/RunMode.h runmode/RunMode.cpp \
+    runmode/InteractiveMode.h runmode/InteractiveMode.cpp \
     \
     excecutor/Excecutor.h excecutor/Excecutor.cpp \
     banner/Banner.h banner/Banner.cpp \
