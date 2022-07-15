@@ -3,7 +3,7 @@
 
 #include "NoiseStreamer.h"
 
-void* noisestreamer_start(void* noiseStreamer);
-void* noisestreamer_stop(void* noiseStreamer);
+void* noisestreamer_start(void* task);
+void* noisestreamer_stop(void* task);
 
 #endif // NoiseStreamerTask_h__

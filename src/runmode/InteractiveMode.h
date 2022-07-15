@@ -20,8 +20,10 @@ private:
     LogService *logSrv;
     SignalAdapter* sigAdapter;
     NoiseStreamer* noiseStreamer;
+    Thread* th;
 
     static void* help(void*);
+    static void* noiseStreamerThreadDelegate(void*);
 
     void registerTasks();
     void processCommand(string command);

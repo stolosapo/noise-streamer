@@ -16,11 +16,24 @@ InteractiveMode::InteractiveMode(
 {
     registerTasks();
     _exit = 0;
+
+    th = new Thread;
+    th->attachDelegate(&InteractiveMode::noiseStreamerThreadDelegate);
 }
 
 InteractiveMode::~InteractiveMode()
 {
 
+}
+
+void* InteractiveMode::noiseStreamerThreadDelegate(void* data)
+{
+    NoiseStreamer* ns = (NoiseStreamer*) data;
+    ns->initialize();
+    ns->connect();
+    ns->stream();
+    ns->disconnect();
+    ns->shutdown();
 }
 
 void* InteractiveMode::help(void*)
@@ -30,8 +43,9 @@ void* InteractiveMode::help(void*)
 
 void InteractiveMode::registerTasks()
 {
-    registerTask("start", &noisestreamer_start);
+    // registerTask("start", &noisestreamer_start);
     registerTask("stop", &noisestreamer_stop);
+    registerTask("exit", &noisestreamer_stop);
     registerTask("help", &help);
 }
 
@@ -40,7 +54,6 @@ void InteractiveMode::processCommand(string command)
     if (command == "exit")
     {
         _exit = 1;
-        return;
     }
 
     try
@@ -78,7 +91,8 @@ void InteractiveMode::processCommand(string command)
 
 void InteractiveMode::start()
 {
-    noiseStreamer->initialize();
+    // Run streamer in different thread
+    th->start(noiseStreamer);
 
     while (_exit == 0 && !sigAdapter->gotSigInt())
     {
@@ -89,5 +103,5 @@ void InteractiveMode::start()
         processCommand(command);
     }
 
-    noisestreamer_stop(noiseStreamer);
+    th->wait();
 }

@@ -182,7 +182,7 @@ void PlaylistAudioSource::archiveTrack(PlaylistAudioSourceItem* item)
 
 void PlaylistAudioSource::shutdownAudioSource()
 {
-
+    stop();
 }
 
 void PlaylistAudioSource::initialize()

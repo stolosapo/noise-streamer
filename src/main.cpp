@@ -1,6 +1,6 @@
 #include <iostream>
 #include <noisekernel/Signal.h>
-#include <noisekernel/Exception.h>
+#include "exception/NoiseStreamerException.h"
 #include "banner/Banner.h"
 #include "excecutor/Excecutor.h"
 #include "logger/Logger.h"
@@ -17,7 +17,7 @@ using namespace std;
 using namespace NoiseKernel;
 
 void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer);
-void runInteractive(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamer* noiseStreamer);
+void runInteractive(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, NoiseStreamer* noiseStreamer);
 
 int main(int argc, char* argv[])
 {
@@ -80,8 +80,7 @@ int main(int argc, char* argv[])
         runStandalone(&logger, &noiseStreamer);
 
         // Run Interactive
-        // TODO: should now allowed to run on background
-        // runInteractive(&logger, &signalAdapter, &noiseStreamer);
+        // runInteractive(&logger, &signalAdapter, &noiseStreamerArgs, &noiseStreamer);
     }
     catch (DomainException &e)
     {
@@ -129,10 +128,21 @@ void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer)
 void runInteractive(
     LogService* logSrv,
     SignalAdapter* sigSrv,
+    NoiseStreamerArgument* noiseStreamerArgs,
     NoiseStreamer* noiseStreamer)
 {
     try
     {
+        if (noiseStreamerArgs->runOnBackground())
+        {
+            throw DomainException(GNR0003);
+        }
+
+        if (!noiseStreamerArgs->shouldLogToFile())
+        {
+            throw DomainException(GNR0004);
+        }
+
         InteractiveMode interactive(logSrv, sigSrv, noiseStreamer);
         interactive.start();
     }

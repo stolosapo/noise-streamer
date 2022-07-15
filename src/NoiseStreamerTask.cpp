@@ -1,17 +1,21 @@
 #include "NoiseStreamerTask.h"
+#include <noisekernel/Thread.h>
 
-void* noisestreamer_start(void* noiseStreamer)
+using namespace NoiseKernel;
+
+void* noisestreamer_start(void* task)
 {
-    NoiseStreamer* ns = (NoiseStreamer*) noiseStreamer;
+    Task* t = (Task*) task;
+    NoiseStreamer* ns = (NoiseStreamer*) t->getData();
     ns->connect();
     ns->stream();
     return NULL;
 }
 
-void* noisestreamer_stop(void* noiseStreamer)
+void* noisestreamer_stop(void* task)
 {
-    NoiseStreamer* ns = (NoiseStreamer*) noiseStreamer;
-    ns->disconnect();
+    Task* t = (Task*) task;
+    NoiseStreamer* ns = (NoiseStreamer*) t->getData();
     ns->shutdown();
     return NULL;
 }
