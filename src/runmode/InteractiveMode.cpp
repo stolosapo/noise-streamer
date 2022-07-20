@@ -32,11 +32,11 @@ InteractiveMode::~InteractiveMode()
 void* InteractiveMode::noiseStreamerThreadDelegate(void* data)
 {
     NoiseStreamer* ns = (NoiseStreamer*) data;
-    ns->initialize();
-    ns->connect();
-    ns->stream();
-    ns->disconnect();
-    ns->shutdown();
+    // ns->connect();
+    // ns->stream();
+    // ns->disconnect();
+    // ns->shutdown();
+    ns->start();
     return NULL;
 }
 

@@ -7,8 +7,7 @@ void* noisestreamer_start(void* task)
 {
     Task* t = (Task*) task;
     NoiseStreamer* ns = (NoiseStreamer*) t->getData();
-    ns->connect();
-    ns->stream();
+    ns->start();
     return NULL;
 }
 
@@ -16,6 +15,6 @@ void* noisestreamer_stop(void* task)
 {
     Task* t = (Task*) task;
     NoiseStreamer* ns = (NoiseStreamer*) t->getData();
-    ns->shutdown();
+    ns->stop();
     return NULL;
 }

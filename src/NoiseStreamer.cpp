@@ -21,10 +21,28 @@ NoiseStreamer::NoiseStreamer(
     audioSource(audioSource),
     healthPolicy(healthPolicy)
 {
+    _stop = 0;
     libShout = NULL;
     audioMetadataChangedEventHandler = NULL;
     errorAppearedEventHandler = NULL;
     encoder = NULL;
+
+    // Initialize Audio Source
+    audioMetadataChangedEventHandler = new AudioMetadataChangedEventHandler(this);
+    errorAppearedEventHandler = new ErrorAppearedEventHandler(this);
+    audioSource->AudioMetadataChanged += audioMetadataChangedEventHandler;
+    audioSource->ErrorAppeared += errorAppearedEventHandler;
+    audioSource->initialize();
+
+    // Initialize Encoder
+    EncodeContext context;
+    context.bitrate = (int) config->bitrate;
+    context.samplerate = stringToNumber<int>(config->samplerate);
+    context.encodeMode = CBR;
+    context.quality = 3;
+
+    encoder = new NoiseStreamerEncoder;
+    encoder->initForEncode(&context);
 }
 
 NoiseStreamer::~NoiseStreamer()
@@ -123,6 +141,8 @@ string NoiseStreamer::userAgent()
 
 void NoiseStreamer::initializeShout()
 {
+    finilizeShout();
+
     libShout = new LibShout(logSrv, sigAdapter);
     libShout->initializeShout();
 
@@ -181,7 +201,7 @@ void NoiseStreamer::streamAudioSource()
     long read;
     int encodeWrite;
 
-    while (!sigAdapter->gotSigInt())
+    while (!sigAdapter->gotSigInt() && _stop != 1)
     {
         healthPolicy->assertErrorCounterThresholdReached();
 
@@ -215,43 +235,6 @@ void NoiseStreamer::streamAudioSource()
     logSrv->info("AudioSource streamming stopped");
 }
 
-void NoiseStreamer::initialize()
-{
-    if (audioMetadataChangedEventHandler != NULL)
-    {
-        delete audioMetadataChangedEventHandler;
-    }
-
-    if (errorAppearedEventHandler != NULL)
-    {
-        delete errorAppearedEventHandler;
-    }
-
-    // Initialize Audio Source
-    audioMetadataChangedEventHandler =
-        new AudioMetadataChangedEventHandler(this);
-
-    errorAppearedEventHandler =
-        new ErrorAppearedEventHandler(this);
-
-    audioSource->AudioMetadataChanged -= audioMetadataChangedEventHandler;
-    audioSource->AudioMetadataChanged += audioMetadataChangedEventHandler;
-
-    audioSource->ErrorAppeared -= errorAppearedEventHandler;
-    audioSource->ErrorAppeared += errorAppearedEventHandler;
-    audioSource->initialize();
-
-    // Initialize Encoder Decoder
-    EncodeContext context;
-    context.bitrate = (int) config->bitrate;
-    context.samplerate = stringToNumber<int>(config->samplerate);
-    context.encodeMode = CBR;
-    context.quality = 3;
-
-    encoder = new NoiseStreamerEncoder;
-    encoder->initForEncode(&context);
-}
-
 void NoiseStreamer::connect()
 {
     initializeShout();
@@ -283,4 +266,31 @@ void NoiseStreamer::stream()
     {
         logSrv->error(handle(e));
     }
+}
+
+void NoiseStreamer::start()
+{
+    if (_stop == 0)
+    {
+        logSrv->warn("NoiseStreamer is already started!, skipping");
+    }
+
+    _stop = 0;
+
+    connect();
+    stream();
+    disconnect();
+    shutdown();
+
+    _stop = 1;
+}
+
+void NoiseStreamer::stop()
+{
+    if (_stop == 1)
+    {
+        logSrv->warn("NoiseStreamer is already stopped!, skipping");
+    }
+
+    _stop = 1;
 }

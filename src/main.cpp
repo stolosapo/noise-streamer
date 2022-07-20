@@ -105,11 +105,11 @@ void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer)
 {
     try
     {
-        noiseStreamer->initialize();
-        noiseStreamer->connect();
-        noiseStreamer->stream();
-        noiseStreamer->disconnect();
-        noiseStreamer->shutdown();
+        // noiseStreamer->connect();
+        // noiseStreamer->stream();
+        // noiseStreamer->disconnect();
+        // noiseStreamer->shutdown();
+        noiseStreamer->start();
     }
     catch (DomainException &e)
     {

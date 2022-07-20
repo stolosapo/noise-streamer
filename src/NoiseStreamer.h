@@ -38,6 +38,7 @@ class NoiseStreamer
 
 private:
     static const char* USER_AGENT;
+    volatile sig_atomic_t _stop;
 
     LogService* logSrv;
     SignalAdapter* sigAdapter;
@@ -55,6 +56,11 @@ private:
 	void finilizeShout();
     void streamAudioSource();
 
+    void connect();
+    void disconnect();
+    void shutdown();
+    void stream();
+
 public:
     NoiseStreamer(
         LogService *logSrv,
@@ -66,11 +72,8 @@ public:
 
     string userAgent();
 
-    void initialize();
-    void connect();
-    void disconnect();
-    void shutdown();
-    void stream();
+    void start();
+    void stop();
 };
 
 #endif // NoiseStreamer_h__
