@@ -187,6 +187,8 @@ void PlaylistAudioSource::shutdownAudioSource()
 
 void PlaylistAudioSource::initialize()
 {
+    resetStop();
+
     playlistHandler = new PlaylistHandler(
         logSrv,
         config->playlistFilePath,

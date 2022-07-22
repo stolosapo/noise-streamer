@@ -7,6 +7,8 @@
 using namespace std;
 
 const char* InteractiveMode::PROMPT = "streamer> ";
+const char* InteractiveMode::EXIT = "exit";
+const char* InteractiveMode::HELP = "help";
 
 InteractiveMode::InteractiveMode(
     LogService *logSrv,
@@ -17,8 +19,7 @@ InteractiveMode::InteractiveMode(
     registerTasks();
     _exit = 0;
 
-    th = new Thread;
-    th->attachDelegate(&InteractiveMode::noiseStreamerThreadDelegate);
+    th = NULL;
 }
 
 InteractiveMode::~InteractiveMode()
@@ -29,55 +30,58 @@ InteractiveMode::~InteractiveMode()
     }
 }
 
-void* InteractiveMode::noiseStreamerThreadDelegate(void* data)
+void InteractiveMode::startNoiseStreamerAsync()
 {
-    NoiseStreamer* ns = (NoiseStreamer*) data;
-    // ns->connect();
-    // ns->stream();
-    // ns->disconnect();
-    // ns->shutdown();
-    ns->start();
-    return NULL;
+    if (th != NULL && th->isRunning())
+    {
+        throw RuntimeException("NoiseStreamer is already running!");
+    }
+
+    if (th != NULL)
+    {
+        th->wait();
+        delete th;
+    }
+
+    th = noiseStreamer->startAsync();
+    cout << "NoiseStreamer started to stream!" << endl;
 }
 
-void* InteractiveMode::help(void*)
+string InteractiveMode::help()
 {
-    return static_cast<void*>(new string("Some help.."));
+    return "Some help..";
 }
 
 void InteractiveMode::registerTasks()
 {
-    // registerTask("start", &noisestreamer_start);
-    registerTask("stop", &noisestreamer_stop);
-    registerTask("exit", &noisestreamer_stop);
-    registerTask("help", &help);
+
 }
 
 void InteractiveMode::processCommand(string command)
 {
-    if (command == "exit")
-    {
-        _exit = 1;
-    }
-
     try
     {
-        if (!taskExist(command))
+        if (command == "start")
         {
-            cerr << "Command not found, try 'help'" << endl;
-            return;
+            startNoiseStreamerAsync();
         }
-
-        void* result = runTask(command, noiseStreamer);
-        if (result != NULL)
-    	{
-    		string *str = static_cast<string*>(result);
-            string strValue = *str;
-
-            cout << strValue << endl;
-
-    		delete str;
-    	}
+        else if (command == "stop")
+        {
+            noiseStreamer->stop();
+        }
+        else if (command == EXIT)
+        {
+            noiseStreamer->stop();
+            _exit = 1;
+        }
+        else if (command == HELP)
+        {
+            cout << help() << endl;
+        }
+        else
+        {
+            throw RuntimeException("Command not found, try 'help'");
+        }
     }
     catch (DomainException &e)
     {
@@ -95,8 +99,7 @@ void InteractiveMode::processCommand(string command)
 
 void InteractiveMode::start()
 {
-    // Run streamer in different thread
-    th->start(noiseStreamer);
+    startNoiseStreamerAsync();
 
     while (_exit == 0 && !sigAdapter->gotSigInt())
     {

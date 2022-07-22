@@ -15,6 +15,8 @@ class InteractiveMode: public TaskRunner
 {
 private:
     static const char* PROMPT;
+    static const char* EXIT;
+    static const char* HELP;
     volatile sig_atomic_t _exit;
 
     LogService *logSrv;
@@ -22,8 +24,8 @@ private:
     NoiseStreamer* noiseStreamer;
     Thread* th;
 
-    static void* help(void*);
-    static void* noiseStreamerThreadDelegate(void*);
+    string help();
+    void startNoiseStreamerAsync();
 
     void registerTasks();
     void processCommand(string command);

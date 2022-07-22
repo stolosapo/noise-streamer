@@ -4,6 +4,7 @@
 #include <string>
 #include <noisekernel/Logger.h>
 #include <noisekernel/Signal.h>
+#include <noisekernel/Thread.h>
 
 #include "libshout/LibShout.h"
 #include "config/NoiseStreamerConfig.h"
@@ -51,6 +52,8 @@ private:
     ErrorAppearedEventHandler* errorAppearedEventHandler;
     NoiseStreamerEncoder* encoder;
 
+    static void* startStreamerThread(void* noiseStreamer);
+
     void initializeShout();
     void connectShout();
 	void finilizeShout();
@@ -73,6 +76,7 @@ public:
     string userAgent();
 
     void start();
+    Thread* startAsync();
     void stop();
 };
 

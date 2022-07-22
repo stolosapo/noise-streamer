@@ -18,6 +18,11 @@ void PlaylistAudioSourceNavigator::stop()
     _stop = 1;
 }
 
+void PlaylistAudioSourceNavigator::resetStop()
+{
+    _stop = 0;
+}
+
 void PlaylistAudioSourceNavigator::next()
 {
     _next = 1;

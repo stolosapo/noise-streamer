@@ -14,6 +14,7 @@ public:
     virtual ~PlaylistAudioSourceNavigator();
 
     void stop();
+    void resetStop();
     void next();
     void resetNext();
 

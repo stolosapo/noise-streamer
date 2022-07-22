@@ -21,7 +21,7 @@ NoiseStreamer::NoiseStreamer(
     audioSource(audioSource),
     healthPolicy(healthPolicy)
 {
-    _stop = 0;
+    _stop = 1;
     libShout = NULL;
     audioMetadataChangedEventHandler = NULL;
     errorAppearedEventHandler = NULL;
@@ -273,6 +273,7 @@ void NoiseStreamer::start()
     if (_stop == 0)
     {
         logSrv->warn("NoiseStreamer is already started!, skipping");
+        return;
     }
 
     _stop = 0;
@@ -283,6 +284,20 @@ void NoiseStreamer::start()
     shutdown();
 
     _stop = 1;
+}
+
+void* NoiseStreamer::startStreamerThread(void* noiseStreamer)
+{
+    NoiseStreamer* ns = (NoiseStreamer*) noiseStreamer;
+    ns->start();
+}
+
+Thread* NoiseStreamer::startAsync()
+{
+    Thread* th = new Thread;
+    th->attachDelegate(&NoiseStreamer::startStreamerThread);
+    th->start(this);
+    return th;
 }
 
 void NoiseStreamer::stop()
