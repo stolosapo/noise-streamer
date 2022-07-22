@@ -6,7 +6,6 @@
 #include <noisekernel/Signal.h>
 #include <noisekernel/Thread.h>
 #include "../NoiseStreamer.h"
-#include "../NoiseStreamerTask.h"
 
 using namespace std;
 using namespace NoiseKernel;

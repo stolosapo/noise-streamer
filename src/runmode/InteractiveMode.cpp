@@ -1,7 +1,6 @@
 #include "InteractiveMode.h"
 #include <iostream>
 #include <stdio.h>
-#include "../NoiseStreamerTask.h"
 #include "../exception/NoiseStreamerException.h"
 
 using namespace std;
