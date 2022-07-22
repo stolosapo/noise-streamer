@@ -11,10 +11,12 @@
 using namespace std;
 using namespace NoiseKernel;
 
-class InteractiveMode: public TaskRunner
+class InteractiveMode
 {
 private:
     static const char* PROMPT;
+    static const char* START;
+    static const char* STOP;
     static const char* EXIT;
     static const char* HELP;
     volatile sig_atomic_t _exit;
@@ -26,8 +28,8 @@ private:
 
     string help();
     void startNoiseStreamerAsync();
+    void stopNoiseStreamer();
 
-    void registerTasks();
     void processCommand(string command);
 
 public:

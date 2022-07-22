@@ -7,6 +7,8 @@
 using namespace std;
 
 const char* InteractiveMode::PROMPT = "streamer> ";
+const char* InteractiveMode::START = "start";
+const char* InteractiveMode::STOP = "stop";
 const char* InteractiveMode::EXIT = "exit";
 const char* InteractiveMode::HELP = "help";
 
@@ -14,9 +16,8 @@ InteractiveMode::InteractiveMode(
     LogService *logSrv,
     SignalAdapter* sigAdapter,
     NoiseStreamer* noiseStreamer)
-    : TaskRunner(), logSrv(logSrv), sigAdapter(sigAdapter), noiseStreamer(noiseStreamer)
+    : logSrv(logSrv), sigAdapter(sigAdapter), noiseStreamer(noiseStreamer)
 {
-    registerTasks();
     _exit = 0;
 
     th = NULL;
@@ -44,7 +45,18 @@ void InteractiveMode::startNoiseStreamerAsync()
     }
 
     th = noiseStreamer->startAsync();
-    cout << "NoiseStreamer started to stream!" << endl;
+    cout << "NoiseStreamer started streaming!" << endl;
+}
+
+void InteractiveMode::stopNoiseStreamer()
+{
+    if (th != NULL && !th->isRunning())
+    {
+        throw RuntimeException("NoiseStreamer is already stopped!");
+    }
+
+    noiseStreamer->stop();
+    cout << "NoiseStreamer stopped streaming!" << endl;
 }
 
 string InteractiveMode::help()
@@ -52,22 +64,17 @@ string InteractiveMode::help()
     return "Some help..";
 }
 
-void InteractiveMode::registerTasks()
-{
-
-}
-
 void InteractiveMode::processCommand(string command)
 {
     try
     {
-        if (command == "start")
+        if (command == START)
         {
             startNoiseStreamerAsync();
         }
-        else if (command == "stop")
+        else if (command == STOP)
         {
-            noiseStreamer->stop();
+            stopNoiseStreamer();
         }
         else if (command == EXIT)
         {

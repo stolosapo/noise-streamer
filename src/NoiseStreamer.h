@@ -59,6 +59,7 @@ private:
 	void finilizeShout();
     void streamAudioSource();
 
+    void initialize();
     void connect();
     void disconnect();
     void shutdown();
