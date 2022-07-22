@@ -26,6 +26,7 @@ InteractiveMode::~InteractiveMode()
 {
     if (th != NULL)
     {
+        th->wait();
         delete th;
     }
 }
