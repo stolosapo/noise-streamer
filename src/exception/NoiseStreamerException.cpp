@@ -2,6 +2,8 @@
 
 const DomainErrorCode GNR0001 = DomainErrorCode("GNR0001", "Cannot open file '%s'");
 const DomainErrorCode GNR0002 = DomainErrorCode("GNR0002", "Invalid file line number '%s'");
+const DomainErrorCode GNR0003 = DomainErrorCode("GNR0003", "Cannot run in background in this run mode");
+const DomainErrorCode GNR0004 = DomainErrorCode("GNR0004", "Cannot run without file logging in this run mode");
 
 const DomainErrorCode ARG0001 = DomainErrorCode("ARG0001", "Missing Argument '%s'");
 

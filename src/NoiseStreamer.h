@@ -4,6 +4,7 @@
 #include <string>
 #include <noisekernel/Logger.h>
 #include <noisekernel/Signal.h>
+#include <noisekernel/Thread.h>
 
 #include "libshout/LibShout.h"
 #include "config/NoiseStreamerConfig.h"
@@ -38,6 +39,7 @@ class NoiseStreamer
 
 private:
     static const char* USER_AGENT;
+    volatile sig_atomic_t _stop;
 
     LogService* logSrv;
     SignalAdapter* sigAdapter;
@@ -49,12 +51,19 @@ private:
     AudioMetadataChangedEventHandler* audioMetadataChangedEventHandler;
     ErrorAppearedEventHandler* errorAppearedEventHandler;
     NoiseStreamerEncoder* encoder;
-    NoiseStreamerEncoder* decoder;
+
+    static void* startStreamerThread(void* noiseStreamer);
 
     void initializeShout();
     void connectShout();
 	void finilizeShout();
     void streamAudioSource();
+
+    void initialize();
+    void connect();
+    void disconnect();
+    void shutdown();
+    void stream();
 
 public:
     NoiseStreamer(
@@ -67,11 +76,9 @@ public:
 
     string userAgent();
 
-    void initialize();
-    void connect();
-    void disconnect();
-    void shutdown();
-    void stream();
+    void start();
+    Thread* startAsync();
+    void stop();
 };
 
 #endif // NoiseStreamer_h__

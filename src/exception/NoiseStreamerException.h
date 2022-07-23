@@ -7,6 +7,8 @@ using namespace NoiseKernel;
 
 extern const DomainErrorCode GNR0001;
 extern const DomainErrorCode GNR0002;
+extern const DomainErrorCode GNR0003;
+extern const DomainErrorCode GNR0004;
 
 extern const DomainErrorCode ARG0001;
 

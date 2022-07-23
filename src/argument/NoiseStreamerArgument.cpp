@@ -2,6 +2,9 @@
 #include "../exception/NoiseStreamerException.h"
 
 const string NoiseStreamerArgument::LOGLEVEL = "loglevel";
+const string NoiseStreamerArgument::LOGFILE = "logfile";
+const string NoiseStreamerArgument::BACKGROUND = "background";
+const string NoiseStreamerArgument::PIDFILE = "pidfile";
 const string NoiseStreamerArgument::HOSTNAME = "hostname";
 const string NoiseStreamerArgument::PORT = "port";
 const string NoiseStreamerArgument::USERNAME = "username";
@@ -34,25 +37,30 @@ string NoiseStreamerArgument::title()
 
 void NoiseStreamerArgument::registerArguments()
 {
-    registerArg(LOGLEVEL, "The LogLevel: TRACE, DEBUG, INFO, WARN, ERROR, FATAL Default: INFO");
-    registerArg(HOSTNAME, "The Icecast hostname");
-    registerArg(PORT, "The Icecast port");
-    registerArg(USERNAME, "The Mountpoint username");
+    registerArg(LOGLEVEL, "The LogLevel: TRACE, DEBUG, INFO, WARN, ERROR, FATAL. Default: INFO");
+    registerArg(LOGFILE, "The file that should log. Leave blank if should log on console");
+    registerArg(BACKGROUND, "If want to run application in the background");
+    registerArg(PIDFILE, "The PID file that contains the background process id");
+    registerArg(HOSTNAME, "The Icecast hostname. Default: '127.0.0.1'");
+    registerArg(PORT, "The Icecast port. Default: '8000'");
+    registerArg(USERNAME, "The Mountpoint username. Default: 'source'");
     registerArg(PASSWORD, "The Mountpoint password");
     registerArg(MOUNTPOINT, "The Mountpoint itself");
     registerArg(NAME, "The Mountpoint Name");
     registerArg(GENRE, "The Mountpoint Genre");
     registerArg(DESCRIPTION, "The Mountpoint Description");
     registerArg(URL, "A Url for the radio station");
-    registerArg(ISPUBLIC, "If Mountpoint is Public, true - false");
-    registerArg(BITRATE, "The Mountpoint Bitrate");
-    registerArg(SAMPLERATE, "The Mountpoint Samplerate");
-    registerArg(CHANNELS, "The Mountpoint Number of channels");
+    registerArg(ISPUBLIC, "If Mountpoint is Public. Default: false");
+    registerArg(BITRATE, "The Mountpoint Bitrate. Default: '128'");
+    registerArg(SAMPLERATE, "The Mountpoint Samplerate. Default: '44100'");
+    registerArg(CHANNELS, "The Mountpoint Number of channels. Default: '2'");
 }
 
 bool NoiseStreamerArgument::noArgs()
 {
     return !(hasArg(LOGLEVEL) ||
+        hasArg(BACKGROUND) ||
+        hasArg(PIDFILE) ||
         hasArg(HOSTNAME) ||
         hasArg(PORT) ||
         hasArg(USERNAME) ||
@@ -74,8 +82,49 @@ LogLevel NoiseStreamerArgument::getLogLevel()
     return convertLogLevelFromString(s);
 }
 
+bool NoiseStreamerArgument::shouldLogToFile()
+{
+    return hasArg(LOGFILE);
+}
+
+string NoiseStreamerArgument::logFile()
+{
+    bool b = hasArg(LOGFILE);
+    string f = getStringValue(LOGFILE);
+    if (b && f == "")
+    {
+        throw DomainException(ARG0001, LOGFILE);
+    }
+    return f;
+}
+
+bool NoiseStreamerArgument::runOnBackground()
+{
+    bool b = hasArg(BACKGROUND);
+    if (b && !hasArg(PIDFILE))
+    {
+        throw DomainException(ARG0001, PIDFILE);
+    }
+    return b;
+}
+
+string NoiseStreamerArgument::pidFile()
+{
+    string s = getStringValue(PIDFILE);
+    if (runOnBackground() && s == "")
+    {
+        throw DomainException(ARG0001, PIDFILE);
+    }
+    return s;
+}
+
 string NoiseStreamerArgument::getHostname()
 {
+    if (!hasArg(HOSTNAME))
+    {
+        return "127.0.0.1";
+    }
+
     string s = getStringValue(HOSTNAME);
     if (s == "")
     {
@@ -86,6 +135,11 @@ string NoiseStreamerArgument::getHostname()
 
 string NoiseStreamerArgument::getPort()
 {
+    if (!hasArg(PORT))
+    {
+        return "8000";
+    }
+
     string s = getStringValue(PORT);
     if (s == "")
     {
@@ -96,6 +150,11 @@ string NoiseStreamerArgument::getPort()
 
 string NoiseStreamerArgument::getUsername()
 {
+    if (!hasArg(USERNAME))
+    {
+        return "source";
+    }
+
     string s = getStringValue(USERNAME);
     if (s == "")
     {
@@ -146,11 +205,21 @@ string NoiseStreamerArgument::getUrl()
 
 bool NoiseStreamerArgument::getIsPublic()
 {
+    if (!hasArg(ISPUBLIC))
+    {
+        return false;
+    }
+
     return getBoolValue(ISPUBLIC);
 }
 
 int NoiseStreamerArgument::getBitrate()
 {
+    if (!hasArg(BITRATE))
+    {
+        return 128;
+    }
+
     int s = getIntValue(BITRATE);
     if (s == 0)
     {
@@ -161,6 +230,11 @@ int NoiseStreamerArgument::getBitrate()
 
 string NoiseStreamerArgument::getSamplerate()
 {
+    if (!hasArg(SAMPLERATE))
+    {
+        return "44100";
+    }
+
     string s = getStringValue(SAMPLERATE);
     if (s == "")
     {
@@ -171,6 +245,11 @@ string NoiseStreamerArgument::getSamplerate()
 
 string NoiseStreamerArgument::getChannels()
 {
+    if (!hasArg(CHANNELS))
+    {
+        return "2";
+    }
+
     string s = getStringValue(CHANNELS);
     if (s == "")
     {

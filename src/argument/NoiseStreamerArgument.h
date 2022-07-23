@@ -12,6 +12,9 @@ class NoiseStreamerArgument: public ArgumentAdapter
 {
 private:
     static const string LOGLEVEL;
+    static const string LOGFILE;
+    static const string BACKGROUND;
+    static const string PIDFILE;
     static const string HOSTNAME;
     static const string PORT;
     static const string USERNAME;
@@ -37,6 +40,10 @@ public:
     bool noArgs();
 
     LogLevel getLogLevel();
+    bool shouldLogToFile();
+    string logFile();
+    bool runOnBackground();
+    string pidFile();
     string getHostname();
     string getPort();
     string getUsername();

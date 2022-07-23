@@ -3,6 +3,7 @@
 
 #include <noisekernel/Logger.h>
 #include <string>
+#include <time.h>
 
 using namespace std;
 
@@ -23,9 +24,13 @@ enum LogLevel
 
 extern const LogLevel defaultLogLevel;
 extern LogLevel logLevel;
+extern NoiseKernel::LogService rootLogService;
+extern bool shouldLogOnFile;
+extern string logFile;
 
 LogLevel convertLogLevelFromString(string logLevel);
 string convertLogLevelToString(LogLevel logLevel);
+string formatLogEntry(LogLevel logLevel, time_t time, string message);
 
 NoiseKernel::LogService buildLogService();
 

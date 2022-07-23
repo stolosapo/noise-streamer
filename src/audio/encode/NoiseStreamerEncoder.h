@@ -1,9 +1,12 @@
 #ifndef NoiseStreamerEncoder_h__
 #define NoiseStreamerEncoder_h__
 
+#include <noisekernel/Logger.h>
 #include "liblame/LibLame.h"
 #include "../tag/AudioTag.h"
 #include "EncodeContext.h"
+
+using namespace NoiseKernel;
 
 class NoiseStreamerEncoder
 {
@@ -31,6 +34,18 @@ public:
 
     void initForDecode();
     int decode(unsigned char* mp3Buffer, size_t mp3Len, short pcmLeft[], short pcmRight[]);
+
+    int getDecodedHeaderParsed();
+    int getDecodedStereo();
+    int getDecodedSamplerate();
+    int getDecodedBitrate();
+    int getDecodedMode();
+    int getDecodedModeExt();
+    int getDecodedFramesize();
+    unsigned long getDecodedNumberOfSamples();
+    int getDecodedTotalFrames();
+    int getDecodedFrameNumber();
+
     void finilizeDecode();
 
     void initForEncode(EncodeContext* context);

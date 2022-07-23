@@ -182,11 +182,13 @@ void PlaylistAudioSource::archiveTrack(PlaylistAudioSourceItem* item)
 
 void PlaylistAudioSource::shutdownAudioSource()
 {
-
+    stop();
 }
 
 void PlaylistAudioSource::initialize()
 {
+    resetStop();
+
     playlistHandler = new PlaylistHandler(
         logSrv,
         config->playlistFilePath,
@@ -234,6 +236,9 @@ int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buf
             logSrv->info("Playlist finished!");
             return 0;
         }
+
+        // reset deocer
+        mp3Decoder->initForDecode();
     }
 
     long read = fread(mp3OutBuffer, sizeof(char), buffer_size, currentMp3File);
@@ -262,17 +267,30 @@ int PlaylistAudioSource::readNextPcmData(short *pcmLeft, short *pcmRight)
     {
         if (decodeRead < 0)
         {
-            logSrv->warn("Decode error: " + numberToString<int>(decodeRead));
+            string err = "Decode error: " + numberToString<int>(decodeRead) +
+            " HeaderParsed: " + numberToString<int>(mp3Decoder->getDecodedHeaderParsed()) +
+            " Stereo: " + numberToString<int>(mp3Decoder->getDecodedStereo()) +
+            " Samplerate: " + numberToString<int>(mp3Decoder->getDecodedSamplerate()) +
+            " Bitrate: " + numberToString<int>(mp3Decoder->getDecodedBitrate()) +
+            " Mode: " + numberToString<int>(mp3Decoder->getDecodedMode()) +
+            " ModeExt: " + numberToString<int>(mp3Decoder->getDecodedModeExt()) +
+            " Framesize: " + numberToString<int>(mp3Decoder->getDecodedFramesize()) +
+            " NumberOfSamples: " + numberToString<unsigned long>(mp3Decoder->getDecodedNumberOfSamples()) +
+            " TotalFrames: " + numberToString<int>(mp3Decoder->getDecodedTotalFrames()) +
+            " FrameNumber: " + numberToString<int>(mp3Decoder->getDecodedFrameNumber());
+
+            logSrv->warn(err + ", skipping track");
+
+            // TODO: Maybe should log this problematic track
+            // to different playlist
+
+            next();
         }
 
         decodeErrorCnt++;
         if (decodeErrorCnt % 100 == 0)
         {
-            // TODO: Maybe should log this problematic track
-            // to different playlist
-
-            // There is some problem
-            mp3Decoder->initForDecode();
+            logSrv->warn("Decode too many errors, skipping track");
             next();
         }
 

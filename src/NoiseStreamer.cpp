@@ -21,11 +21,28 @@ NoiseStreamer::NoiseStreamer(
     audioSource(audioSource),
     healthPolicy(healthPolicy)
 {
+    _stop = 1;
     libShout = NULL;
     audioMetadataChangedEventHandler = NULL;
     errorAppearedEventHandler = NULL;
     encoder = NULL;
-    decoder = NULL;
+
+    // Initialize Audio Source
+    audioMetadataChangedEventHandler = new AudioMetadataChangedEventHandler(this);
+    errorAppearedEventHandler = new ErrorAppearedEventHandler(this);
+    audioSource->AudioMetadataChanged += audioMetadataChangedEventHandler;
+    audioSource->ErrorAppeared += errorAppearedEventHandler;
+    // audioSource->initialize();
+
+    // // Initialize Encoder
+    // EncodeContext context;
+    // context.bitrate = (int) config->bitrate;
+    // context.samplerate = stringToNumber<int>(config->samplerate);
+    // context.encodeMode = CBR;
+    // context.quality = 3;
+
+    // encoder = new NoiseStreamerEncoder;
+    // encoder->initForEncode(&context);
 }
 
 NoiseStreamer::~NoiseStreamer()
@@ -45,11 +62,6 @@ NoiseStreamer::~NoiseStreamer()
     if (encoder != NULL)
     {
         delete encoder;
-    }
-
-    if (decoder != NULL)
-    {
-        delete decoder;
     }
 }
 
@@ -129,6 +141,8 @@ string NoiseStreamer::userAgent()
 
 void NoiseStreamer::initializeShout()
 {
+    finilizeShout();
+
     libShout = new LibShout(logSrv, sigAdapter);
     libShout->initializeShout();
 
@@ -178,54 +192,26 @@ void NoiseStreamer::finilizeShout()
 
 void NoiseStreamer::streamAudioSource()
 {
-    const int AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE;
-    const int ENCODE_AUDIO_SIZE = AUDIO_SIZE * 10;
-
     short pcmL[NoiseStreamerEncoder::PCM_SIZE];
     short pcmR[NoiseStreamerEncoder::PCM_SIZE];
 
-    unsigned char mp3Buffer[AUDIO_SIZE];
+    const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE * 10;
     unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
 
     long read;
-    int decodeRead;
     int encodeWrite;
-    int decodeErrCnt = 0;
 
-    while (!sigAdapter->gotSigInt())
+    while (!sigAdapter->gotSigInt() && _stop != 1)
     {
         healthPolicy->assertErrorCounterThresholdReached();
 
-        // read = audioSource->readNextMp3Data(mp3Buffer, AUDIO_SIZE);
-        // if (read <= 0)
-        // {
-        //     break;
-        // }
-
-        // decodeRead = decoder->decode(mp3Buffer, read, pcmL, pcmR);
-        // if (decodeRead <= 0)
-        // {
-        //     if (decodeRead < 0)
-        //     {
-        //         logSrv->warn("Decode error: " + numberToString<int>(decodeRead));
-        //     }
-
-        //     decodeErrCnt++;
-        //     if (decodeErrCnt % 10 == 0)
-        //     {
-        //         healthPolicy->incrementErrorCounter();
-        //     }
-        //     continue;
-        // }
-        // decodeErrCnt = 0;
-
-        decodeRead = audioSource->readNextPcmData(pcmL, pcmR);
-        if (decodeRead <= 0)
+        read = audioSource->readNextPcmData(pcmL, pcmR);
+        if (read <= 0)
         {
             break;
         }
 
-        encodeWrite = encoder->encode(pcmL, pcmR, decodeRead, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
+        encodeWrite = encoder->encode(pcmL, pcmR, read, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         if (encodeWrite <= 0)
         {
             logSrv->warn("Could not encode sample, returned " + numberToString<int>(encodeWrite));
@@ -238,7 +224,6 @@ void NoiseStreamer::streamAudioSource()
             throw DomainException(NSS0019, "Connection status '" + connStr + "'");
         }
 
-        // libShout->shoutSend(mp3Buffer, read);
         libShout->shoutSend(mp3EncodedBuffer, encodeWrite);
 
         healthPolicy->setShoutQueueLenth(libShout->shoutQueuelen());
@@ -252,42 +237,23 @@ void NoiseStreamer::streamAudioSource()
 
 void NoiseStreamer::initialize()
 {
-    if (audioMetadataChangedEventHandler != NULL)
-    {
-        delete audioMetadataChangedEventHandler;
-    }
-
-    if (errorAppearedEventHandler != NULL)
-    {
-        delete errorAppearedEventHandler;
-    }
-
     // Initialize Audio Source
-    audioMetadataChangedEventHandler =
-        new AudioMetadataChangedEventHandler(this);
-
-    errorAppearedEventHandler =
-        new ErrorAppearedEventHandler(this);
-
-    audioSource->AudioMetadataChanged -= audioMetadataChangedEventHandler;
-    audioSource->AudioMetadataChanged += audioMetadataChangedEventHandler;
-
-    audioSource->ErrorAppeared -= errorAppearedEventHandler;
-    audioSource->ErrorAppeared += errorAppearedEventHandler;
     audioSource->initialize();
 
-    // Initialize Encoder Decoder
+    // Initialize Encoder
     EncodeContext context;
     context.bitrate = (int) config->bitrate;
     context.samplerate = stringToNumber<int>(config->samplerate);
     context.encodeMode = CBR;
     context.quality = 3;
 
+    if (encoder != NULL)
+    {
+        delete encoder;
+    }
+
     encoder = new NoiseStreamerEncoder;
     encoder->initForEncode(&context);
-
-    decoder = new NoiseStreamerEncoder;
-    decoder->initForDecode();
 }
 
 void NoiseStreamer::connect()
@@ -306,7 +272,7 @@ void NoiseStreamer::shutdown()
 {
     audioSource->shutdownAudioSource();
     encoder->finilizeEncode();
-    decoder->finilizeDecode();
+    logSrv->info("NoiseStreamer is shutted down!");
 }
 
 void NoiseStreamer::stream()
@@ -321,4 +287,47 @@ void NoiseStreamer::stream()
     {
         logSrv->error(handle(e));
     }
+}
+
+void NoiseStreamer::start()
+{
+    if (_stop == 0)
+    {
+        logSrv->warn("NoiseStreamer is already started!, skipping");
+        return;
+    }
+
+    _stop = 0;
+
+    initialize();
+    connect();
+    stream();
+    disconnect();
+    shutdown();
+
+    _stop = 1;
+}
+
+void* NoiseStreamer::startStreamerThread(void* noiseStreamer)
+{
+    NoiseStreamer* ns = (NoiseStreamer*) noiseStreamer;
+    ns->start();
+}
+
+Thread* NoiseStreamer::startAsync()
+{
+    Thread* th = new Thread;
+    th->attachDelegate(&NoiseStreamer::startStreamerThread);
+    th->start(this);
+    return th;
+}
+
+void NoiseStreamer::stop()
+{
+    if (_stop == 1)
+    {
+        logSrv->warn("NoiseStreamer is already stopped!, skipping");
+    }
+
+    _stop = 1;
 }

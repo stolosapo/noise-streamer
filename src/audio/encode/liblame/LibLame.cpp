@@ -1,6 +1,10 @@
 #include "LibLame.h"
-
+#include <iostream>
+#include <string>
 #include "../../../exception/NoiseStreamerException.h"
+#include "../../../logger/Logger.h"
+
+using namespace std;
 
 LibLame::LibLame()
 {
@@ -264,7 +268,13 @@ void LibLame::setWriteId3tagAutomatic(bool enabled)
 #ifdef HAVE_LAME
 hip_t LibLame::hipDecodeInit()
 {
-    return hip_decode_init();
+    hip_t hip = hip_decode_init();
+
+    hip_set_errorf(hip, &decodeReportError);
+    hip_set_debugf(hip, &decodeReportDebug);
+    hip_set_msgf(hip, &decodeReportMessage);
+
+    return hip;
 }
 
 void LibLame::hipDecodeExit(hip_t hip)
@@ -282,6 +292,16 @@ int LibLame::hipDecode(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_
     return hip_decode(hip, mp3buf, len, pcm_l, pcm_r);
 }
 
+int LibLame::hipDecodeHeaders(hip_t hip, unsigned char*  mp3buf, size_t len, short pcm_l[], short pcm_r[], mp3data_struct* mp3data)
+{
+    /*
+    -1: decoding error
+     0: need more data before we can complete the decode
+    >0: returned 'nout' samples worth of data in pcm_l,pcm_r
+    */
+    return hip_decode_headers(hip, mp3buf, len, pcm_l, pcm_r, mp3data);
+}
+
 int LibLame::hipDecode1Headers(hip_t hip, unsigned char* mp3_buffer, size_t mp3_len, short pcm_l[], short pcm_r[], mp3data_struct* mp3data)
 {
     /*
@@ -290,6 +310,21 @@ int LibLame::hipDecode1Headers(hip_t hip, unsigned char* mp3_buffer, size_t mp3_
     >0: returned 'nout' samples worth of data in pcm_l,pcm_r
     */
     return hip_decode1_headers(hip, mp3_buffer, mp3_len, pcm_l, pcm_r, mp3data);
+}
+
+void LibLame::decodeReportError(const char *format, va_list ap)
+{
+    rootLogService.error("LibShout Decode: " + string(format));
+}
+
+void LibLame::decodeReportDebug(const char *format, va_list ap)
+{
+    rootLogService.debug("LibShout Decode: " + string(format));
+}
+
+void LibLame::decodeReportMessage(const char *format, va_list ap)
+{
+    rootLogService.info("LibShout Decode: " + string(format));
 }
 #endif
 
