@@ -22,6 +22,7 @@ common_sources = \
     \
     runmode/RunMode.h runmode/RunMode.cpp \
     runmode/InteractiveMode.h runmode/InteractiveMode.cpp \
+    runmode/AgentMode.h runmode/AgentMode.cpp \
     \
     excecutor/Excecutor.h excecutor/Excecutor.cpp \
     banner/Banner.h banner/Banner.cpp \
