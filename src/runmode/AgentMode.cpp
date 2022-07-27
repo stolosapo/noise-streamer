@@ -68,6 +68,59 @@ void AgentMode::initialize()
     startNoiseStreamerAsync();
 }
 
+bool AgentMode::validateCommand(string command)
+{
+    if (TcpServer::validateCommand(command))
+	{
+		return true;
+	}
+
+	return true;
+}
+
+void AgentMode::processCommand(TcpClientConnection *client, string command)
+{
+    TcpStream *stream = client->getStream();
+
+    string strValue = command;
+
+    try
+    {
+    	// void* retval = agentProtocol()->runParametrizedTask(command, this);
+
+    	// if (retval != NULL)
+    	// {
+    	// 	string *str = static_cast<string*>(retval);
+    	// 	strValue = *str;
+
+    	// 	delete str;
+    	// }
+    }
+    catch(DomainException& e)
+    {
+        strValue = handle(e);
+        logSrv->error(strValue);
+    }
+    catch(RuntimeException& e)
+    {
+        strValue = handle(e);
+        logSrv->error(strValue);
+    }
+    catch(exception& e)
+    {
+        strValue = e.what();
+        logSrv->error(strValue);
+    }
+
+	stream->send(strValue);
+}
+
+void AgentMode::processErrorCommand(TcpClientConnection *client, string command)
+{
+    TcpServer::processErrorCommand(client, command);
+    logSrv->error("");
+}
+
 // void AgentMode::processCommand(string command)
 // {
 //     try
