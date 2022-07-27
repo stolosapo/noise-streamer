@@ -5,18 +5,17 @@
 #include <noisekernel/Logger.h>
 #include <noisekernel/Signal.h>
 #include <noisekernel/Thread.h>
+#include <noisekernel/Tcp.h>
 #include "../NoiseStreamer.h"
 
 using namespace std;
 using namespace NoiseKernel;
 
-class AgentMode
+class AgentMode: public TcpServer
 {
 private:
-    volatile sig_atomic_t _exit;
-
-    LogService *logSrv;
-    SignalAdapter* sigAdapter;
+    LogService* logSrv;
+    SignalAdapter* sigSrv;
     NoiseStreamer* noiseStreamer;
     Thread* th;
 
@@ -24,12 +23,15 @@ private:
     void startNoiseStreamerAsync();
     void stopNoiseStreamer();
 
-    void processCommand(string command);
+protected:
+    virtual void initialize();
 
 public:
     AgentMode(
         LogService *logSrv,
-        SignalAdapter* sigAdapter,
+        SignalAdapter *sigSrv,
+        TcpServerConfig *config,
+        TcpProtocol *protocol,
         NoiseStreamer* noiseStreamer);
     virtual ~AgentMode();
 };

@@ -7,12 +7,15 @@ using namespace std;
 
 AgentMode::AgentMode(
     LogService *logSrv,
-    SignalAdapter* sigAdapter,
+    SignalAdapter *sigSrv,
+    TcpServerConfig *config,
+    TcpProtocol *protocol,
     NoiseStreamer* noiseStreamer)
-    : logSrv(logSrv), sigAdapter(sigAdapter), noiseStreamer(noiseStreamer)
+    : TcpServer(logSrv, sigSrv, config, protocol),
+    logSrv(logSrv),
+    sigSrv(sigSrv),
+    noiseStreamer(noiseStreamer)
 {
-    _exit = 0;
-
     th = NULL;
 }
 
@@ -58,23 +61,30 @@ string AgentMode::help()
     return "Some help..";
 }
 
-void AgentMode::processCommand(string command)
+void AgentMode::initialize()
 {
-    try
-    {
+    TcpServer::initialize();
 
-        throw RuntimeException("Command not found, try 'help'");
-    }
-    catch (DomainException &e)
-    {
-        cerr << handle(e) << endl;
-    }
-    catch (RuntimeException &e)
-    {
-        cerr << handle(e) << endl;
-    }
-    catch (exception &e)
-    {
-        cerr << e.what() << endl;
-    }
+    startNoiseStreamerAsync();
 }
+
+// void AgentMode::processCommand(string command)
+// {
+//     try
+//     {
+
+//         throw RuntimeException("Command not found, try 'help'");
+//     }
+//     catch (DomainException &e)
+//     {
+//         cerr << handle(e) << endl;
+//     }
+//     catch (RuntimeException &e)
+//     {
+//         cerr << handle(e) << endl;
+//     }
+//     catch (exception &e)
+//     {
+//         cerr << e.what() << endl;
+//     }
+// }

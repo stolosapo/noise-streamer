@@ -12,6 +12,7 @@
 #include "health/NoiseStreamerHealthPolicy.h"
 #include "audio/source/PlaylistAudioSource.h"
 #include "runmode/InteractiveMode.h"
+#include "runmode/AgentMode.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -19,6 +20,7 @@ using namespace NoiseKernel;
 void run(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, NoiseStreamer* noiseStreamer);
 void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer);
 void runInteractive(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, NoiseStreamer* noiseStreamer);
+void runAgent(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, NoiseStreamer* noiseStreamer);
 
 int main(int argc, char* argv[])
 {
@@ -118,6 +120,10 @@ void run(
             runInteractive(logSrv, sigSrv, noiseStreamerArgs, noiseStreamer);
             break;
 
+        case AGENT:
+            runAgent(logSrv, sigSrv, noiseStreamerArgs, noiseStreamer);
+            break;
+
         default:
             logSrv->warn("No valid RunMode found. Try 'help'");
             break;
@@ -160,4 +166,31 @@ void runInteractive(
 
     InteractiveMode interactive(logSrv, sigSrv, noiseStreamer);
     interactive.start();
+}
+
+void runAgent(
+    LogService* logSrv,
+    SignalAdapter* sigSrv,
+    NoiseStreamerArgument* noiseStreamerArgs,
+    NoiseStreamer* noiseStreamer)
+{
+    TcpServerConfig config(
+        1,
+        "NoiseStreamerAgent",
+        "The NoiseStreamer Agent Server",
+        TcpServerConfig::DEFAULT_HOSTNAME,
+        TcpServerConfig::DEFAULT_PORT,
+        TcpServerConfig::DEFAULT_THREAD_POOL_SIZE
+    );
+
+    TcpProtocol protocol(true);
+
+    AgentMode agent(
+        logSrv,
+        sigSrv,
+        &config,
+        &protocol,
+        noiseStreamer);
+
+    agent.serve();
 }
