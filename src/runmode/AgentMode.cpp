@@ -68,9 +68,9 @@ void AgentMode::initialize()
 
 bool AgentMode::validateCommand(string command)
 {
-    if (TcpServer::validateCommand(command))
+    if (!TcpServer::validateCommand(command))
 	{
-		return true;
+		return false;
 	}
 
     if (command == START)
@@ -83,8 +83,6 @@ bool AgentMode::validateCommand(string command)
 
 void AgentMode::processCommand(TcpClientConnection *client, string command)
 {
-    logSrv->trace("Proccess command: " + command);
-
     TcpStream *stream = client->getStream();
 
     string strValue = command;
@@ -126,10 +124,4 @@ void AgentMode::processCommand(TcpClientConnection *client, string command)
     }
 
 	stream->send(strValue);
-}
-
-void AgentMode::processErrorCommand(TcpClientConnection *client, string command)
-{
-    TcpServer::processErrorCommand(client, command);
-    logSrv->error("Not found command: " + command);
 }

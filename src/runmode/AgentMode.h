@@ -30,7 +30,6 @@ protected:
     virtual void initialize();
     virtual bool validateCommand(string command);
     virtual void processCommand(TcpClientConnection *client, string command);
-    virtual void processErrorCommand(TcpClientConnection *client, string command);
 
 public:
     AgentMode(
