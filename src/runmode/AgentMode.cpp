@@ -2,10 +2,12 @@
 #include <iostream>
 #include <stdio.h>
 #include "../exception/NoiseStreamerException.h"
+#include "../utils/StringHelper.h"
 
 using namespace std;
 
 const char* AgentMode::START = "start";
+const char* AgentMode::AGENT_STATUS = "agent-status";
 
 AgentMode::AgentMode(
     LogService *logSrv,
@@ -19,7 +21,7 @@ AgentMode::AgentMode(
     noiseStreamer(noiseStreamer)
 {
     th = NULL;
-    taskRunner = new NoiseStreamerTaskRunner();
+    streamerTaskRunner = new NoiseStreamerTaskRunner;
 }
 
 AgentMode::~AgentMode()
@@ -30,7 +32,7 @@ AgentMode::~AgentMode()
         delete th;
     }
 
-    delete taskRunner;
+    delete streamerTaskRunner;
 }
 
 NoiseStreamer* AgentMode::validStreamer()
@@ -59,6 +61,31 @@ void* AgentMode::startNoiseStreamerAsync()
     return static_cast<void*>(new string("NoiseStreamer started streaming!"));
 }
 
+void* AgentMode::agentStatus()
+{
+    double uptimeSec = uptime();
+	int connections = numberOfActiveConnections();
+
+	int sec = uptimeSec;
+
+	int days = sec / 60 / 60 / 24;
+	int hours = (sec / 60 / 60) % 24;
+	int minutes = (sec / 60) % 60;
+	int seconds = sec % 60;
+
+	char s[25];
+	sprintf(s, "%01d days, %02d:%02d:%02d", days, hours, minutes, seconds);
+	string str(s);
+
+	string value = "\n";
+
+	// value += "Version: " + string(client->version()) + "\n";
+	value += "Uptime: " + str + "\n";
+	value += "Active connections: " + numberToString<int>(connections) + "\n";
+
+	return static_cast<void*>(new string(value));
+}
+
 void AgentMode::initialize()
 {
     TcpServer::initialize();
@@ -73,12 +100,12 @@ bool AgentMode::validateCommand(string command)
 		return false;
 	}
 
-    if (command == START)
+    if (command == START || command == AGENT_STATUS)
     {
         return true;
     }
 
-	return taskRunner->taskExist(command);
+	return streamerTaskRunner->taskExist(command);
 }
 
 void AgentMode::processCommand(TcpClientConnection *client, string command)
@@ -95,9 +122,13 @@ void AgentMode::processCommand(TcpClientConnection *client, string command)
         {
             retval = startNoiseStreamerAsync();
         }
+        else if (command == AGENT_STATUS)
+        {
+            retval = agentStatus();
+        }
         else
         {
-            retval = taskRunner->runNoiseStreamerTask(command, validStreamer());
+            retval = streamerTaskRunner->runNoiseStreamerTask(command, validStreamer());
         }
 
         if (retval != NULL)

@@ -16,15 +16,17 @@ class AgentMode: public TcpServer
 {
 private:
     static const char* START;
+    static const char* AGENT_STATUS;
 
     LogService* logSrv;
     SignalAdapter* sigSrv;
     NoiseStreamer* noiseStreamer;
-    NoiseStreamerTaskRunner* taskRunner;
+    NoiseStreamerTaskRunner* streamerTaskRunner;
     Thread* th;
 
     NoiseStreamer* validStreamer();
     void* startNoiseStreamerAsync();
+    void* agentStatus();
 
 protected:
     virtual void initialize();
