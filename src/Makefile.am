@@ -19,6 +19,7 @@ maininclude_HEADERS = \
 
 common_sources = \
     NoiseStreamer.cpp \
+    NoiseStreamerTaskRunner.h NoiseStreamerTaskRunner.cpp \
     \
     runmode/RunMode.h runmode/RunMode.cpp \
     runmode/InteractiveMode.h runmode/InteractiveMode.cpp \

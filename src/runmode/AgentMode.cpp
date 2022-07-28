@@ -5,6 +5,8 @@
 
 using namespace std;
 
+const char* AgentMode::START = "start";
+
 AgentMode::AgentMode(
     LogService *logSrv,
     SignalAdapter *sigSrv,
@@ -17,6 +19,7 @@ AgentMode::AgentMode(
     noiseStreamer(noiseStreamer)
 {
     th = NULL;
+    taskRunner = new NoiseStreamerTaskRunner();
 }
 
 AgentMode::~AgentMode()
@@ -26,9 +29,20 @@ AgentMode::~AgentMode()
         th->wait();
         delete th;
     }
+
+    delete taskRunner;
 }
 
-void AgentMode::startNoiseStreamerAsync()
+NoiseStreamer* AgentMode::validStreamer()
+{
+    if (th != NULL && !th->isRunning())
+    {
+        throw RuntimeException("NoiseStreamer is not running");
+    }
+    return noiseStreamer;
+}
+
+void* AgentMode::startNoiseStreamerAsync()
 {
     if (th != NULL && th->isRunning())
     {
@@ -42,23 +56,7 @@ void AgentMode::startNoiseStreamerAsync()
     }
 
     th = noiseStreamer->startAsync();
-    cout << "NoiseStreamer started streaming!" << endl;
-}
-
-void AgentMode::stopNoiseStreamer()
-{
-    if (th != NULL && !th->isRunning())
-    {
-        throw RuntimeException("NoiseStreamer is already stopped!");
-    }
-
-    noiseStreamer->stop();
-    cout << "NoiseStreamer stopped streaming!" << endl;
-}
-
-string AgentMode::help()
-{
-    return "Some help..";
+    return static_cast<void*>(new string("NoiseStreamer started streaming!"));
 }
 
 void AgentMode::initialize()
@@ -75,26 +73,41 @@ bool AgentMode::validateCommand(string command)
 		return true;
 	}
 
-	return true;
+    if (command == START)
+    {
+        return true;
+    }
+
+	return taskRunner->taskExist(command);
 }
 
 void AgentMode::processCommand(TcpClientConnection *client, string command)
 {
+    logSrv->trace("Proccess command: " + command);
+
     TcpStream *stream = client->getStream();
 
     string strValue = command;
 
     try
     {
-    	// void* retval = agentProtocol()->runParametrizedTask(command, this);
+        void* retval = NULL;
 
-    	// if (retval != NULL)
-    	// {
-    	// 	string *str = static_cast<string*>(retval);
-    	// 	strValue = *str;
+        if (command == START)
+        {
+            retval = startNoiseStreamerAsync();
+        }
+        else
+        {
+            retval = taskRunner->runNoiseStreamerTask(command, validStreamer());
+        }
 
-    	// 	delete str;
-    	// }
+        if (retval != NULL)
+    	{
+    		string *str = static_cast<string*>(retval);
+    		strValue = *str;
+    		delete str;
+    	}
     }
     catch(DomainException& e)
     {
@@ -118,26 +131,5 @@ void AgentMode::processCommand(TcpClientConnection *client, string command)
 void AgentMode::processErrorCommand(TcpClientConnection *client, string command)
 {
     TcpServer::processErrorCommand(client, command);
-    logSrv->error("");
+    logSrv->error("Not found command: " + command);
 }
-
-// void AgentMode::processCommand(string command)
-// {
-//     try
-//     {
-
-//         throw RuntimeException("Command not found, try 'help'");
-//     }
-//     catch (DomainException &e)
-//     {
-//         cerr << handle(e) << endl;
-//     }
-//     catch (RuntimeException &e)
-//     {
-//         cerr << handle(e) << endl;
-//     }
-//     catch (exception &e)
-//     {
-//         cerr << e.what() << endl;
-//     }
-// }

@@ -7,6 +7,7 @@
 #include <noisekernel/Thread.h>
 #include <noisekernel/Tcp.h>
 #include "../NoiseStreamer.h"
+#include "../NoiseStreamerTaskRunner.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -14,14 +15,16 @@ using namespace NoiseKernel;
 class AgentMode: public TcpServer
 {
 private:
+    static const char* START;
+
     LogService* logSrv;
     SignalAdapter* sigSrv;
     NoiseStreamer* noiseStreamer;
+    NoiseStreamerTaskRunner* taskRunner;
     Thread* th;
 
-    string help();
-    void startNoiseStreamerAsync();
-    void stopNoiseStreamer();
+    NoiseStreamer* validStreamer();
+    void* startNoiseStreamerAsync();
 
 protected:
     virtual void initialize();
