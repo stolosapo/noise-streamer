@@ -12,12 +12,15 @@
 #include "health/NoiseStreamerHealthPolicy.h"
 #include "audio/source/PlaylistAudioSource.h"
 #include "runmode/InteractiveMode.h"
+#include "runmode/AgentMode.h"
 
 using namespace std;
 using namespace NoiseKernel;
 
+void run(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, NoiseStreamer* noiseStreamer);
 void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer);
 void runInteractive(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, NoiseStreamer* noiseStreamer);
+void runAgent(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, NoiseStreamer* noiseStreamer);
 
 int main(int argc, char* argv[])
 {
@@ -76,11 +79,8 @@ int main(int argc, char* argv[])
             (AudioSource*) playlistAudioSource,
             &healthPolicy);
 
-        // Run Standalone
-        runStandalone(&logger, &noiseStreamer);
-
-        // Run Interactive
-        // runInteractive(&logger, &signalAdapter, &noiseStreamerArgs, &noiseStreamer);
+        // Run It!!
+        run(&logger, &signalAdapter, &noiseStreamerArgs, &noiseStreamer);
     }
     catch (DomainException &e)
     {
@@ -101,14 +101,33 @@ int main(int argc, char* argv[])
     cout << "Bye Bye.." << endl;
 }
 
-void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer)
+void run(
+    LogService* logSrv,
+    SignalAdapter* sigSrv,
+    NoiseStreamerArgument* noiseStreamerArgs,
+    NoiseStreamer* noiseStreamer)
 {
     try
     {
-        // noiseStreamer->start();
-        Thread* th = noiseStreamer->startAsync();
-        th->wait();
-        delete th;
+        RunMode runMode = noiseStreamerArgs->getRunMode();
+        switch (runMode)
+        {
+        case STANDALONE:
+            runStandalone(logSrv, noiseStreamer);
+            break;
+
+        case INTERACTIVE:
+            runInteractive(logSrv, sigSrv, noiseStreamerArgs, noiseStreamer);
+            break;
+
+        case AGENT:
+            runAgent(logSrv, sigSrv, noiseStreamerArgs, noiseStreamer);
+            break;
+
+        default:
+            logSrv->warn("No valid RunMode found. Try 'help'");
+            break;
+        }
     }
     catch (DomainException &e)
     {
@@ -124,37 +143,54 @@ void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer)
     }
 }
 
+void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer)
+{
+    noiseStreamer->start();
+}
+
 void runInteractive(
     LogService* logSrv,
     SignalAdapter* sigSrv,
     NoiseStreamerArgument* noiseStreamerArgs,
     NoiseStreamer* noiseStreamer)
 {
-    try
+    if (noiseStreamerArgs->runOnBackground())
     {
-        if (noiseStreamerArgs->runOnBackground())
-        {
-            throw DomainException(GNR0003);
-        }
+        throw DomainException(GNR0003);
+    }
 
-        if (!noiseStreamerArgs->shouldLogToFile())
-        {
-            throw DomainException(GNR0004);
-        }
+    if (!noiseStreamerArgs->shouldLogToFile())
+    {
+        throw DomainException(GNR0004);
+    }
 
-        InteractiveMode interactive(logSrv, sigSrv, noiseStreamer);
-        interactive.start();
-    }
-    catch (DomainException &e)
-    {
-        logSrv->error(handle(e));
-    }
-    catch (RuntimeException &e)
-    {
-        logSrv->error(handle(e));
-    }
-    catch (exception &e)
-    {
-        throw e;
-    }
+    InteractiveMode interactive(logSrv, sigSrv, noiseStreamer);
+    interactive.start();
+}
+
+void runAgent(
+    LogService* logSrv,
+    SignalAdapter* sigSrv,
+    NoiseStreamerArgument* noiseStreamerArgs,
+    NoiseStreamer* noiseStreamer)
+{
+    TcpServerConfig config(
+        1,
+        "NoiseStreamerAgent",
+        "The NoiseStreamer Agent Server",
+        TcpServerConfig::DEFAULT_HOSTNAME,
+        TcpServerConfig::DEFAULT_PORT,
+        TcpServerConfig::DEFAULT_THREAD_POOL_SIZE
+    );
+
+    TcpProtocol protocol(true);
+
+    AgentMode agent(
+        logSrv,
+        sigSrv,
+        &config,
+        &protocol,
+        noiseStreamer);
+
+    agent.serve();
 }

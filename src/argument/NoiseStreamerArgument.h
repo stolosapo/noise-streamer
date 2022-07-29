@@ -4,6 +4,7 @@
 #include <string>
 #include <noisekernel/Argument.h>
 #include "../logger/Logger.h"
+#include "../runmode/RunMode.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -11,6 +12,7 @@ using namespace NoiseKernel;
 class NoiseStreamerArgument: public ArgumentAdapter
 {
 private:
+    static const string RUNMODE;
     static const string LOGLEVEL;
     static const string LOGFILE;
     static const string BACKGROUND;
@@ -39,6 +41,7 @@ public:
     virtual void registerArguments();
     bool noArgs();
 
+    RunMode getRunMode();
     LogLevel getLogLevel();
     bool shouldLogToFile();
     string logFile();
