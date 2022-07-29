@@ -6,6 +6,7 @@
 #include <noisekernel/Signal.h>
 #include <noisekernel/Thread.h>
 #include <noisekernel/Tcp.h>
+#include "AgentModeTask.h"
 #include "../NoiseStreamer.h"
 #include "../NoiseStreamerTaskRunner.h"
 
@@ -16,17 +17,18 @@ class AgentMode: public TcpServer
 {
 private:
     static const char* START;
-    static const char* AGENT_STATUS;
 
     LogService* logSrv;
     SignalAdapter* sigSrv;
     NoiseStreamer* noiseStreamer;
     NoiseStreamerTaskRunner* streamerTaskRunner;
+    TaskRunner* runner;
     Thread* th;
 
     NoiseStreamer* validStreamer();
-    void* startNoiseStreamerAsync();
-    void* agentStatus();
+
+    friend void* agent_start_streamer(void* task);
+    friend void* agent_status(void* task);
 
 protected:
     virtual void initialize();
