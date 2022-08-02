@@ -13,6 +13,7 @@
 #include "audio/source/PlaylistAudioSource.h"
 #include "runmode/InteractiveMode.h"
 #include "runmode/AgentMode.h"
+#include "runmode/AgentProtocol.h"
 #include "runmode/ClientMode.h"
 
 using namespace std;
@@ -189,16 +190,18 @@ void runAgent(
         TcpServerConfig::DEFAULT_THREAD_POOL_SIZE
     );
 
-    TcpProtocol protocol(true);
+    AgentProtocol* protocol = AgentProtocol::createForServer();
 
     AgentMode agent(
         logSrv,
         sigSrv,
         &config,
-        &protocol,
+        protocol,
         noiseStreamer);
 
     agent.serve();
+
+    delete protocol;
 }
 
 void runClient(
@@ -214,14 +217,15 @@ void runClient(
         NoiseKernel::TcpClientConfig::DEFAULT_PORT
     );
 
-    TcpProtocol protocol(false);
+    AgentProtocol* protocol = AgentProtocol::createForClient();
 
     ClientMode client(
         logSrv,
         sigSrv,
         &config,
-        &protocol
-    );
+        protocol);
 
     client.action();
+
+    delete protocol;
 }

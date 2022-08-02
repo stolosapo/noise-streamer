@@ -25,6 +25,7 @@ common_sources = \
     runmode/InteractiveMode.h runmode/InteractiveMode.cpp \
     runmode/AgentMode.h runmode/AgentMode.cpp \
     runmode/AgentModeTask.h runmode/AgentModeTask.cpp \
+    runmode/AgentProtocol.h runmode/AgentProtocol.cpp \
     runmode/ClientMode.h runmode/ClientMode.cpp \
     \
     excecutor/Excecutor.h excecutor/Excecutor.cpp \
