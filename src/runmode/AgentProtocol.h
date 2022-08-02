@@ -13,9 +13,6 @@ public:
     AgentProtocol(bool isServer);
     virtual ~AgentProtocol();
 
-    static AgentProtocol* createForServer();
-    static AgentProtocol* createForClient();
-
     virtual string prompt();
 };
 

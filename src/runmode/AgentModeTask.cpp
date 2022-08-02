@@ -40,9 +40,16 @@ void* agent_status(void* task)
     sprintf(s, "%01d days, %02d:%02d:%02d", days, hours, minutes, seconds);
     string str(s);
 
+    string status = "not running";
+    if (self->th->isRunning())
+    {
+        status = "running";
+    }
+
     string value = "\n";
 
     value += "User-Agent: " + string(self->noiseStreamer->userAgent()) + "\n";
+    value += "NoiseStreamer Status: " + status + "\n";
     value += "Uptime: " + str + "\n";
     value += "Active connections: " + numberToString<int>(connections) + "\n";
 

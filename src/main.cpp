@@ -190,18 +190,16 @@ void runAgent(
         TcpServerConfig::DEFAULT_THREAD_POOL_SIZE
     );
 
-    AgentProtocol* protocol = AgentProtocol::createForServer();
+    AgentProtocol protocol(true);
 
     AgentMode agent(
         logSrv,
         sigSrv,
         &config,
-        protocol,
+        &protocol,
         noiseStreamer);
 
     agent.serve();
-
-    delete protocol;
 }
 
 void runClient(
@@ -217,15 +215,13 @@ void runClient(
         NoiseKernel::TcpClientConfig::DEFAULT_PORT
     );
 
-    AgentProtocol* protocol = AgentProtocol::createForClient();
+    AgentProtocol protocol(false);
 
     ClientMode client(
         logSrv,
         sigSrv,
         &config,
-        protocol);
+        &protocol);
 
     client.action();
-
-    delete protocol;
 }
