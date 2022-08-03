@@ -1,8 +1,9 @@
 Prerequisites
 -------------
 
-noisekernel - the library that is contained a lot of core
+libnoisekernel - the library that is contained a lot of core
     functionality, helper classes and methods
+    (can found here: https://github.com/stolosapo/noise-kernel/releases)
 
 libshout - the library that streams audio data to Icecast Server
     (can found here: https://www.icecast.org/download/)
