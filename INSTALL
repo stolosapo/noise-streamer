@@ -1,8 +1,14 @@
 Prerequisites
 -------------
 
+noisekernel - the library that is contained a lot of core
+    functionality, helper classes and methods
+
 libshout - the library that streams audio data to Icecast Server
     (can found here: https://www.icecast.org/download/)
+
+liblame - the library that encode into mp3 and decode from mp3
+    the audio tracks. (can found here: https://lame.sourceforge.io/download.php)
 
 Building
 --------
