@@ -8,7 +8,6 @@
 #include <noisekernel/Tcp.h>
 #include "AgentModeTask.h"
 #include "../NoiseStreamer.h"
-#include "../NoiseStreamerTaskRunner.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -16,12 +15,10 @@ using namespace NoiseKernel;
 class AgentMode: public TcpServer
 {
 private:
-    static const char* START;
-
     LogService* logSrv;
     SignalAdapter* sigSrv;
     NoiseStreamer* noiseStreamer;
-    NoiseStreamerTaskRunner* streamerTaskRunner;
+    TaskRunner* streamerTaskRunner;
     TaskRunner* runner;
     Thread* th;
 

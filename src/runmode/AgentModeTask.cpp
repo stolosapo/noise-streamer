@@ -2,10 +2,19 @@
 #include "AgentMode.h"
 #include "../exception/NoiseStreamerException.h"
 #include "../utils/StringHelper.h"
+#include "../utils/TaskHelper.h"
+
+TaskRunner* createAgentModeTaskRunner()
+{
+    TaskRunner* runner = new TaskRunner;
+    runner->registerTask("start", &agent_start_streamer);
+    runner->registerTask("agent-status", &agent_status);
+    return runner;
+}
 
 void* agent_start_streamer(void* task)
 {
-    AgentMode* self = task_unwrapper<AgentMode>(task);
+    AgentMode* self = unwrap_task<AgentMode>(task);
 
     if (self->th != NULL && self->th->isRunning())
     {
@@ -24,7 +33,7 @@ void* agent_start_streamer(void* task)
 
 void* agent_status(void* task)
 {
-    AgentMode* self = task_unwrapper<AgentMode>(task);
+    AgentMode* self = unwrap_task<AgentMode>(task);
 
     double uptimeSec = self->uptime();
     int connections = self->numberOfActiveConnections();

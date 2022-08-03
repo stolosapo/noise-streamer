@@ -1,12 +1,12 @@
 #include "AgentMode.h"
 #include <iostream>
 #include <stdio.h>
+#include "AgentModeTask.h"
+#include "../NoiseStreamerTask.h"
 #include "../exception/NoiseStreamerException.h"
 #include "../utils/StringHelper.h"
 
 using namespace std;
-
-const char* AgentMode::START = "start";
 
 AgentMode::AgentMode(
     LogService *logSrv,
@@ -20,10 +20,8 @@ AgentMode::AgentMode(
     noiseStreamer(noiseStreamer)
 {
     th = NULL;
-    streamerTaskRunner = new NoiseStreamerTaskRunner;
-    runner = new TaskRunner;
-    runner->registerTask(START, &agent_start_streamer);
-    runner->registerTask("agent-status", &agent_status);
+    streamerTaskRunner = createNoiseStreamerTaskRunner();
+    runner = createAgentModeTaskRunner();
 }
 
 AgentMode::~AgentMode()
@@ -52,7 +50,7 @@ void AgentMode::initialize()
 {
     TcpServer::initialize();
 
-    runner->runTask(START, this);
+    runner->runTask("start", this);
 }
 
 bool AgentMode::validateCommand(string command)
@@ -86,7 +84,7 @@ void AgentMode::processCommand(TcpClientConnection *client, string command)
         }
         else
         {
-            retval = streamerTaskRunner->runNoiseStreamerTask(command, validStreamer());
+            retval = streamerTaskRunner->runTask(command, validStreamer());
         }
 
         if (retval != NULL)

@@ -19,7 +19,7 @@ maininclude_HEADERS = \
 
 common_sources = \
     NoiseStreamer.cpp \
-    NoiseStreamerTaskRunner.h NoiseStreamerTaskRunner.cpp \
+    NoiseStreamerTask.h NoiseStreamerTask.cpp \
     \
     runmode/RunMode.h runmode/RunMode.cpp \
     runmode/InteractiveMode.h runmode/InteractiveMode.cpp \
@@ -78,6 +78,7 @@ common_sources = \
     utils/StringHelper.h utils/StringHelper.cpp \
     utils/FileHelper.h utils/FileHelper.cpp \
     utils/File.h utils/File.cpp \
+    utils/TaskHelper.h \
     utils/SynchronizedQueue.h \
     utils/SynchronizedPQueue.h
 
