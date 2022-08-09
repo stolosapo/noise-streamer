@@ -9,5 +9,6 @@ using namespace NoiseKernel;
 TaskRunner* createNoiseStreamerTaskRunner();
 
 void* noisestreamer_stop(void* task);
+void* noisestreamer_playlist_task(void* task);
 
 #endif // NoiseStreamerTaskRunner_h__

@@ -23,6 +23,7 @@ public:
 
     AudioSourceType getType() const;
 
+    virtual void* runCommand(string command);
     virtual void shutdownAudioSource() = 0;
     virtual void initialize() = 0;
     virtual int readNextMp3Data(unsigned char* mp3OutBuffer, size_t buffer_size) = 0;
