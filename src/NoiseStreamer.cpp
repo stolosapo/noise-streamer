@@ -317,6 +317,7 @@ void* NoiseStreamer::startStreamerThread(void* noiseStreamer)
 {
     NoiseStreamer* ns = (NoiseStreamer*) noiseStreamer;
     ns->start();
+    return NULL;
 }
 
 Thread* NoiseStreamer::startAsync()
