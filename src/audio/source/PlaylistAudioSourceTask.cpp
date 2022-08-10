@@ -8,13 +8,13 @@
 TaskRunner* createPlaylistAudioSourceTaskRunner()
 {
     TaskRunner* runner = new TaskRunner;
-    runner->registerTask("audio-status", &playlistaudiosource_audio_status);
-    runner->registerTask("now", &playlistaudiosource_now_playing);
-    runner->registerTask("preview", &playlistaudiosource_preview_next);
-    runner->registerTask("preview-track", &playlistaudiosource_preview_track);
-    runner->registerTask("history", &playlistaudiosource_history);
-    runner->registerTask("next", &playlistaudiosource_next_track);
-    runner->registerTask("request", &playlistaudiosource_request_track);
+    runner->registerTask("playlist::audio-status", &playlistaudiosource_audio_status);
+    runner->registerTask("playlist::now", &playlistaudiosource_now_playing);
+    runner->registerTask("playlist::preview", &playlistaudiosource_preview_next);
+    runner->registerTask("playlist::preview-track", &playlistaudiosource_preview_track);
+    runner->registerTask("playlist::history", &playlistaudiosource_history);
+    runner->registerTask("playlist::next", &playlistaudiosource_next_track);
+    runner->registerTask("playlist::request", &playlistaudiosource_request_track);
     return runner;
 }
 

@@ -28,7 +28,6 @@ void* noisestreamer_stop(void* task)
 void* noisestreamer_playlist_task(void* task)
 {
     Task* t = (Task*) task;
-    string taskName = split(t->getTaskName(), "::")[1];
     NoiseStreamer* ns = (NoiseStreamer*) t->getData();
-    return ns->getAudioSource()->runCommand(taskName);
+    return ns->getAudioSource()->runCommand(t->getTaskName());
 }
