@@ -18,6 +18,22 @@ TaskRunner* createPlaylistAudioSourceTaskRunner()
     return runner;
 }
 
+string createPlaylistAudioSourceTaskRunnerHelp()
+{
+    return "\n"
+	"Playlist :: Tasks\n"
+	"=================\n"
+	"\n"
+    "playlist::audio-status             See the status of the Audio Source\n"
+    "playlist::now                      See the current playing track\n"
+    "playlist::preview                  Preview next track\n"
+    "playlist::preview-track            Preview track by index\n"
+    "playlist::history?[length=5]       Return the history of given length. Default is the last 5 tracks\n"
+    "playlist::next                     Navigate to the next track\n"
+    "playlist::request?[track_index]    Create a track request based on track index\n"
+    "\n";
+}
+
 string playlistaudiosource_format_playlistitem(PlaylistItem* track, int trackStartTime)
 {
     AudioTag* tag = track->getMetadata();

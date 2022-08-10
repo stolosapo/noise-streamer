@@ -6,6 +6,7 @@
 using namespace NoiseKernel;
 
 TaskRunner* createAgentModeTaskRunner();
+string createAgentModeTaskRunnerHelp();
 
 void* agent_start_streamer(void* task);
 void* agent_status(void* task);

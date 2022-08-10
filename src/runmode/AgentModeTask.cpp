@@ -1,5 +1,6 @@
 #include "AgentModeTask.h"
 #include "AgentMode.h"
+#include "../NoiseStreamerTask.h"
 #include "../exception/NoiseStreamerException.h"
 #include "../utils/StringHelper.h"
 #include "../utils/TaskHelper.h"
@@ -10,6 +11,20 @@ TaskRunner* createAgentModeTaskRunner()
     runner->registerTask("start", &agent_start_streamer);
     runner->registerTask("agent-status", &agent_status);
     return runner;
+}
+
+string createAgentModeTaskRunnerHelp()
+{
+    string result = "\n"
+    "Agent :: Tasks\n"
+    "==============\n"
+    "\n"
+    "start          Starts the NoiseStreamer\n"
+    "agent-status   See the status of the Agent and NoiseStreamer"
+    "\n" +
+    createNoiseStreamerTaskRunnerHelp();
+
+    return result;
 }
 
 void* agent_start_streamer(void* task)

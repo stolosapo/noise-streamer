@@ -1,4 +1,5 @@
 #include "NoiseStreamerTask.h"
+#include "audio/source/PlaylistAudioSourceTask.h"
 #include "utils/TaskHelper.h"
 #include "utils/StringHelper.h"
 
@@ -16,6 +17,19 @@ TaskRunner* createNoiseStreamerTaskRunner()
     runner->registerTask("playlist::request", &noisestreamer_playlist_task);
 
     return runner;
+}
+
+string createNoiseStreamerTaskRunnerHelp()
+{
+    string result = "\n"
+    "NoiseStreamer :: Tasks\n"
+    "======================\n"
+    "\n"
+    "stop        Stops the NoiseStreamer\n"
+    "\n" +
+    createPlaylistAudioSourceTaskRunnerHelp();
+
+    return result;
 }
 
 void* noisestreamer_stop(void* task)

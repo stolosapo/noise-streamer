@@ -13,6 +13,7 @@ public:
     AgentProtocol(bool isServer);
     virtual ~AgentProtocol();
 
+    virtual string help();
     virtual string prompt();
 };
 

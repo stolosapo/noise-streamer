@@ -7,6 +7,7 @@
 using namespace NoiseKernel;
 
 TaskRunner* createNoiseStreamerTaskRunner();
+string createNoiseStreamerTaskRunnerHelp();
 
 void* noisestreamer_stop(void* task);
 void* noisestreamer_playlist_task(void* task);

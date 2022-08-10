@@ -7,6 +7,7 @@
 using namespace NoiseKernel;
 
 TaskRunner* createPlaylistAudioSourceTaskRunner();
+string createPlaylistAudioSourceTaskRunnerHelp();
 
 string playlistaudiosource_format_playlistitem(PlaylistItem* track);
 
