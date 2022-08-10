@@ -117,11 +117,7 @@ void* playlistaudiosource_history(void* task)
     int historyLength = 5;
     if (lengthParam != "")
     {
-        int l = stringToNumber<int>(lengthParam);
-        if (l < historySize)
-        {
-            historyLength = l;
-        }
+        historyLength = stringToNumber<int>(lengthParam);
     }
 
     if (historyLength >= historySize)
