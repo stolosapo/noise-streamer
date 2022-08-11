@@ -8,6 +8,8 @@ using namespace NoiseKernel;
 template <typename T>
 T* unwrap_task(void* task);
 
+string build_full_task_name(Task* task);
+
 template <typename T>
 T* unwrap_task(void* task)
 {

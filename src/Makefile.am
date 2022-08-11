@@ -79,7 +79,7 @@ common_sources = \
     utils/StringHelper.h utils/StringHelper.cpp \
     utils/FileHelper.h utils/FileHelper.cpp \
     utils/File.h utils/File.cpp \
-    utils/TaskHelper.h \
+    utils/TaskHelper.h utils/TaskHelper.cpp \
     utils/SynchronizedQueue.h \
     utils/SynchronizedPQueue.h
 

@@ -16,6 +16,7 @@ template <typename T>
 string numberToString(T Number);
 string pad(const string& str, int times);
 vector<string> split(const string& str, const string& delimiter);
+void join(const vector<string>& v, char c, string& s);
 
 template <typename T>
 T stringToNumber(const string &str)

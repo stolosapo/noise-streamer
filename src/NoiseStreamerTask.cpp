@@ -43,5 +43,6 @@ void* noisestreamer_playlist_task(void* task)
 {
     Task* t = (Task*) task;
     NoiseStreamer* ns = (NoiseStreamer*) t->getData();
-    return ns->getAudioSource()->runCommand(t->getTaskName());
+    string taskFullName = build_full_task_name(t);
+    return ns->getAudioSource()->runCommand(taskFullName);
 }
