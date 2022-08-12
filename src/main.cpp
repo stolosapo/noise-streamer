@@ -7,6 +7,7 @@
 #include "argument/NoiseStreamerArgument.h"
 #include "argument/PlaylistAudioSourceArgument.h"
 #include "argument/AgentArgument.h"
+#include "argument/ClientArgument.h"
 #include "NoiseStreamer.h"
 #include "config/NoiseStreamerConfig.h"
 #include "config/PlaylistAudioSourceConfig.h"
@@ -20,11 +21,18 @@
 using namespace std;
 using namespace NoiseKernel;
 
-void run(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, AgentArgument* agentArgs, NoiseStreamer* noiseStreamer);
+void run(
+    LogService* logSrv,
+    SignalAdapter* sigSrv,
+    NoiseStreamerArgument* noiseStreamerArgs,
+    AgentArgument* agentArgs,
+    ClientArgument* clientArgs,
+    NoiseStreamer* noiseStreamer);
+
 void runStandalone(LogService* logSrv, NoiseStreamer* noiseStreamer);
 void runInteractive(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs, NoiseStreamer* noiseStreamer);
 void runAgent(LogService* logSrv, SignalAdapter* sigSrv, AgentArgument* agentArgs, NoiseStreamer* noiseStreamer);
-void runClient(LogService* logSrv, SignalAdapter* sigSrv, NoiseStreamerArgument* noiseStreamerArgs);
+void runClient(LogService* logSrv, SignalAdapter* sigSrv, ClientArgument* clientArgs);
 
 int main(int argc, char* argv[])
 {
@@ -37,15 +45,18 @@ int main(int argc, char* argv[])
         NoiseStreamerArgument noiseStreamerArgs(&provider);
         PlaylistAudioSourceArgument playlistAudioSourceArgs(&provider);
         AgentArgument agentArgument(&provider);
+        ClientArgument clientArgument(&provider);
         noiseStreamerArgs.registerArguments();
         playlistAudioSourceArgs.registerArguments();
         agentArgument.registerArguments();
+        clientArgument.registerArguments();
 
         if (noiseStreamerArgs.noArgs() || provider.hasArg("help"))
         {
             cout << noiseStreamerArgs.help() << endl;
             cout << playlistAudioSourceArgs.help() << endl;
             cout << agentArgument.help() << endl;
+            cout << clientArgument.help() << endl;
             exit(0);
         }
 
@@ -87,7 +98,13 @@ int main(int argc, char* argv[])
             &healthPolicy);
 
         // Run It!!
-        run(&logger, &signalAdapter, &noiseStreamerArgs, &agentArgument, &noiseStreamer);
+        run(
+            &logger,
+            &signalAdapter,
+            &noiseStreamerArgs,
+            &agentArgument,
+            &clientArgument,
+            &noiseStreamer);
     }
     catch (DomainException &e)
     {
@@ -113,6 +130,7 @@ void run(
     SignalAdapter* sigSrv,
     NoiseStreamerArgument* noiseStreamerArgs,
     AgentArgument* agentArgs,
+    ClientArgument* clientArgs,
     NoiseStreamer* noiseStreamer)
 {
     try
@@ -133,7 +151,7 @@ void run(
             break;
 
         case CLIENT:
-            runClient(logSrv, sigSrv, noiseStreamerArgs);
+            runClient(logSrv, sigSrv, clientArgs);
             break;
 
         default:
@@ -190,9 +208,9 @@ void runAgent(
         1,
         "NoiseStreamerAgent",
         "The NoiseStreamer Agent Server",
-        agentArgs->getAgentHostName(),
-        agentArgs->getAgentPort(),
-        agentArgs->getAgentPoolSize());
+        agentArgs->getServerHostName(),
+        agentArgs->getServerPort(),
+        agentArgs->getServerPoolSize());
 
     AgentProtocol protocol(true);
 
@@ -209,15 +227,14 @@ void runAgent(
 void runClient(
     LogService* logSrv,
     SignalAdapter* sigSrv,
-    NoiseStreamerArgument* noiseStreamerArgs)
+    ClientArgument* clientArgs)
 {
     TcpClientConfig config(
         1,
         "NoiseStreamerClient",
         "The NoiseStreamer Agent's Client",
-        NoiseKernel::TcpClientConfig::DEFAULT_SERVERNAME,
-        NoiseKernel::TcpClientConfig::DEFAULT_PORT
-    );
+        clientArgs->getAgentHostName(),
+        clientArgs->getAgentPort());
 
     AgentProtocol protocol(false);
 

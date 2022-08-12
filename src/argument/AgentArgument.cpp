@@ -1,9 +1,9 @@
 #include "AgentArgument.h"
 #include "../exception/NoiseStreamerException.h"
 
-const string AgentArgument::AGENTHOSTNAME = "agenthostname";
-const string AgentArgument::AGENTPORT = "agentport";
-const string AgentArgument::AGENTPOOLSIZE = "agentpoolsize";
+const string AgentArgument::SERVERHOSTNAME = "serverhostname";
+const string AgentArgument::SERVERPORT = "serverport";
+const string AgentArgument::SERVERPOOLSIZE = "serverpoolsize";
 
 AgentArgument::AgentArgument(ArgumentProvider* argProvider): ArgumentAdapter(argProvider)
 {
@@ -22,46 +22,46 @@ string AgentArgument::title()
 
 void AgentArgument::registerArguments()
 {
-    registerArg(AGENTHOSTNAME, "The hostname of NoisStreamer Agent. Default: 'localhost'");
-    registerArg(AGENTPORT, "The port of NoisStreamer Agent. Default: '51717'");
-    registerArg(AGENTPOOLSIZE, "The pool size of NoisStreamer Agent. Default: '5'");
+    registerArg(SERVERHOSTNAME, "The hostname of NoisStreamer Agent Server. Default: 'localhost'");
+    registerArg(SERVERPORT, "The port of NoisStreamer Agent Server. Default: '51717'");
+    registerArg(SERVERPOOLSIZE, "The pool size of NoisStreamer Agent Server. Default: '5'");
 }
 
-string AgentArgument::getAgentHostName()
+string AgentArgument::getServerHostName()
 {
-    if (!hasArg(AGENTHOSTNAME))
+    if (!hasArg(SERVERHOSTNAME))
     {
         return "localhost";
     }
 
-    string s = getStringValue(AGENTHOSTNAME);
+    string s = getStringValue(SERVERHOSTNAME);
     if (s == "")
     {
-        throw DomainException(ARG0001, AGENTHOSTNAME);
+        throw DomainException(ARG0001, SERVERHOSTNAME);
     }
     return s;
 }
 
-int AgentArgument::getAgentPort()
+int AgentArgument::getServerPort()
 {
-    if (!hasArg(AGENTPORT))
+    if (!hasArg(SERVERPORT))
     {
         return 51717;
     }
-    return getIntValue(AGENTPORT);
+    return getIntValue(SERVERPORT);
 }
 
-int AgentArgument::getAgentPoolSize()
+int AgentArgument::getServerPoolSize()
 {
-    if (!hasArg(AGENTPOOLSIZE))
+    if (!hasArg(SERVERPOOLSIZE))
     {
         return 5;
     }
 
-    int s = getIntValue(AGENTPOOLSIZE);
+    int s = getIntValue(SERVERPOOLSIZE);
     if (s == 0)
     {
-        throw DomainException(ARG0001, AGENTPOOLSIZE);
+        throw DomainException(ARG0001, SERVERPOOLSIZE);
     }
     return s;
 }

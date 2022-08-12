@@ -76,6 +76,7 @@ common_sources = \
     argument/NoiseStreamerArgument.h argument/NoiseStreamerArgument.cpp \
     argument/PlaylistAudioSourceArgument.h argument/PlaylistAudioSourceArgument.cpp \
     argument/AgentArgument.h argument/AgentArgument.cpp \
+    argument/ClientArgument.h argument/ClientArgument.cpp \
     \
     utils/StringHelper.h utils/StringHelper.cpp \
     utils/FileHelper.h utils/FileHelper.cpp \

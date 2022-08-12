@@ -8,9 +8,9 @@ using namespace NoiseKernel;
 class AgentArgument: public ArgumentAdapter
 {
 private:
-    static const string AGENTHOSTNAME;
-    static const string AGENTPORT;
-    static const string AGENTPOOLSIZE;
+    static const string SERVERHOSTNAME;
+    static const string SERVERPORT;
+    static const string SERVERPOOLSIZE;
 
 protected:
     virtual string title();
@@ -21,9 +21,9 @@ public:
 
     virtual void registerArguments();
 
-    string getAgentHostName();
-    int getAgentPort();
-    int getAgentPoolSize();
+    string getServerHostName();
+    int getServerPort();
+    int getServerPoolSize();
 };
 
 #endif // AgentArgument_h__
