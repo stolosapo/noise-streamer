@@ -33,7 +33,7 @@ NoiseStreamerArgument::~NoiseStreamerArgument()
 
 string NoiseStreamerArgument::title()
 {
-    return "NoiseStreamer help";
+    return "NoiseStreamer args";
 }
 
 void NoiseStreamerArgument::registerArguments()
