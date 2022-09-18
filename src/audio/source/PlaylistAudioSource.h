@@ -10,6 +10,7 @@
 #include "PlaylistAudioSourceNavigator.h"
 #include "PlaylistAudioSourceItem.h"
 #include "PlaylistAudioSourceItemContext.h"
+#include "PlaylistAudioSourceTask.h"
 #include "../playlist/PlaylistHandler.h"
 #include "../encode/NoiseStreamerEncoder.h"
 #include "../../config/PlaylistAudioSourceConfig.h"
@@ -39,6 +40,7 @@ private:
     PlaylistItem currentTrack;
     PlaylistAudioSourceItem* currentPlaylistItem;
     time_t currentTrackStartTime;
+    TaskRunner* taskRunner;
 
     PlaylistAudioSourceItem* createPlaylistAudioSourceItem(PlaylistItem item);
     PlaylistAudioSourceItem* fetchNextPlaylistItem();
@@ -47,6 +49,15 @@ private:
     void finilizeCurrentPlayingTrack();
     void archiveTrack(PlaylistAudioSourceItem* item);
 
+    friend void* playlistaudiosource_audio_status(void* task);
+    friend void* playlistaudiosource_now_playing(void* task);
+    friend void* playlistaudiosource_preview_next(void* task);
+    friend void* playlistaudiosource_preview_track(void* task);
+    friend void* playlistaudiosource_search(void* task);
+    friend void* playlistaudiosource_history(void* task);
+    friend void* playlistaudiosource_next_track(void* task);
+    friend void* playlistaudiosource_request_track(void* task);
+
 public:
 	PlaylistAudioSource(
         LogService* logSrv,
@@ -54,6 +65,7 @@ public:
         PlaylistAudioSourceConfig* config);
 	virtual ~PlaylistAudioSource();
 
+    virtual void* runCommand(string command);
     virtual void shutdownAudioSource();
     virtual void initialize();
     virtual int readNextMp3Data(unsigned char* mp3OutBuffer, size_t buffer_size);

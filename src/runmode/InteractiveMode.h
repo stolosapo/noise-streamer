@@ -28,6 +28,7 @@ private:
     string help();
     void startNoiseStreamerAsync();
     void stopNoiseStreamer();
+    void exitRun();
 
     void processCommand(string command);
 

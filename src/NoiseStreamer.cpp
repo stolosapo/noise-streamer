@@ -139,6 +139,11 @@ string NoiseStreamer::userAgent()
     return string(USER_AGENT) + "/1.0.0";
 }
 
+AudioSource* NoiseStreamer::getAudioSource()
+{
+    return audioSource;
+}
+
 void NoiseStreamer::initializeShout()
 {
     finilizeShout();
@@ -312,6 +317,7 @@ void* NoiseStreamer::startStreamerThread(void* noiseStreamer)
 {
     NoiseStreamer* ns = (NoiseStreamer*) noiseStreamer;
     ns->start();
+    return NULL;
 }
 
 Thread* NoiseStreamer::startAsync()

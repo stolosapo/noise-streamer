@@ -1,6 +1,7 @@
 #include "NoiseStreamerArgument.h"
 #include "../exception/NoiseStreamerException.h"
 
+const string NoiseStreamerArgument::RUNMODE = "runmode";
 const string NoiseStreamerArgument::LOGLEVEL = "loglevel";
 const string NoiseStreamerArgument::LOGFILE = "logfile";
 const string NoiseStreamerArgument::BACKGROUND = "background";
@@ -32,11 +33,12 @@ NoiseStreamerArgument::~NoiseStreamerArgument()
 
 string NoiseStreamerArgument::title()
 {
-    return "NoiseStreamer help";
+    return "NoiseStreamer args";
 }
 
 void NoiseStreamerArgument::registerArguments()
 {
+    registerArg(RUNMODE, "The RunMode of Application: STANDALONE, INTERACTIVE, AGENT, CLIENT. Default: STANDALONE");
     registerArg(LOGLEVEL, "The LogLevel: TRACE, DEBUG, INFO, WARN, ERROR, FATAL. Default: INFO");
     registerArg(LOGFILE, "The file that should log. Leave blank if should log on console");
     registerArg(BACKGROUND, "If want to run application in the background");
@@ -58,7 +60,8 @@ void NoiseStreamerArgument::registerArguments()
 
 bool NoiseStreamerArgument::noArgs()
 {
-    return !(hasArg(LOGLEVEL) ||
+    return !(hasArg(RUNMODE) ||
+        hasArg(LOGLEVEL) ||
         hasArg(BACKGROUND) ||
         hasArg(PIDFILE) ||
         hasArg(HOSTNAME) ||
@@ -74,6 +77,12 @@ bool NoiseStreamerArgument::noArgs()
         hasArg(BITRATE) ||
         hasArg(SAMPLERATE) ||
         hasArg(CHANNELS));
+}
+
+RunMode NoiseStreamerArgument::getRunMode()
+{
+    string r = getStringValue(RUNMODE);
+    return runModeFromString(r);
 }
 
 LogLevel NoiseStreamerArgument::getLogLevel()

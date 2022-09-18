@@ -14,3 +14,8 @@ AudioSourceType AudioSource::getType() const
 {
     return type;
 }
+
+void* AudioSource::runCommand(string command)
+{
+    return NULL;
+}

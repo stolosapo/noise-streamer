@@ -19,7 +19,7 @@ PlaylistAudioSourceArgument::~PlaylistAudioSourceArgument()
 
 string PlaylistAudioSourceArgument::title()
 {
-    return "Playlist AudioSource help";
+    return "Playlist AudioSource args";
 }
 
 void PlaylistAudioSourceArgument::registerArguments()

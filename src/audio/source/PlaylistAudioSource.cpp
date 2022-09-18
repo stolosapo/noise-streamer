@@ -4,6 +4,7 @@
 #include <noisekernel/Exception.h>
 #include "AudioSourceType.h"
 #include "AudioMetadataChangedEventArgs.h"
+#include "PlaylistAudioSourceTask.h"
 #include "../playlist/PlaylistHandler.h"
 #include "../../utils/StringHelper.h"
 #include "../../utils/FileHelper.h"
@@ -30,6 +31,8 @@ PlaylistAudioSource::PlaylistAudioSource(
     mp3Buffer = new unsigned char[NoiseStreamerEncoder::MP3_SIZE];
     mp3Decoder = new NoiseStreamerEncoder;
     mp3Decoder->initForDecode();
+
+    taskRunner = createPlaylistAudioSourceTaskRunner();
 }
 
 PlaylistAudioSource::~PlaylistAudioSource()
@@ -50,6 +53,7 @@ PlaylistAudioSource::~PlaylistAudioSource()
     delete encodePool;
     delete mp3Buffer;
     delete mp3Decoder;
+    delete taskRunner;
 }
 
 PlaylistAudioSourceItem* PlaylistAudioSource::createPlaylistAudioSourceItem(PlaylistItem item)
@@ -178,6 +182,11 @@ void PlaylistAudioSource::archiveTrack(PlaylistAudioSourceItem* item)
     delete item;
 
     numberOfPlayedTracks++;
+}
+
+void* PlaylistAudioSource::runCommand(string command)
+{
+    return taskRunner->runTask(command, this);
 }
 
 void PlaylistAudioSource::shutdownAudioSource()

@@ -75,6 +75,7 @@ public:
     virtual ~NoiseStreamer();
 
     string userAgent();
+    AudioSource* getAudioSource();
 
     void start();
     Thread* startAsync();

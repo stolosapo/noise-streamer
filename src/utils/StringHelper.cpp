@@ -34,3 +34,18 @@ vector<string> split(const string& str, const string& delimiter)
 
     return result;
 }
+
+
+void join(const vector<string>& v, char c, string& s)
+{
+    s.clear();
+
+    for (vector<string>::const_iterator p = v.begin(); p != v.end(); ++p)
+    {
+        s += *p;
+        if (p != v.end() - 1)
+        {
+            s += c;
+        }
+    }
+}

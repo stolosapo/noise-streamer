@@ -59,6 +59,13 @@ void InteractiveMode::stopNoiseStreamer()
     cout << "NoiseStreamer stopped streaming!" << endl;
 }
 
+void InteractiveMode::exitRun()
+{
+    noiseStreamer->stop();
+    _exit = 1;
+    cout << "NoiseStreamer stopped streaming!" << endl;
+}
+
 string InteractiveMode::help()
 {
     return "Some help..";
@@ -78,8 +85,7 @@ void InteractiveMode::processCommand(string command)
         }
         else if (command == EXIT)
         {
-            noiseStreamer->stop();
-            _exit = 1;
+            exitRun();
         }
         else if (command == HELP)
         {

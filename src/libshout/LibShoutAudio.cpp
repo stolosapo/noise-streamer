@@ -8,7 +8,6 @@ void LibShout::setAudioInfo(string name, string value)
 {
     if (shout_set_audio_info(shout, name.c_str(), value.c_str()) != SHOUTERR_SUCCESS)
     {
-        string mess = name + ":" + value;
         throw DomainException(NSS0013, getError());
     }
 }

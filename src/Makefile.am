@@ -19,9 +19,14 @@ maininclude_HEADERS = \
 
 common_sources = \
     NoiseStreamer.cpp \
+    NoiseStreamerTask.h NoiseStreamerTask.cpp \
     \
     runmode/RunMode.h runmode/RunMode.cpp \
     runmode/InteractiveMode.h runmode/InteractiveMode.cpp \
+    runmode/AgentMode.h runmode/AgentMode.cpp \
+    runmode/AgentModeTask.h runmode/AgentModeTask.cpp \
+    runmode/AgentProtocol.h runmode/AgentProtocol.cpp \
+    runmode/ClientMode.h runmode/ClientMode.cpp \
     \
     excecutor/Excecutor.h excecutor/Excecutor.cpp \
     banner/Banner.h banner/Banner.cpp \
@@ -40,6 +45,7 @@ common_sources = \
     audio/source/PlaylistAudioSourceItem.h audio/source/PlaylistAudioSourceItem.cpp \
     audio/source/PlaylistAudioSourceItemContext.h \
     audio/source/PlaylistAudioSourceNavigator.h audio/source/PlaylistAudioSourceNavigator.cpp \
+    audio/source/PlaylistAudioSourceTask.h audio/source/PlaylistAudioSourceTask.cpp \
     audio/tag/AudioTag.cpp \
     audio/tag/AudioTagReader.h audio/tag/AudioTagReader.cpp \
     audio/playlist/PlaylistStrategyType.cpp \
@@ -69,10 +75,13 @@ common_sources = \
     \
     argument/NoiseStreamerArgument.h argument/NoiseStreamerArgument.cpp \
     argument/PlaylistAudioSourceArgument.h argument/PlaylistAudioSourceArgument.cpp \
+    argument/AgentArgument.h argument/AgentArgument.cpp \
+    argument/ClientArgument.h argument/ClientArgument.cpp \
     \
     utils/StringHelper.h utils/StringHelper.cpp \
     utils/FileHelper.h utils/FileHelper.cpp \
     utils/File.h utils/File.cpp \
+    utils/TaskHelper.h utils/TaskHelper.cpp \
     utils/SynchronizedQueue.h \
     utils/SynchronizedPQueue.h
 
