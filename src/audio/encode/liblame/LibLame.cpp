@@ -314,17 +314,23 @@ int LibLame::hipDecode1Headers(hip_t hip, unsigned char* mp3_buffer, size_t mp3_
 
 void LibLame::decodeReportError(const char *format, va_list ap)
 {
-    rootLogService.error("LibLame Decode: " + string(format));
+    char s[255];
+    sprintf(s, format, ap);
+    rootLogService.error("LibLame Decode: " + string(s));
 }
 
 void LibLame::decodeReportDebug(const char *format, va_list ap)
 {
-    rootLogService.debug("LibLame Decode: " + string(format));
+    char s[255];
+    sprintf(s, format, ap);
+    rootLogService.debug("LibLame Decode: " + string(s));
 }
 
 void LibLame::decodeReportMessage(const char *format, va_list ap)
 {
-    rootLogService.info("LibLame Decode: " + string(format));
+    char s[255];
+    sprintf(s, format, ap);
+    rootLogService.info("LibLame Decode: " + string(s));
 }
 #endif
 
