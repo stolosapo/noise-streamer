@@ -246,11 +246,15 @@ int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buf
             return 0;
         }
 
+        if (mp3OutBuffer != NULL) {
+            delete mp3OutBuffer;
+            mp3OutBuffer = new unsigned char[buffer_size];
+        }
         // reset deocer
         mp3Decoder->initForDecode();
     }
 
-    long read = fread(mp3OutBuffer, sizeof(char), buffer_size, currentMp3File);
+    long read = fread(mp3OutBuffer, sizeof(unsigned char), buffer_size, currentMp3File);
     if (read > 0)
     {
         return read;

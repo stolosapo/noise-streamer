@@ -203,7 +203,7 @@ void NoiseStreamer::streamAudioSource()
     const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE * 10;
     unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
 
-    long read;
+    int read;
     int encodeWrite;
 
     while (!sigAdapter->gotSigInt() && _stop != 1)
@@ -216,10 +216,19 @@ void NoiseStreamer::streamAudioSource()
             break;
         }
 
+        /*
+         * return code     number of bytes output in mp3buf. Can be 0
+         *                 -1:  mp3buf was too small
+         *                 -2:  malloc() problem
+         *                 -3:  lame_init_params() not called
+         *                 -4:  psycho acoustic problems
+        */
         encodeWrite = encoder->encode(pcmL, pcmR, read, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
-        if (encodeWrite <= 0)
+        if (encodeWrite < 0)
         {
             logSrv->warn("Could not encode sample, returned " + numberToString<int>(encodeWrite));
+            // TODO: Instead of stopping loop, maybe is better to send interupt to audioSource to go to next
+            // and the continue loop
             break;
         }
 
