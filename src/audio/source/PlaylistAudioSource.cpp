@@ -27,7 +27,6 @@ PlaylistAudioSource::PlaylistAudioSource(
     currentMp3File = NULL;
     currentPlaylistItem = NULL;
     currentTrackStartTime = 0;
-    encodePool = new ThreadPool(5);
     mp3Buffer = new unsigned char[NoiseStreamerEncoder::MP3_SIZE];
     mp3Decoder = new NoiseStreamerEncoder;
     mp3Decoder->initForDecode();
@@ -50,47 +49,9 @@ PlaylistAudioSource::~PlaylistAudioSource()
 
     finilizeCurrentPlayingTrack();
 
-    delete encodePool;
     delete mp3Buffer;
     delete mp3Decoder;
     delete taskRunner;
-}
-
-PlaylistAudioSourceItem* PlaylistAudioSource::createPlaylistAudioSourceItem(PlaylistItem item)
-{
-    return new PlaylistAudioSourceItem(item);
-}
-
-PlaylistAudioSourceItem* PlaylistAudioSource::fetchNextPlaylistItem()
-{
-    if (sigSrv->gotSigInt() || !mainQueue.hasNext())
-    {
-        // Playlist has no more items
-        return NULL;
-    }
-
-    PlaylistAudioSourceItem* nextPlaylistItem = mainQueue.getNext();
-
-    prepareNextTrack();
-
-    currentTrack = nextPlaylistItem->getTrack();
-    currentTrackStartTime = time(0);
-
-    if (!nextPlaylistItem->readyToPlay())
-    {
-        nextPlaylistItem->waitToFinishEncode();
-    }
-
-    if (!nextPlaylistItem->isSuccessEncoded())
-    {
-        /* TODO: Should log this track as failed */
-        logSrv->warn("Skipping: " + nextPlaylistItem->getTrack().getTrack());
-
-        // Fetch next
-        return fetchNextPlaylistItem();
-    }
-
-    return nextPlaylistItem;
 }
 
 bool PlaylistAudioSource::loadNextPlaylistItem()
@@ -98,14 +59,24 @@ bool PlaylistAudioSource::loadNextPlaylistItem()
     try
     {
         // Fetch next Playlist item
-        PlaylistAudioSourceItem* nextPlaylistItem = fetchNextPlaylistItem();
+        if (sigSrv->gotSigInt() || !mainQueue.hasNext())
+        {
+            // Playlist has no more items
+            return false;
+        }
+
+        PlaylistAudioSourceItem* nextPlaylistItem = mainQueue.getNext();
         if (nextPlaylistItem == NULL)
         {
             return false;
         }
 
+        prepareNextTrack();
+
         // Set instances
+        currentTrackStartTime = time(0);
         currentPlaylistItem = nextPlaylistItem;
+        currentTrack = nextPlaylistItem->getTrack();
         currentMp3File = openReadBinary(currentPlaylistItem->getTrackFile());
         logSrv->info("Playing: " + currentPlaylistItem->getTrackFile());
 
@@ -138,12 +109,12 @@ void PlaylistAudioSource::prepareNextTrack()
     {
         int trackIndex = requestedTrackIndex.getNext();
         PlaylistItem nextTrack = playlistHandler->getTrack(trackIndex);
-        mainQueue.putBack(createPlaylistAudioSourceItem(nextTrack));
+        mainQueue.putBack(new PlaylistAudioSourceItem(nextTrack));
     }
     else if (playlistHandler->hasNext())
     {
         PlaylistItem nextTrack = playlistHandler->nextTrack();
-        mainQueue.putBack(createPlaylistAudioSourceItem(nextTrack));
+        mainQueue.putBack(new PlaylistAudioSourceItem(nextTrack));
     }
 }
 
@@ -157,31 +128,12 @@ void PlaylistAudioSource::finilizeCurrentPlayingTrack()
 
     if (currentPlaylistItem != NULL)
     {
-        archiveTrack(currentPlaylistItem);
+        playlistHandler->archiveTrack(currentPlaylistItem->getTrack());
+        numberOfPlayedTracks++;
+
+        delete currentPlaylistItem;
         currentPlaylistItem = NULL;
     }
-}
-
-void PlaylistAudioSource::archiveTrack(PlaylistAudioSourceItem* item)
-{
-    playlistHandler->archiveTrack(item->getTrack());
-
-    /* Return the encode thread back to pool */
-    if (item->getEncodeThread() != NULL)
-    {
-        encodePool->putBack(item->getEncodeThread());
-    }
-
-    // /* Dispose the encode context */
-    // if (item->getContext() != NULL)
-    // {
-    //     delete item->getContext();
-    // }
-
-    /* Dispose item reference */
-    delete item;
-
-    numberOfPlayedTracks++;
 }
 
 void* PlaylistAudioSource::runCommand(string command)
@@ -213,15 +165,7 @@ void PlaylistAudioSource::initialize()
     logSrv->debug("Playlist: '" + config->playlistFilePath + "' loaded, with '" + numberToString<int>(playlistHandler->playlistSize()) + "' tracks");
     logSrv->debug("History: '" + config->historyFilePath + "' loaded, with '" + numberToString<int>(playlistHandler->historySize()) + "' tracks");
 
-    /* Put the first track into the queue */
     prepareNextTrack();
-
-    /* Wait track to be encoded if needed */
-    PlaylistAudioSourceItem* firstTrack = mainQueue.front();
-    if (firstTrack != NULL)
-    {
-        firstTrack->waitToFinishEncode();
-    }
 }
 
 int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buffer_size)
@@ -260,7 +204,7 @@ int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buf
         return read;
     }
 
-    // Mp3 File finished
+    // File finished
     finilizeCurrentPlayingTrack();
 
     // Read next
