@@ -5,7 +5,6 @@
 #include "../playlist/PlaylistItem.h"
 
 using namespace std;
-using namespace NoiseKernel;
 
 class PlaylistAudioSourceItem
 {
