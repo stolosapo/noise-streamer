@@ -305,10 +305,15 @@ int PlaylistAudioSource::readNextPcmData(short *pcmLeft, short *pcmRight)
         }
 
         decodeErrorCnt++;
-        if (decodeErrorCnt % 100 == 0)
+        if (decodeErrorCnt % 1000 == 0)
         {
             logSrv->warn("Decode too many errors, skipping track");
+
+            // Go to the next track
             next();
+
+            // And finilise the current one
+            finilizeCurrentPlayingTrack();
         }
 
         decodeRead = readNextPcmData(pcmLeft, pcmRight);
