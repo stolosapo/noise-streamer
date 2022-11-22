@@ -297,7 +297,11 @@ int PlaylistAudioSource::readNextPcmData(short *pcmLeft, short *pcmRight)
             // TODO: Maybe should log this problematic track
             // to different playlist
 
+            // Go to the next track
             next();
+
+            // And finilise the current one
+            finilizeCurrentPlayingTrack();
         }
 
         decodeErrorCnt++;
