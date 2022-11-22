@@ -292,16 +292,17 @@ int PlaylistAudioSource::readNextPcmData(short *pcmLeft, short *pcmRight)
             " TotalFrames: " + numberToString<int>(mp3Decoder->getDecodedTotalFrames()) +
             " FrameNumber: " + numberToString<int>(mp3Decoder->getDecodedFrameNumber());
 
-            logSrv->warn(err + ", skipping track");
+            // logSrv->warn(err + ", skipping track");
+            logSrv->warn(err + " -> " + numberToString<int>(decodeErrorCnt));
 
-            // TODO: Maybe should log this problematic track
-            // to different playlist
+            // // TODO: Maybe should log this problematic track
+            // // to different playlist
 
-            // Go to the next track
-            next();
+            // // Go to the next track
+            // next();
 
-            // And finilise the current one
-            finilizeCurrentPlayingTrack();
+            // // And finilise the current one
+            // finilizeCurrentPlayingTrack();
         }
 
         decodeErrorCnt++;
