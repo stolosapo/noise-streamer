@@ -4,8 +4,11 @@
 #include <cstring>
 #include "../../utils/StringHelper.h"
 
-const int NoiseStreamerEncoder::MP3_SIZE = 4096;
-const int NoiseStreamerEncoder::PCM_SIZE = MP3_SIZE * 100;
+// const int NoiseStreamerEncoder::MP3_SIZE = 4096;
+// const int NoiseStreamerEncoder::PCM_SIZE = MP3_SIZE * 100;
+
+const int NoiseStreamerEncoder::MP3_SIZE = 8192;
+const int NoiseStreamerEncoder::PCM_SIZE = 8192;
 
 NoiseStreamerEncoder::NoiseStreamerEncoder()
 {

@@ -197,10 +197,11 @@ void NoiseStreamer::finilizeShout()
 
 void NoiseStreamer::streamAudioSource()
 {
-    short pcmL[NoiseStreamerEncoder::PCM_SIZE];
-    short pcmR[NoiseStreamerEncoder::PCM_SIZE];
+    short pcmL[NoiseStreamerEncoder::PCM_SIZE * sizeof(short int)];
+    short pcmR[NoiseStreamerEncoder::PCM_SIZE * sizeof(short int)];
 
-    const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE * 10;
+    // const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE * 10;
+    const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE;
     unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
 
     int read;

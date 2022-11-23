@@ -213,7 +213,8 @@ int PlaylistAudioSource::readNextMp3Data(unsigned char* mp3OutBuffer, size_t buf
 
 int PlaylistAudioSource::readNextPcmData(short *pcmLeft, short *pcmRight)
 {
-    int read = readNextMp3Data(mp3Buffer, NoiseStreamerEncoder::MP3_SIZE);
+    // int read = readNextMp3Data(mp3Buffer, NoiseStreamerEncoder::MP3_SIZE);
+    int read = readNextMp3Data(mp3Buffer, NoiseStreamerEncoder::MP3_SIZE * sizeof(unsigned char));
     if (read <= 0)
     {
         return read;
