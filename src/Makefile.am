@@ -43,7 +43,6 @@ common_sources = \
     audio/source/AudioSource.cpp \
     audio/source/PlaylistAudioSource.h audio/source/PlaylistAudioSource.cpp \
     audio/source/PlaylistAudioSourceItem.h audio/source/PlaylistAudioSourceItem.cpp \
-    audio/source/PlaylistAudioSourceItemContext.h \
     audio/source/PlaylistAudioSourceNavigator.h audio/source/PlaylistAudioSourceNavigator.cpp \
     audio/source/PlaylistAudioSourceTask.h audio/source/PlaylistAudioSourceTask.cpp \
     audio/tag/AudioTag.cpp \

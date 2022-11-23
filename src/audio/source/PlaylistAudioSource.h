@@ -9,7 +9,6 @@
 #include "AudioSource.h"
 #include "PlaylistAudioSourceNavigator.h"
 #include "PlaylistAudioSourceItem.h"
-#include "PlaylistAudioSourceItemContext.h"
 #include "PlaylistAudioSourceTask.h"
 #include "../playlist/PlaylistHandler.h"
 #include "../encode/NoiseStreamerEncoder.h"
@@ -30,7 +29,6 @@ private:
     PlaylistHandler* playlistHandler;
     SynchronizedQueue<int> requestedTrackIndex;
     SynchronizedPQueue<PlaylistAudioSourceItem> mainQueue;
-    ThreadPool* encodePool;
     NoiseStreamerEncoder* mp3Decoder;
 
     unsigned char *mp3Buffer;
@@ -42,12 +40,9 @@ private:
     time_t currentTrackStartTime;
     TaskRunner* taskRunner;
 
-    PlaylistAudioSourceItem* createPlaylistAudioSourceItem(PlaylistItem item);
-    PlaylistAudioSourceItem* fetchNextPlaylistItem();
     bool loadNextPlaylistItem();
     void prepareNextTrack();
     void finilizeCurrentPlayingTrack();
-    void archiveTrack(PlaylistAudioSourceItem* item);
 
     friend void* playlistaudiosource_audio_status(void* task);
     friend void* playlistaudiosource_now_playing(void* task);
