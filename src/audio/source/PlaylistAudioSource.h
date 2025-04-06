@@ -25,7 +25,6 @@ class PlaylistAudioSource: public AudioSource, public PlaylistAudioSourceNavigat
 private:
     LogService* logSrv;
     SignalAdapter* sigSrv;
-    PlaylistAudioSourceConfig* config;
 
     PlaylistHandler* playlistHandler;
     SynchronizedQueue<int> requestedTrackIndex;
@@ -64,6 +63,8 @@ public:
         SignalAdapter* sigSrv,
         PlaylistAudioSourceConfig* config);
 	virtual ~PlaylistAudioSource();
+
+    PlaylistAudioSourceConfig* config;
 
     virtual void* runCommand(string command);
     virtual void shutdownAudioSource();
