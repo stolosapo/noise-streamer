@@ -282,6 +282,11 @@ int NoiseStreamerEncoder::encode(short int *pcmLeft, short int *pcmRight, int sa
     return lame->encodeBuffer(pcmLeft, pcmRight, samples, mp3Buffer, mp3Len);
 }
 
+int NoiseStreamerEncoder::encode(short int* pcm_buffer, int num_samples, unsigned char* mp3_buffer, int mp3_buffer_size)
+{
+    return lame->encodeBufferInterleaved(pcm_buffer, num_samples, mp3_buffer, mp3_buffer_size);
+}
+
 void NoiseStreamerEncoder::finilizeEncode()
 {
     if (lame == NULL)

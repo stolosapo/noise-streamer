@@ -1,9 +1,11 @@
 #include "NoiseStreamer.h"
 #include "exception/NoiseStreamerException.h"
 #include "audio/source/PlaylistAudioSource.h"
+#include "audio/source/PlaylistSource.h"
 #include "audio/source/AudioMetadataChangedEventArgs.h"
 #include "audio/encode/EncodeContext.h"
 #include "utils/StringHelper.h"
+#include "audio/BufferSizes.h"
 
 using namespace NoiseKernel;
 
@@ -197,24 +199,34 @@ void NoiseStreamer::finilizeShout()
 
 void NoiseStreamer::streamAudioSource()
 {
+    const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE * 10;
+    
     short pcmL[NoiseStreamerEncoder::PCM_SIZE];
     short pcmR[NoiseStreamerEncoder::PCM_SIZE];
+    short pcm_buffer[1024];
 
-    const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE * 10;
-    unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
+    unsigned char mp3EncodedBuffer[8192];
 
     int read;
     int encodeWrite;
+
+    PlaylistAudioSource* playlistAudioSource = (PlaylistAudioSource*) audioSource;
+    PlaylistSource playlistSource(logSrv, sigAdapter);
+    PlaylistAudioSourceConfig* config = playlistAudioSource->config;
+    playlistSource.initialize(*config);
+    playlistSource.start();
 
     while (!sigAdapter->gotSigInt() && _stop != 1)
     {
         healthPolicy->assertErrorCounterThresholdReached();
 
-        read = audioSource->readNextPcmData(pcmL, pcmR);
-        if (read <= 0)
-        {
-            break;
-        }
+        // read = audioSource->readNextPcmData(pcmL, pcmR);
+        // if (read <= 0)
+        // {
+        //     break;
+        // }
+
+        playlistSource.readOutput(pcm_buffer, 1024);
 
         /*
          * return code     number of bytes output in mp3buf. Can be 0
@@ -223,7 +235,8 @@ void NoiseStreamer::streamAudioSource()
          *                 -3:  lame_init_params() not called
          *                 -4:  psycho acoustic problems
         */
-        encodeWrite = encoder->encode(pcmL, pcmR, read, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
+        // encodeWrite = encoder->encode(pcmL, pcmR, read, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
+        encodeWrite = encoder->encode(pcm_buffer, sizeof(pcm_buffer) / 2, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         if (encodeWrite < 0)
         {
             logSrv->warn("Could not encode sample, returned " + numberToString<int>(encodeWrite));

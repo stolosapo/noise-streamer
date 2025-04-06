@@ -50,6 +50,7 @@ public:
 
     void initForEncode(EncodeContext* context);
     int encode(short int *pcmLeft, short int *pcmRight, int samples, unsigned char* mp3Buffer, size_t mp3Len);
+    int encode(short int* pcm_buffer, int num_samples, unsigned char* mp3_buffer, int mp3_buffer_size);
     void finilizeEncode();
 };
 
