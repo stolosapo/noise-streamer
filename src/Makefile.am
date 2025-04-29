@@ -40,6 +40,7 @@ common_sources = \
     exception/NoiseStreamerException.cpp \
     \
     audio/CircularBuffer.h audio/CircularBuffer.cpp \
+    audio/CircularBuffer_v2.h \
     audio/AudioBitrate.cpp \
     audio/source/AudioMetadataChangedEventArgs.h audio/source/AudioMetadataChangedEventArgs.cpp \
     audio/source/AudioSource.cpp \

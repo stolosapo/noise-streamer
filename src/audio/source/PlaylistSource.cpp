@@ -16,10 +16,12 @@ PlaylistSource::PlaylistSource(
     playingThread(NULL),
     resampleThread(NULL)
 {
-    decodedBuffer = new CircularBuffer(sigSrv, PCM_BUFFER_SAMPLES); // 1 sec buffer (44.1kHz stereo)
     // decodedBuffer = new CircularBuffer(sigSrv, 44100 * 2); // 1 sec buffer (44.1kHz stereo)
-    pcmOutputBuffer = new CircularBuffer(sigSrv, PCM_BUFFER_SAMPLES); // 1 sec buffer (44.1kHz stereo)
+    decodedBuffer = new CircularBuffer(sigSrv, 44100 * 2 * 10); // 10 sec buffer (44.1kHz stereo)
+    decodedBuffer_v2 = new CircularBuffer_v2<short>(sigSrv, 44100 * 2 * 2);
     // pcmOutputBuffer = new CircularBuffer(sigSrv, 44100 * 2); // 1 sec buffer (44.1kHz stereo)
+    pcmOutputBuffer = new CircularBuffer(sigSrv, 44100 * 2 * 10); // 10 sec buffer (44.1kHz stereo)
+    pcmOutputBuffer_v2 = new CircularBuffer_v2<short>(sigSrv, 44100 * 2 * 2);
 
     _playlistLock.init();
 }
@@ -54,9 +56,19 @@ PlaylistSource::~PlaylistSource()
         delete decodedBuffer;
     }
 
+    if (decodedBuffer_v2 != NULL)
+    {
+        delete decodedBuffer_v2;
+    }
+
     if (pcmOutputBuffer != NULL)
     {
         delete pcmOutputBuffer;
+    }
+
+    if (pcmOutputBuffer_v2 != NULL)
+    {
+        delete pcmOutputBuffer_v2;
     }
 
     _playlistLock.destroy();
@@ -72,14 +84,18 @@ void* PlaylistSource::signalHandler(void* playlistSource)
     }
 
     self->decodedBuffer->reset();
+    self->decodedBuffer_v2->close();
     self->pcmOutputBuffer->reset();
+    self->pcmOutputBuffer_v2->close();
 
     return NULL;
 }
 
-void PlaylistSource::readOutput(short* data, size_t num_samples)
+size_t PlaylistSource::readOutput(short* data, size_t num_samples)
 {
-    pcmOutputBuffer->read(data, num_samples);
+    // pcmOutputBuffer->read(data, num_samples);
+    // return num_samples;
+    return decodedBuffer_v2->read(data, num_samples);
 }
 
 void PlaylistSource::loadPlaylist(const PlaylistAudioSourceConfig& config)
@@ -163,11 +179,20 @@ void* PlaylistSource::startPlaying(void* playlistSource)
         int channels;
         int encoding;
 
-        decode_mp3(track.getTrack().c_str(), self->pcmOutputBuffer, self->sigSrv, rate, channels, encoding);
+        // decode_mp3(track.getTrack().c_str(), self->pcmOutputBuffer, self->sigSrv, rate, channels, encoding);
+        bool ok = decode_mp3(track.getTrack().c_str(), self->decodedBuffer_v2, self->sigSrv, rate, channels, encoding);
+        if (!ok)
+        {
+            cerr << "Decode error! Skipping Track..." << endl;
+            continue;
+        }
 
         self->currentTrackRate = rate;
         self->currentTrackChannels = channels;
         self->currentTrackEncoding = encoding;
+
+        // Archive it..
+        self->playlist->archiveTrack(track);
     }
 
     self->logSrv->info("PlaylistSource stopped playing");
@@ -187,7 +212,7 @@ void* PlaylistSource::resample(void* playlistSource)
 
     while (!self->sigSrv->gotSigInt()) 
     {
-        resample_pcm(self->decodedBuffer, self->pcmOutputBuffer, self->currentTrackRate, newSamplerate);
+        resample_pcm(self->decodedBuffer_v2, self->pcmOutputBuffer_v2, self->currentTrackRate, newSamplerate);
     }
 
     self->logSrv->info("Resample process ended");
