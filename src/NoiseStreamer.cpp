@@ -204,8 +204,9 @@ void NoiseStreamer::streamAudioSource()
     short pcmL[NoiseStreamerEncoder::PCM_SIZE];
     short pcmR[NoiseStreamerEncoder::PCM_SIZE];
     short pcm_buffer[1024];
+    short read_buffer[2048];
 
-    unsigned char mp3EncodedBuffer[8192];
+    unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
 
     int read;
     int encodeWrite;
@@ -226,7 +227,9 @@ void NoiseStreamer::streamAudioSource()
         //     break;
         // }
 
-        playlistSource.readOutput(pcm_buffer, 1024);
+        // cout << "Old read: " << read << endl;
+
+        size_t read = playlistSource.readOutput(read_buffer, 2048);
 
         /*
          * return code     number of bytes output in mp3buf. Can be 0
@@ -236,7 +239,7 @@ void NoiseStreamer::streamAudioSource()
          *                 -4:  psycho acoustic problems
         */
         // encodeWrite = encoder->encode(pcmL, pcmR, read, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
-        encodeWrite = encoder->encode(pcm_buffer, sizeof(pcm_buffer) / 2, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
+        encodeWrite = encoder->encode(read_buffer, 1024, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         if (encodeWrite < 0)
         {
             logSrv->warn("Could not encode sample, returned " + numberToString<int>(encodeWrite));
@@ -244,6 +247,8 @@ void NoiseStreamer::streamAudioSource()
             // and the continue loop
             break;
         }
+
+        // cout << "ReadBuffer: " << PCM_BUFFER_SAMPLES << ", Read: " << read << ", LameEncodeBuffer: " << LAME_ENCODE_BUFFER << ", EncodeWrite: " << encodeWrite << endl;
 
         if (!libShout->isConnected())
         {
