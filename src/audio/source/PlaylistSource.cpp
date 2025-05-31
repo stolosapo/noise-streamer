@@ -4,6 +4,10 @@
 #include "../decode/DecodeMP3.h"
 #include "../BufferSizes.h"
 
+#include <noisekernel/Exception.h>
+
+using namespace NoiseKernel;
+
 PlaylistSource::PlaylistSource(
     LogService* logSrv,
     SignalAdapter* sigSrv): 
@@ -12,8 +16,7 @@ PlaylistSource::PlaylistSource(
     sigSrv(sigSrv),
     signalThread(NULL),
     playlist(NULL),
-    playingThread(NULL),
-    resampleThread(NULL)
+    playingThread(NULL)
 {
     decodedBuffer = new CircularBuffer<short>(44100 * 2 * 2);
     _playlistLock.init();
@@ -21,12 +24,6 @@ PlaylistSource::PlaylistSource(
 
 PlaylistSource::~PlaylistSource()
 {
-    if (resampleThread != NULL)
-    {
-        resampleThread->wait();
-        delete resampleThread;
-    }
-
     if (playingThread != NULL)
     {
         playingThread->wait();
@@ -62,7 +59,7 @@ void* PlaylistSource::signalHandler(void* playlistSource)
     }
 
     self->decodedBuffer->close();
-
+    
     return NULL;
 }
 
@@ -118,10 +115,22 @@ void PlaylistSource::initialize(const PlaylistAudioSourceConfig& config)
 
 void PlaylistSource::start()
 {
+    if (playingThread != NULL)
+    {
+        logSrv->warn("Playing thread already is running, skipping..");
+        return;
+    }
+    
     // Start Decode and Playing thread
     playingThread = new Thread();
     playingThread->attachDelegate(&PlaylistSource::startPlaying);
     playingThread->start(this);
+
+    if (signalThread != NULL)
+    {
+        logSrv->warn("Signal thread already is running, skipping..");
+        return;
+    }
 
     // Start Signal Thread
     signalThread = new Thread();
@@ -133,32 +142,48 @@ void* PlaylistSource::startPlaying(void* playlistSource)
 {
     PlaylistSource* self = (PlaylistSource*) playlistSource;
 
-    // Run playlist is ended
-    while (!self->sigSrv->gotSigInt() && self->hasNext())
+    try
     {
-        // Get next track
-        PlaylistItem track = self->nextTrack();
-        self->logSrv->info("Playing: " + track.getTrack());
-
-        // TODO: Raise AudioMetadataChanged Event
-        
-        // Decode file
-        long rate;
-        int channels;
-        int encoding;
-
-        bool ok = decode_mp3(track.getTrack().c_str(), self->decodedBuffer, self->sigSrv, rate, channels, encoding);
-        if (!ok)
+        // Run playlist is ended
+        while (!self->sigSrv->gotSigInt() && self->hasNext() && !self->isStoped())
         {
-            cerr << "Decode error! Skipping Track..." << endl;
-            continue;
+            // Get next track
+            PlaylistItem track = self->nextTrack();
+            self->logSrv->info("Playing: " + track.getTrack());
+    
+            // TODO: Raise AudioMetadataChanged Event
+            
+            // Decode file
+            long rate;
+            int channels;
+            int encoding;
+    
+            bool ok = decode_mp3(track.getTrack().c_str(), self->decodedBuffer, self->sigSrv, rate, channels, encoding);
+            if (!ok)
+            {
+                // TODO: Considering put this track to failed list
+                self->logSrv->warn("Decode error! Skipping Track...");
+                continue;
+            }
+    
+            // Archive it..
+            self->playlist->archiveTrack(track);
         }
-
-        // Archive it..
-        self->playlist->archiveTrack(track);
+    
+        self->logSrv->info("PlaylistSource stopped playing");
     }
-
-    self->logSrv->info("PlaylistSource stopped playing");
-
+    catch(DomainException& e)
+    {
+        self->logSrv->error(handle(e));
+    }
+    catch(RuntimeException& e)
+    {
+        self->logSrv->error(handle(e));
+    }
+    catch(exception& e)
+    {
+        self->logSrv->error(e.what());
+    }
+    
     return NULL;
 }
