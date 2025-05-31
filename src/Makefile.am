@@ -58,7 +58,10 @@ common_sources = \
     audio/playlist/RandomOncePlaylistStrategy.h audio/playlist/RandomOncePlaylistStrategy.cpp \
     audio/playlist/SimplePlaylistStrategy.h audio/playlist/SimplePlaylistStrategy.cpp \
     \
-    audio/decode/DecodeMP3.h audio/decode/DecodeMP3.cpp \ 
+    audio/decode/DecodeMP3.h audio/decode/DecodeMP3.cpp \
+    audio/decode/AudioDecoderFactory.h audio/decode/AudioDecoderFactory.cpp \
+    audio/decode/AudioDecoder.h audio/decode/AudioDecoder.cpp \
+    audio/decode/MP3Decoder.h audio/decode/MP3Decoder.cpp \
     \
     audio/encode/liblame/LibLame.h audio/encode/liblame/LibLame.cpp \
     audio/encode/NoiseStreamerEncoder.h audio/encode/NoiseStreamerEncoder.cpp \

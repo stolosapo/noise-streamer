@@ -36,3 +36,13 @@ const DomainErrorCode NSS0024 = DomainErrorCode("NSS0024", "Failed to reencode t
 const DomainErrorCode NSS0025 = DomainErrorCode("NSS0025", "Incorrect requested track index");
 const DomainErrorCode NSS0026 = DomainErrorCode("NSS0026", "NoiseStreamer is already running!");
 const DomainErrorCode NSS0027 = DomainErrorCode("NSS0027", "Libshout queue length threshold reached '%s'");
+
+const DomainErrorCode DEC0001 = DomainErrorCode("DEC0001", "Could not find decoder for file '%s'");
+const DomainErrorCode DEC0002 = DomainErrorCode("DEC0002", "MPG123 failed on mpg123_init: '%s'");
+const DomainErrorCode DEC0003 = DomainErrorCode("DEC0003", "MPG123 failed on mpg123_new: '%s'");
+const DomainErrorCode DEC0004 = DomainErrorCode("DEC0004", "MPG123 failed on mpg123_open: '%s'");
+const DomainErrorCode DEC0005 = DomainErrorCode("DEC0005", "MPG123 failed on mpg123_format: '%s'");
+const DomainErrorCode DEC0006 = DomainErrorCode("DEC0006", "MPG123 failed on mpg123_read: '%s'");
+const DomainErrorCode DEC0007 = DomainErrorCode("DEC0007", "MPG123 failed on mpg123_scan: '%s'");
+const DomainErrorCode DEC0008 = DomainErrorCode("DEC0008", "MPG123 failed, no ID3 tags found");
+const DomainErrorCode DEC0009 = DomainErrorCode("DEC0009", "MPG123 failed to get frame info");
