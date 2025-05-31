@@ -2,8 +2,6 @@
 #include <iostream>
 #include <mpg123.h>
 
-#include "../BufferSizes.h"
-
 using namespace std;
 
 bool decode_mp3(const char* input_file, CircularBuffer<short>* output_buffer, SignalAdapter* sigSrv, long& rate, int& channels, int& encoding)

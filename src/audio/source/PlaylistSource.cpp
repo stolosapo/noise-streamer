@@ -2,7 +2,6 @@
 
 #include "../../utils/StringHelper.h"
 #include "../decode/DecodeMP3.h"
-#include "../BufferSizes.h"
 
 #include <noisekernel/Exception.h>
 
