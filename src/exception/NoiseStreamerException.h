@@ -42,5 +42,15 @@ extern const DomainErrorCode NSS0025;
 extern const DomainErrorCode NSS0026;
 extern const DomainErrorCode NSS0027;
 
+extern const DomainErrorCode DEC0001;
+extern const DomainErrorCode DEC0002;
+extern const DomainErrorCode DEC0003;
+extern const DomainErrorCode DEC0004;
+extern const DomainErrorCode DEC0005;
+extern const DomainErrorCode DEC0006;
+extern const DomainErrorCode DEC0007;
+extern const DomainErrorCode DEC0008;
+extern const DomainErrorCode DEC0009;
+
 
 #endif // NoiseStreamerException_h__

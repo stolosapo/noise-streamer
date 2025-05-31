@@ -10,6 +10,7 @@
 #include "../playlist/PlaylistHandler.h"
 #include "../../config/PlaylistAudioSourceConfig.h"
 #include "../CircularBuffer.h"
+#include "../decode/AudioDecoder.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -30,6 +31,9 @@ private:
     void loadPlaylist(const PlaylistAudioSourceConfig& config);
     bool hasNext();
     PlaylistItem nextTrack();
+
+    bool decode(const char* filename);
+    string getMetadata(const char* filename, AudioDecoder* decoder);
 
     static void* signalHandler(void* playlistSource);
     static void* startPlaying(void* playlistSource);

@@ -2,7 +2,9 @@
 
 #include "../../exception/NoiseStreamerException.h"
 #include "../../utils/StringHelper.h"
+#include "../../utils/FileHelper.h"
 #include "../decode/DecodeMP3.h"
+#include "../decode/AudioDecoderFactory.h"
 
 PlaylistSource::PlaylistSource(
     LogService* logSrv,
@@ -147,14 +149,8 @@ void* PlaylistSource::startPlaying(void* playlistSource)
             PlaylistItem track = self->nextTrack();
             self->logSrv->info("Playing: " + track.getTrack());
     
-            // TODO: Raise AudioMetadataChanged Event
-            
             // Decode file
-            long rate;
-            int channels;
-            int encoding;
-    
-            bool ok = decode_mp3(track.getTrack().c_str(), self->decodedBuffer, self->sigSrv, rate, channels, encoding);
+            bool ok = self->decode(track.getTrack().c_str());
             if (!ok)
             {
                 // TODO: Considering put this track to failed list
@@ -182,4 +178,79 @@ void* PlaylistSource::startPlaying(void* playlistSource)
     }
     
     return NULL;
+}
+
+bool PlaylistSource::decode(const char* filename)
+{
+    AudioDecoder* decoder = NULL;
+    bool ok;
+    
+    try
+    {
+        decoder = createDecoder(filename, sigSrv, decodedBuffer);
+
+        ok = decoder->open(filename);
+
+        string metadata = getMetadata(filename, decoder);
+        cout << metadata << endl;
+
+        ok = decoder->decode();
+    }
+    catch(DomainException& e)
+    {
+        logSrv->error(handle(e));
+    }
+    catch(RuntimeException& e)
+    {
+        logSrv->error(handle(e));
+    }
+    catch(exception& e)
+    {
+        logSrv->error(e.what());
+    }
+
+    if (decoder != NULL)
+    {
+        delete decoder;
+    }
+
+    return ok;
+}
+
+string PlaylistSource::getMetadata(const char* filepath, AudioDecoder* decoder)
+{
+    try
+    {
+        TrackMetadata metadata;
+        metadata.filename = filepath;
+        decoder->getMetadata(metadata);
+
+        cout << "Metadata:" << endl;
+        cout << "  Title:   " << metadata.title << endl;
+        cout << "  Artist:  " << metadata.artist << endl;
+        cout << "  Album:   " << metadata.album << endl;
+        cout << "  Year:    " << metadata.year << endl;
+        cout << "  Comment: " << metadata.comment << endl;
+        cout << "  Genre:   " << metadata.genre << endl;
+        cout << "  Duration:   " << metadata.duration << endl;
+        cout << "  Bitrate:   " << metadata.bitrate << endl;
+        cout << "  Samplerate:   " << metadata.samplerate << endl;
+        cout << "  Channels:   " << metadata.channels << endl;
+
+        return metadata.artist + " - " + metadata.title;
+    }
+    catch(DomainException& e)
+    {
+        logSrv->warn(handle(e));
+    }
+    catch(RuntimeException& e)
+    {
+        logSrv->warn(handle(e));
+    }
+    catch(exception& e)
+    {
+        logSrv->warn(e.what());
+    }
+
+    return filename(filepath);
 }
