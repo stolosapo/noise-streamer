@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install NoiseTest library
       run: |
@@ -84,7 +84,7 @@ jobs:
         ./tester.sh > test_results.log
 
     - name: Archive Test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-suit-logs
         path: |
@@ -94,7 +94,7 @@ jobs:
             tests/test_results.log
 
     - name: Download Test results
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: test-suit-logs
 
@@ -105,12 +105,12 @@ jobs:
       run: make dist
 
     - name: Archive dist
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dist
         path: noisestreamer-*.tar.gz
 
     - name: Download dist
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: dist
