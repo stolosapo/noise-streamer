@@ -1,7 +1,5 @@
 #include "NoiseStreamer.h"
 #include "exception/NoiseStreamerException.h"
-#include "audio/source/PlaylistAudioSource.h"
-#include "audio/source/PlaylistSource.h"
 #include "audio/source/AudioMetadataChangedEventArgs.h"
 #include "audio/encode/EncodeContext.h"
 #include "utils/StringHelper.h"
