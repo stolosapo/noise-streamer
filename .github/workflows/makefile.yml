@@ -56,6 +56,17 @@ jobs:
         make
         sudo make install
 
+    - name: Install libmpg123
+      run: |
+        wget https://sourceforge.net/projects/mpg123/files/latest/download
+        mv download mpg123.tar.bz2
+        bzip2 -d mpg123.tar.bz2
+        tar -xvf mpg123.tar
+        cd mpg123-1.32.10
+        ./configure
+        make
+        sudo make install
+
     - name: Install NoiseKernel library
       run: |
         wget https://github.com/stolosapo/noise-kernel/releases/download/v1.0.0/noisekernel-1.0.0.tar.gz
