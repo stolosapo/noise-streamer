@@ -34,17 +34,6 @@ NoiseStreamer::NoiseStreamer(
     errorAppearedEventHandler = new ErrorAppearedEventHandler(this);
     audioSource->AudioMetadataChanged += audioMetadataChangedEventHandler;
     audioSource->ErrorAppeared += errorAppearedEventHandler;
-    // audioSource->initialize();
-
-    // // Initialize Encoder
-    // EncodeContext context;
-    // context.bitrate = (int) config->bitrate;
-    // context.samplerate = stringToNumber<int>(config->samplerate);
-    // context.encodeMode = CBR;
-    // context.quality = 3;
-
-    // encoder = new NoiseStreamerEncoder;
-    // encoder->initForEncode(&context);
 }
 
 NoiseStreamer::~NoiseStreamer()
@@ -200,15 +189,9 @@ void NoiseStreamer::finilizeShout()
 void NoiseStreamer::streamAudioSource()
 {
     const int ENCODE_AUDIO_SIZE = NoiseStreamerEncoder::MP3_SIZE * 10;
-    
-    short pcmL[NoiseStreamerEncoder::PCM_SIZE];
-    short pcmR[NoiseStreamerEncoder::PCM_SIZE];
-    short pcm_buffer[1024];
     short read_buffer[2048];
-
     unsigned char mp3EncodedBuffer[ENCODE_AUDIO_SIZE];
 
-    int read;
     int encodeWrite;
 
     PlaylistAudioSource* playlistAudioSource = (PlaylistAudioSource*) audioSource;
@@ -221,14 +204,6 @@ void NoiseStreamer::streamAudioSource()
     {
         healthPolicy->assertErrorCounterThresholdReached();
 
-        // read = audioSource->readNextPcmData(pcmL, pcmR);
-        // if (read <= 0)
-        // {
-        //     break;
-        // }
-
-        // cout << "Old read: " << read << endl;
-
         size_t read = playlistSource.readOutput(read_buffer, 2048);
 
         /*
@@ -238,7 +213,6 @@ void NoiseStreamer::streamAudioSource()
          *                 -3:  lame_init_params() not called
          *                 -4:  psycho acoustic problems
         */
-        // encodeWrite = encoder->encode(pcmL, pcmR, read, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         encodeWrite = encoder->encode(read_buffer, 1024, mp3EncodedBuffer, ENCODE_AUDIO_SIZE);
         if (encodeWrite < 0)
         {
@@ -247,8 +221,6 @@ void NoiseStreamer::streamAudioSource()
             // and the continue loop
             break;
         }
-
-        // cout << "ReadBuffer: " << PCM_BUFFER_SAMPLES << ", Read: " << read << ", LameEncodeBuffer: " << LAME_ENCODE_BUFFER << ", EncodeWrite: " << encodeWrite << endl;
 
         if (!libShout->isConnected())
         {
@@ -270,7 +242,7 @@ void NoiseStreamer::streamAudioSource()
 void NoiseStreamer::initialize()
 {
     // Initialize Audio Source
-    audioSource->initialize();
+    // audioSource->initialize();
 
     // Initialize Encoder
     EncodeContext context;

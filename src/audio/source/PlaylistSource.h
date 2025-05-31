@@ -10,7 +10,6 @@
 #include "../playlist/PlaylistHandler.h"
 #include "../../config/PlaylistAudioSourceConfig.h"
 #include "../CircularBuffer.h"
-#include "../CircularBuffer_v2.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -26,15 +25,8 @@ private:
     PlaylistHandler* playlist;
     Thread* playingThread;
 
-    CircularBuffer* decodedBuffer;
-    CircularBuffer_v2<short>* decodedBuffer_v2;
-    CircularBuffer* pcmOutputBuffer;
-    CircularBuffer_v2<short>* pcmOutputBuffer_v2;
+    CircularBuffer<short>* decodedBuffer;
     Thread* resampleThread;
-
-    long currentTrackRate; 
-    int currentTrackChannels;
-    int currentTrackEncoding;
     
     void loadPlaylist(const PlaylistAudioSourceConfig& config);
     bool hasNext();
@@ -42,7 +34,6 @@ private:
 
     static void* signalHandler(void* playlistSource);
     static void* startPlaying(void* playlistSource);
-    static void* resample(void* playlistSource);
 
 public:
 	PlaylistSource(
