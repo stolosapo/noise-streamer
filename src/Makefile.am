@@ -9,7 +9,6 @@ maininclude_HEADERS = \
     exception/NoiseStreamerException.h \
     config/NoiseStreamerConfig.h \
     config/PlaylistAudioSourceConfig.h \
-    audio/BufferSizes.h \
     audio/AudioBitrate.h \
     audio/AudioEncodeMode.h \
     audio/source/AudioSourceType.h \

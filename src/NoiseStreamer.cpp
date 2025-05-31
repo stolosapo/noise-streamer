@@ -5,7 +5,6 @@
 #include "audio/source/AudioMetadataChangedEventArgs.h"
 #include "audio/encode/EncodeContext.h"
 #include "utils/StringHelper.h"
-#include "audio/BufferSizes.h"
 
 using namespace NoiseKernel;
 
