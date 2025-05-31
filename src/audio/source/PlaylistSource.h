@@ -26,7 +26,6 @@ private:
     Thread* playingThread;
 
     CircularBuffer<short>* decodedBuffer;
-    Thread* resampleThread;
     
     void loadPlaylist(const PlaylistAudioSourceConfig& config);
     bool hasNext();

@@ -279,7 +279,7 @@ void NoiseStreamer::disconnect()
 
 void NoiseStreamer::shutdown()
 {
-    audioSource->shutdownAudioSource();
+    playlistSource->stop();
     encoder->finilizeEncode();
     logSrv->info("NoiseStreamer is shutted down!");
 }
