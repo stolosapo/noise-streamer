@@ -1,11 +1,8 @@
 #include "PlaylistSource.h"
 
+#include "../../exception/NoiseStreamerException.h"
 #include "../../utils/StringHelper.h"
 #include "../decode/DecodeMP3.h"
-
-#include <noisekernel/Exception.h>
-
-using namespace NoiseKernel;
 
 PlaylistSource::PlaylistSource(
     LogService* logSrv,
