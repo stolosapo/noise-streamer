@@ -8,7 +8,9 @@
 
 #include "libshout/LibShout.h"
 #include "config/NoiseStreamerConfig.h"
+#include "config/PlaylistAudioSourceConfig.h"
 #include "audio/source/AudioSource.h"
+#include "audio/source/PlaylistSource.h"
 #include "health/NoiseStreamerHealthPolicy.h"
 #include "audio/encode/NoiseStreamerEncoder.h"
 
@@ -44,7 +46,9 @@ private:
     LogService* logSrv;
     SignalAdapter* sigAdapter;
     NoiseStreamerConfig* config;
+    PlaylistAudioSourceConfig* playlistConfig;
     AudioSource* audioSource;
+    PlaylistSource* playlistSource;
     NoiseStreamerHealthPolicy* healthPolicy;
 
     LibShout* libShout;
@@ -70,6 +74,7 @@ public:
         LogService *logSrv,
         SignalAdapter* sigAdapter,
         NoiseStreamerConfig* config,
+        PlaylistAudioSourceConfig* playlistConfig,
         AudioSource* audioSource,
         NoiseStreamerHealthPolicy* healthPolicy);
     virtual ~NoiseStreamer();

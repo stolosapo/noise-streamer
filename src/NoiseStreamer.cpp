@@ -15,11 +15,13 @@ NoiseStreamer::NoiseStreamer(
     LogService *logSrv,
     SignalAdapter* sigAdapter,
     NoiseStreamerConfig* config,
+    PlaylistAudioSourceConfig* playlistConfig,
     AudioSource* audioSource,
     NoiseStreamerHealthPolicy* healthPolicy)
     : logSrv(logSrv),
     sigAdapter(sigAdapter),
     config(config),
+    playlistConfig(playlistConfig),
     audioSource(audioSource),
     healthPolicy(healthPolicy)
 {
@@ -34,6 +36,8 @@ NoiseStreamer::NoiseStreamer(
     errorAppearedEventHandler = new ErrorAppearedEventHandler(this);
     audioSource->AudioMetadataChanged += audioMetadataChangedEventHandler;
     audioSource->ErrorAppeared += errorAppearedEventHandler;
+
+    playlistSource = new PlaylistSource(logSrv, sigAdapter);
 }
 
 NoiseStreamer::~NoiseStreamer()
@@ -53,6 +57,11 @@ NoiseStreamer::~NoiseStreamer()
     if (encoder != NULL)
     {
         delete encoder;
+    }
+
+    if (playlistSource != NULL)
+    {
+        delete playlistSource;
     }
 }
 
@@ -194,17 +203,13 @@ void NoiseStreamer::streamAudioSource()
 
     int encodeWrite;
 
-    PlaylistAudioSource* playlistAudioSource = (PlaylistAudioSource*) audioSource;
-    PlaylistSource playlistSource(logSrv, sigAdapter);
-    PlaylistAudioSourceConfig* config = playlistAudioSource->config;
-    playlistSource.initialize(*config);
-    playlistSource.start();
+    playlistSource->start();
 
     while (!sigAdapter->gotSigInt() && _stop != 1)
     {
         healthPolicy->assertErrorCounterThresholdReached();
 
-        size_t read = playlistSource.readOutput(read_buffer, 2048);
+        size_t read = playlistSource->readOutput(read_buffer, 2048);
 
         /*
          * return code     number of bytes output in mp3buf. Can be 0
@@ -242,7 +247,7 @@ void NoiseStreamer::streamAudioSource()
 void NoiseStreamer::initialize()
 {
     // Initialize Audio Source
-    // audioSource->initialize();
+    playlistSource->initialize(*playlistConfig);
 
     // Initialize Encoder
     EncodeContext context;
