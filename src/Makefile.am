@@ -39,8 +39,7 @@ common_sources = \
     \
     exception/NoiseStreamerException.cpp \
     \
-    audio/CircularBuffer.h audio/CircularBuffer.cpp \
-    audio/CircularBuffer_v2.h \
+    audio/CircularBuffer.h \
     audio/AudioBitrate.cpp \
     audio/source/AudioMetadataChangedEventArgs.h audio/source/AudioMetadataChangedEventArgs.cpp \
     audio/source/AudioSource.cpp \
@@ -61,7 +60,6 @@ common_sources = \
     audio/playlist/SimplePlaylistStrategy.h audio/playlist/SimplePlaylistStrategy.cpp \
     \
     audio/decode/DecodeMP3.h audio/decode/DecodeMP3.cpp \ 
-    audio/resample/resample.h audio/resample/resample.cpp \ 
     \
     audio/encode/liblame/LibLame.h audio/encode/liblame/LibLame.cpp \
     audio/encode/NoiseStreamerEncoder.h audio/encode/NoiseStreamerEncoder.cpp \
@@ -94,11 +92,11 @@ common_sources = \
 
 noisestreamer_SOURCES = main.cpp $(common_sources)
 noisestreamer_LDADD = libnoisestreamer.la
-noisestreamer_CXXFLAGS = $(AM_CXXFLAGS) -lshout -lnoisekernel -lmp3lame -DHAVE_LAME -lmpg123 -DHAVE_MPG123 -lsamplerate -DHAVE_SAMPLERATE
+noisestreamer_CXXFLAGS = $(AM_CXXFLAGS) -lshout -lnoisekernel -lmp3lame -DHAVE_LAME -lmpg123 -DHAVE_MPG123
 
 lib_LTLIBRARIES = libnoisestreamer.la
 libnoisestreamer_la_LDFLAGS = -version-info 1:0:0 -pthread -lshout -lnoisekernel
-libnoisestreamer_la_CXXFLAGS = $(AM_CXXFLAGS) -pthread -lshout -lnoisekernel -lmp3lame -DHAVE_LAME -lmpg123 -DHAVE_MPG123 -lsamplerate -DHAVE_SAMPLERATE
+libnoisestreamer_la_CXXFLAGS = $(AM_CXXFLAGS) -pthread -lshout -lnoisekernel -lmp3lame -DHAVE_LAME -lmpg123 -DHAVE_MPG123
 libnoisestreamer_la_SOURCES = $(common_sources)
 
 TESTS = noisestreamer
