@@ -35,6 +35,8 @@ NoiseStreamer::NoiseStreamer(
     audioSource->ErrorAppeared += errorAppearedEventHandler;
 
     playlistSource = new PlaylistSource(logSrv, sigAdapter);
+    playlistSource->AudioMetadataChanged += audioMetadataChangedEventHandler;
+    playlistSource->ErrorAppeared += errorAppearedEventHandler;
 }
 
 NoiseStreamer::~NoiseStreamer()
