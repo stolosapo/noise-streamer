@@ -71,6 +71,11 @@ void PlaylistSource::loadPlaylist(const PlaylistAudioSourceConfig& config)
 {
     _playlistLock.lock();
 
+    if (playlist != NULL)
+    {
+        delete playlist;
+    }
+
     playlist = new PlaylistHandler(
         logSrv,
         config.playlistFilePath,
