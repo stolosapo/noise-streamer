@@ -62,7 +62,7 @@ jobs:
         mv download mpg123.tar.bz2
         bzip2 -d mpg123.tar.bz2
         tar -xvf mpg123.tar
-        cd mpg123-1.32.10
+        cd mpg123-*
         ./configure
         make
         sudo make install
