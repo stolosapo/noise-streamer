@@ -3,8 +3,8 @@
 #include "../../exception/NoiseStreamerException.h"
 #include "../../utils/StringHelper.h"
 #include "../../utils/FileHelper.h"
-#include "../decode/DecodeMP3.h"
 #include "../decode/AudioDecoderFactory.h"
+#include "AudioMetadataChangedEventArgs.h"
 
 PlaylistSource::PlaylistSource(
     LogService* logSrv,
@@ -150,7 +150,7 @@ void* PlaylistSource::startPlaying(void* playlistSource)
             self->logSrv->info("Playing: " + track.getTrack());
     
             // Decode file
-            bool ok = self->decode(track.getTrack().c_str());
+            bool ok = self->decode(track);
             if (!ok)
             {
                 // TODO: Considering put this track to failed list
@@ -180,33 +180,44 @@ void* PlaylistSource::startPlaying(void* playlistSource)
     return NULL;
 }
 
-bool PlaylistSource::decode(const char* filename)
+bool PlaylistSource::decode(PlaylistItem& track)
 {
     AudioDecoder* decoder = NULL;
-    bool ok;
+    bool ok = false;
     
     try
     {
+        string trackFile = track.getTrack();
+        const char* filename = trackFile.c_str();
         decoder = createDecoder(filename, sigSrv, decodedBuffer);
 
         ok = decoder->open(filename);
 
         string metadata = getMetadata(filename, decoder);
-        cout << metadata << endl;
+
+        AudioMetadataChangedEventArgs* args =
+            new AudioMetadataChangedEventArgs(metadata);
+        AudioMetadataChanged.raise(this, args);
 
         ok = decoder->decode();
     }
     catch(DomainException& e)
     {
         logSrv->error(handle(e));
+        ok = false;
+        ErrorAppeared.raise(this, NULL);
     }
     catch(RuntimeException& e)
     {
         logSrv->error(handle(e));
+        ok = false;
+        ErrorAppeared.raise(this, NULL);
     }
     catch(exception& e)
     {
         logSrv->error(e.what());
+        ok = false;
+        ErrorAppeared.raise(this, NULL);
     }
 
     if (decoder != NULL)
@@ -225,17 +236,10 @@ string PlaylistSource::getMetadata(const char* filepath, AudioDecoder* decoder)
         metadata.filename = filepath;
         decoder->getMetadata(metadata);
 
-        cout << "Metadata:" << endl;
-        cout << "  Title:   " << metadata.title << endl;
-        cout << "  Artist:  " << metadata.artist << endl;
-        cout << "  Album:   " << metadata.album << endl;
-        cout << "  Year:    " << metadata.year << endl;
-        cout << "  Comment: " << metadata.comment << endl;
-        cout << "  Genre:   " << metadata.genre << endl;
-        cout << "  Duration:   " << metadata.duration << endl;
-        cout << "  Bitrate:   " << metadata.bitrate << endl;
-        cout << "  Samplerate:   " << metadata.samplerate << endl;
-        cout << "  Channels:   " << metadata.channels << endl;
+        if (metadata.artist == "")
+        {
+            return metadata.title;
+        }
 
         return metadata.artist + " - " + metadata.title;
     }
