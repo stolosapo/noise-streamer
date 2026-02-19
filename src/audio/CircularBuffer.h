@@ -1,6 +1,7 @@
 #ifndef CircularBuffer_h__
 #define CircularBuffer_h__
 
+#include <pthread.h>
 #include <noisekernel/Thread.h>
 
 template <typename T>
