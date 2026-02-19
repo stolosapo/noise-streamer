@@ -109,6 +109,7 @@ PlaylistItem PlaylistSource::nextTrack()
 
 void PlaylistSource::initialize(const PlaylistAudioSourceConfig& config)
 {
+    resetStop();
     loadPlaylist(config);
 }
 
@@ -161,6 +162,11 @@ void* PlaylistSource::startPlaying(void* playlistSource)
     
             // Archive it..
             self->playlist->archiveTrack(track);
+        }
+
+        if (self->decodedBuffer != NULL)
+        {
+            self->decodedBuffer->close();
         }
     
         self->logSrv->info("PlaylistSource stopped playing");
