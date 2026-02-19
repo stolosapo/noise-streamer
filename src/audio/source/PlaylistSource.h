@@ -5,6 +5,7 @@
 #include <noisekernel/Thread.h>
 #include <noisekernel/Logger.h>
 #include <noisekernel/Signal.h>
+#include <noisekernel/Observer.h>
 
 #include "PlaylistAudioSourceNavigator.h"
 #include "../playlist/PlaylistHandler.h"
@@ -32,13 +33,16 @@ private:
     bool hasNext();
     PlaylistItem nextTrack();
 
-    bool decode(const char* filename);
+    bool decode(PlaylistItem& track);
     string getMetadata(const char* filename, AudioDecoder* decoder);
 
     static void* signalHandler(void* playlistSource);
     static void* startPlaying(void* playlistSource);
 
 public:
+    Event ErrorAppeared;
+    Event AudioMetadataChanged;
+
 	PlaylistSource(
         LogService* logSrv,
         SignalAdapter* sigSrv);

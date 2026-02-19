@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "../../exception/NoiseStreamerException.h"
 #include "../../utils/StringHelper.h"
 
@@ -151,27 +152,36 @@ bool MP3Decoder::getMetadata(TrackMetadata &metadata) const
         throw DomainException(DEC0009);
     }
 
-    // string title(v2->title->p, v2->title->size);
-    // string artist(v2->artist->p, v2->artist->size);
-    // string album(v2->album->p, v2->album->size);
-    // string comment(v2->comment->p, v2->comment->size);
-    // string genre(v2->genre->p, v2->genre->size);
-    // string year(v2->year->p, v2->year->size);
+    if (v2->title != NULL)
+    {
+        metadata.title = string(v2->title->p);
+    }
 
-    // cout << "Metadata:" << endl;
-    // cout << "  Title:   " << v2->title->p << endl;
-    // cout << "  Artist:  " << v2->artist->p << endl;
-    // cout << "  Album:   " << v2->album->p << endl;
-    // cout << "  Year:    " << v2->year->p << endl;
-    // cout << "  Comment: " << v2->comment->p << endl;
-    // cout << "  Genre:   " << v2->genre->p << endl;
+    if (v2->album != NULL)
+    {
+        metadata.album = string(v2->album->p);
+    }
 
-    // metadata.title = title;
-    // metadata.artist = artist;
-    // metadata.album = album;
-    // metadata.comment = comment;
-    // metadata.genre = genre;
-    // metadata.year = year;
+    if (v2->artist != NULL)
+    {
+        metadata.artist = string(v2->artist->p);
+    }
+
+    if (v2->comment != NULL)
+    {
+        metadata.comment = string(v2->comment->p);
+    }
+
+    if (v2->genre != NULL)
+    {
+        metadata.genre = string(v2->genre->p);
+    }
+
+    if (v2->year != NULL)
+    {
+        metadata.year = string(v2->year->p);
+    }
+
     metadata.duration = duration;
     metadata.bitrate = frameinfo.bitrate;
     metadata.samplerate = rate;
