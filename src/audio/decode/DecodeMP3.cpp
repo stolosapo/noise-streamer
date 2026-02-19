@@ -1,6 +1,7 @@
 #include "DecodeMP3.h"
 #include <iostream>
 #include <mpg123.h>
+#include <vector>
 
 using namespace std;
 

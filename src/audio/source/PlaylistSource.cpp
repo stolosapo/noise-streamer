@@ -1,5 +1,6 @@
 #include "PlaylistSource.h"
 
+#include <unistd.h>
 #include "../../exception/NoiseStreamerException.h"
 #include "../../utils/StringHelper.h"
 #include "../../utils/FileHelper.h"
