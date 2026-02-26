@@ -248,12 +248,19 @@ string PlaylistSource::getMetadata(const char* filepath, AudioDecoder* decoder)
         metadata.filename = filepath;
         decoder->getMetadata(metadata);
 
-        if (metadata.artist == "")
+        string delimiter = "";
+        if (metadata.artist != "" && metadata.title != "")
         {
-            return metadata.title;
+            delimiter = " - ";
         }
 
-        return metadata.artist + " - " + metadata.title;
+        string title = metadata.artist + delimiter + metadata.title;
+        if (title == "")
+        {
+            return filename(filepath);
+        }
+
+        return title;
     }
     catch(DomainException& e)
     {

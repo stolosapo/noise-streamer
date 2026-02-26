@@ -135,7 +135,7 @@ void NoiseStreamer::AudioMetadataChangedEventHandler::onEvent(void* sender, Even
 string NoiseStreamer::userAgent()
 {
     // TODO: this should be variable
-    return string(USER_AGENT) + "/1.0.0";
+    return string(USER_AGENT) + "/1.0.1";
 }
 
 AudioSource* NoiseStreamer::getAudioSource()
