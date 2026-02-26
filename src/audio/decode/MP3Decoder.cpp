@@ -152,34 +152,65 @@ bool MP3Decoder::getMetadata(TrackMetadata &metadata) const
         throw DomainException(DEC0009);
     }
 
-    if (v2->title != NULL)
+    if (v2 != NULL)
     {
-        metadata.title = string(v2->title->p);
-    }
+        if (v2->title != NULL)
+        {
+            metadata.title = string(v2->title->p);
+        }
 
-    if (v2->album != NULL)
-    {
-        metadata.album = string(v2->album->p);
-    }
+        if (v2->album != NULL)
+        {
+            metadata.album = string(v2->album->p);
+        }
 
-    if (v2->artist != NULL)
-    {
-        metadata.artist = string(v2->artist->p);
-    }
+        if (v2->artist != NULL)
+        {
+            metadata.artist = string(v2->artist->p);
+        }
 
-    if (v2->comment != NULL)
-    {
-        metadata.comment = string(v2->comment->p);
-    }
+        if (v2->comment != NULL)
+        {
+            metadata.comment = string(v2->comment->p);
+        }
 
-    if (v2->genre != NULL)
-    {
-        metadata.genre = string(v2->genre->p);
-    }
+        if (v2->genre != NULL)
+        {
+            metadata.genre = string(v2->genre->p);
+        }
 
-    if (v2->year != NULL)
+        if (v2->year != NULL)
+        {
+            metadata.year = string(v2->year->p);
+        }
+    } else if (v1 != NULL)
     {
-        metadata.year = string(v2->year->p);
+        if (v1->title != NULL)
+        {
+            metadata.title = string(v1->title);
+        }
+
+        if (v1->album != NULL)
+        {
+            metadata.album = string(v1->album);
+        }
+
+        if (v1->artist != NULL)
+        {
+            metadata.artist = string(v1->artist);
+        }
+
+        if (v1->comment != NULL)
+        {
+            metadata.comment = string(v1->comment);
+        }
+
+        metadata.genre = "";
+
+        if (v1->year != NULL)
+        {
+            metadata.year = string(v1->year);
+        }
     }
 
     metadata.duration = duration;
