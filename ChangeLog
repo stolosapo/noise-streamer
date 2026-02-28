@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Fixed the way that track metadata is parsed
 - Fixed health policy to decrease error count on successful track metadata changed
+- Archived problematic tracks in a different playlist file
 
 ## [1.0.0]
 ### Added
