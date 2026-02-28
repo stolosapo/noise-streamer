@@ -111,10 +111,12 @@ void NoiseStreamer::AudioMetadataChangedEventHandler::onEvent(void* sender, Even
         if (noiseStreamer->libShout == NULL)
         {
             noiseStreamer->logSrv->warn("Trying to update metadata on NULL libshout");
+            delete eventArgs;
             return;
         }
 
         noiseStreamer->libShout->updateMetadata(metadata);
+        noiseStreamer->healthPolicy->decreaseErrorCounter();
     }
     catch(DomainException& e)
     {
