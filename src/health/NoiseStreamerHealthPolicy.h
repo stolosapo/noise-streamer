@@ -19,6 +19,7 @@ public:
     void setShoutQueueLenth(int queueLength);
     int getShoutQueueLength();
     void incrementErrorCounter();
+    void decreaseErrorCounter();
     void resetErrorCounter();
 
     void assertErrorCounterThresholdReached();

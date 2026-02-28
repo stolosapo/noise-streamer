@@ -35,6 +35,14 @@ void NoiseStreamerHealthPolicy::incrementErrorCounter()
     errorCounter++;
 }
 
+void NoiseStreamerHealthPolicy::decreaseErrorCounter()
+{
+    if (errorCounter > 0)
+    {
+        --errorCounter;
+    }
+}
+
 void NoiseStreamerHealthPolicy::resetErrorCounter()
 {
     this->errorCounter = 0;
