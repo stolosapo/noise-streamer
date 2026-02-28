@@ -10,8 +10,10 @@ PlaylistHandler::PlaylistHandler(
     PlaylistStrategyType strategyType,
     bool repeat): logSrv(logSrv)
 {
+    string problematicHistoryFile = historyFile + ".problematic";
     playlist = new File(playlistFile);
     history = new File(historyFile);
+    problematicHistory = new File(problematicHistoryFile);
     strategy = createPlaylistStrategy(strategyType, logSrv, playlist, history, repeat);
 }
 
@@ -19,6 +21,7 @@ PlaylistHandler::~PlaylistHandler()
 {
     delete playlist;
     delete history;
+    delete problematicHistory;
     delete strategy;
 }
 
@@ -73,4 +76,9 @@ PlaylistItem PlaylistHandler::nextTrack()
 void PlaylistHandler::archiveTrack(PlaylistItem track)
 {
     history->append(track.getTrack());
+}
+
+void PlaylistHandler::problematicArchiveTrack(PlaylistItem track)
+{
+    problematicHistory->append(track.getTrack());
 }

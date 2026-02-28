@@ -17,6 +17,7 @@ private:
 
     File* playlist;
     File* history;
+    File* problematicHistory;
 
     PlaylistStrategy* strategy;
     PlaylistItem currentTrack;
@@ -41,6 +42,7 @@ public:
     int getTrackIndex(string track);
     string getHistoryTrack(int historyIndex);
     void archiveTrack(PlaylistItem track);
+    void problematicArchiveTrack(PlaylistItem track);
 };
 
 #endif // PlaylistHandler_h__

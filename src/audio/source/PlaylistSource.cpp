@@ -160,8 +160,8 @@ void* PlaylistSource::startPlaying(void* playlistSource)
             bool ok = self->decode(track);
             if (!ok)
             {
-                // TODO: Considering put this track to failed list
                 self->logSrv->warn("Decode error! Skipping Track...");
+                self->playlist->problematicArchiveTrack(track);
                 continue;
             }
     
