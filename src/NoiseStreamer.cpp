@@ -3,6 +3,7 @@
 #include "audio/source/AudioMetadataChangedEventArgs.h"
 #include "audio/encode/EncodeContext.h"
 #include "utils/StringHelper.h"
+#include "scheduler/ScheduleSlotChangedEventArgs.h"
 
 using namespace NoiseKernel;
 
@@ -28,6 +29,10 @@ NoiseStreamer::NoiseStreamer(
     errorAppearedEventHandler = NULL;
     encoder = NULL;
 
+    slotChangedEventHandler = new SchedulerSlotChangedEventHandler(this);
+    scheduler = new Scheduler(logSrv, sigAdapter);
+    scheduler->SlotChanged += slotChangedEventHandler;
+
     // Initialize Audio Source
     audioMetadataChangedEventHandler = new AudioMetadataChangedEventHandler(this);
     errorAppearedEventHandler = new ErrorAppearedEventHandler(this);
@@ -51,6 +56,16 @@ NoiseStreamer::~NoiseStreamer()
     if (errorAppearedEventHandler != NULL)
     {
         delete errorAppearedEventHandler;
+    }
+
+    if (scheduler != NULL)
+    {
+        delete scheduler;
+    }
+
+    if (slotChangedEventHandler != NULL)
+    {
+        delete slotChangedEventHandler;
     }
 
     if (encoder != NULL)
@@ -117,6 +132,53 @@ void NoiseStreamer::AudioMetadataChangedEventHandler::onEvent(void* sender, Even
 
         noiseStreamer->libShout->updateMetadata(metadata);
         noiseStreamer->healthPolicy->decreaseErrorCounter();
+    }
+    catch(DomainException& e)
+    {
+        noiseStreamer->logSrv->error(handle(e));
+    }
+    catch(RuntimeException& e)
+    {
+        noiseStreamer->logSrv->error(handle(e));
+    }
+    catch(exception& e)
+    {
+        noiseStreamer->logSrv->error(e.what());
+    }
+
+    delete eventArgs;
+}
+
+NoiseStreamer::SchedulerSlotChangedEventHandler::SchedulerSlotChangedEventHandler(NoiseStreamer *noiseStreamer)
+    : EventHandler(), noiseStreamer(noiseStreamer)
+{
+
+}
+
+NoiseStreamer::SchedulerSlotChangedEventHandler::~SchedulerSlotChangedEventHandler()
+{
+
+}
+
+void NoiseStreamer::SchedulerSlotChangedEventHandler::onEvent(void* sender, EventArgs* e)
+{
+    if (e == NULL)
+    {
+        return;
+    }
+
+    ScheduleSlotChangedEventArgs* eventArgs = (ScheduleSlotChangedEventArgs*) e;
+
+    try
+    {
+        ScheduleSlot slot = eventArgs->getSlot();
+        // cout << "New Slot: " << endl
+        //     << "-----------" << endl
+        //     << "Empty: " << slot.empty << endl
+        //     << "Day: " << slot.day << endl
+        //     << "Start: " << (slot.start / 60) << ":" << (slot.start % 60) << endl
+        //     << "End: " << (slot.end / 60) << ":" << (slot.end % 60) << endl
+        //     << "File: " << slot.configFile << endl;
     }
     catch(DomainException& e)
     {
@@ -247,6 +309,13 @@ void NoiseStreamer::streamAudioSource()
 
 void NoiseStreamer::initialize()
 {
+    // Initialize Scheduler
+    if (config->schedule != "")
+    {
+        scheduler->load(config->schedule);
+        scheduler->start();
+    }
+
     // Initialize Audio Source
     playlistSource->initialize(*playlistConfig);
 
@@ -280,6 +349,7 @@ void NoiseStreamer::disconnect()
 
 void NoiseStreamer::shutdown()
 {
+    scheduler->stop();
     playlistSource->stop();
     encoder->finilizeEncode();
     logSrv->info("NoiseStreamer is shutted down!");

@@ -26,6 +26,7 @@ NoiseStreamerConfig buildNoiseStreamerConfig(NoiseStreamerArgument* args)
     conf.bitrate = convert(args->getBitrate());
     conf.samplerate = args->getSamplerate();
     conf.channels = args->getChannels();
+    conf.schedule = args->getSchedule();
 
     return conf;
 }

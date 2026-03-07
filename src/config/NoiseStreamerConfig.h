@@ -23,6 +23,7 @@ struct NoiseStreamerConfig
     AudioBitrate bitrate;
     string samplerate;
     string channels;
+    string schedule;
 };
 
 NoiseStreamerConfig buildNoiseStreamerConfig(NoiseStreamerArgument* args);

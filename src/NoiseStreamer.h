@@ -13,6 +13,7 @@
 #include "audio/source/PlaylistSource.h"
 #include "health/NoiseStreamerHealthPolicy.h"
 #include "audio/encode/NoiseStreamerEncoder.h"
+#include "scheduler/Scheduler.h"
 
 using namespace std;
 using namespace NoiseKernel;
@@ -39,6 +40,16 @@ class NoiseStreamer
         virtual void onEvent(void* sender, EventArgs* e);
     };
 
+    class SchedulerSlotChangedEventHandler: public EventHandler
+    {
+    private:
+        NoiseStreamer *noiseStreamer;
+    public:
+        SchedulerSlotChangedEventHandler(NoiseStreamer *noiseStreamer);
+        virtual ~SchedulerSlotChangedEventHandler();
+        virtual void onEvent(void* sender, EventArgs* e);
+    };
+
 private:
     static const char* USER_AGENT;
     volatile sig_atomic_t _stop;
@@ -50,10 +61,12 @@ private:
     AudioSource* audioSource;
     PlaylistSource* playlistSource;
     NoiseStreamerHealthPolicy* healthPolicy;
+    Scheduler* scheduler;
 
     LibShout* libShout;
     AudioMetadataChangedEventHandler* audioMetadataChangedEventHandler;
     ErrorAppearedEventHandler* errorAppearedEventHandler;
+    SchedulerSlotChangedEventHandler* slotChangedEventHandler;
     NoiseStreamerEncoder* encoder;
 
     static void* startStreamerThread(void* noiseStreamer);

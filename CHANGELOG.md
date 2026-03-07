@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Created Scheduler mechanism that reads schedule from file and trigger slot changed events
 
 ## [1.0.1]
 ### Changed
