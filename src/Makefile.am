@@ -70,6 +70,10 @@ common_sources = \
     \
     health/NoiseStreamerHealthPolicy.h health/NoiseStreamerHealthPolicy.cpp \
     \
+    scheduler/ScheduleSlot.h scheduler/ScheduleSlot.cpp \
+    scheduler/Scheduler.h scheduler/Scheduler.cpp \
+    scheduler/ScheduleSlotChangedEventArgs.h scheduler/ScheduleSlotChangedEventArgs.cpp \
+    \
     libshout/LibShout.h libshout/LibShout.cpp \
     libshout/LibShoutAudio.cpp \
     libshout/LibShoutCommunication.cpp \
@@ -91,7 +95,8 @@ common_sources = \
     utils/File.h utils/File.cpp \
     utils/TaskHelper.h utils/TaskHelper.cpp \
     utils/SynchronizedQueue.h \
-    utils/SynchronizedPQueue.h
+    utils/SynchronizedPQueue.h \
+    utils/TimeHelper.h utils/TimeHelper.cpp
 
 noisestreamer_SOURCES = main.cpp $(common_sources)
 noisestreamer_LDADD = libnoisestreamer.la

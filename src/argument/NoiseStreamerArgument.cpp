@@ -19,6 +19,7 @@ const string NoiseStreamerArgument::ISPUBLIC = "public";
 const string NoiseStreamerArgument::BITRATE = "bitrate";
 const string NoiseStreamerArgument::SAMPLERATE = "samplerate";
 const string NoiseStreamerArgument::CHANNELS = "channels";
+const string NoiseStreamerArgument::SCHEDULE = "schedule";
 
 NoiseStreamerArgument::NoiseStreamerArgument(
     ArgumentProvider* argProvider): ArgumentAdapter(argProvider)
@@ -56,6 +57,7 @@ void NoiseStreamerArgument::registerArguments()
     registerArg(BITRATE, "The Mountpoint Bitrate. Default: '128'");
     registerArg(SAMPLERATE, "The Mountpoint Samplerate. Default: '44100'");
     registerArg(CHANNELS, "The Mountpoint Number of channels. Default: '2'");
+    registerArg(SCHEDULE, "The file to the schedule");
 }
 
 bool NoiseStreamerArgument::noArgs()
@@ -76,7 +78,8 @@ bool NoiseStreamerArgument::noArgs()
         hasArg(ISPUBLIC) ||
         hasArg(BITRATE) ||
         hasArg(SAMPLERATE) ||
-        hasArg(CHANNELS));
+        hasArg(CHANNELS) ||
+        hasArg(SCHEDULE));
 }
 
 RunMode NoiseStreamerArgument::getRunMode()
@@ -265,4 +268,9 @@ string NoiseStreamerArgument::getChannels()
         throw DomainException(ARG0001, CHANNELS);
     }
     return s;
+}
+
+string NoiseStreamerArgument::getSchedule()
+{
+    return getStringValue(SCHEDULE);
 }

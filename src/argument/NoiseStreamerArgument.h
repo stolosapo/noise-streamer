@@ -30,6 +30,7 @@ private:
     static const string BITRATE;
     static const string SAMPLERATE;
     static const string CHANNELS;
+    static const string SCHEDULE;
 
 protected:
     virtual string title();
@@ -60,6 +61,7 @@ public:
     int getBitrate();
     string getSamplerate();
     string getChannels();
+    string getSchedule();
 };
 
 #endif // NoiseStreamerArgument_h__
