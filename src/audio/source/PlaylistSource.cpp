@@ -173,8 +173,6 @@ void* PlaylistSource::startPlaying(void* playlistSource)
         {
             self->decodedBuffer->close();
         }
-    
-        self->logSrv->info("PlaylistSource stopped playing");
     }
     catch(DomainException& e)
     {
@@ -188,6 +186,8 @@ void* PlaylistSource::startPlaying(void* playlistSource)
     {
         self->logSrv->error(e.what());
     }
+
+    self->logSrv->info("PlaylistSource stopped playing");
     
     return NULL;
 }
