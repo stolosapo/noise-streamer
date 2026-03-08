@@ -2,6 +2,7 @@
 #define ScheduleSlot_h__
 
 #include <string>
+#include "../config/PlaylistAudioSourceConfig.h"
 
 using namespace std;
 
@@ -15,5 +16,6 @@ struct ScheduleSlot
 };
 
 void emptySlot(ScheduleSlot& slot);
+void convertSlotToPlaylistConfig(const ScheduleSlot& slot, PlaylistAudioSourceConfig& playlistConfig);
 
 #endif // ScheduleSlot_h__
