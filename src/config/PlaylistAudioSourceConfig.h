@@ -17,5 +17,6 @@ struct PlaylistAudioSourceConfig
 };
 
 PlaylistAudioSourceConfig buildPlaylistAudioSourceConfig(PlaylistAudioSourceArgument* args);
+void buildPlaylistAudioSourceConfig(const string& configFilePath, PlaylistAudioSourceConfig& config);
 
 #endif // PlaylistAudioSourceConfig_h__

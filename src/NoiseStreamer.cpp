@@ -172,13 +172,29 @@ void NoiseStreamer::SchedulerSlotChangedEventHandler::onEvent(void* sender, Even
     try
     {
         ScheduleSlot slot = eventArgs->getSlot();
-        // cout << "New Slot: " << endl
+    
+        if (slot.empty)
+        {
+            noiseStreamer->playlistSource->initialize(*noiseStreamer->playlistConfig);
+        }
+        else
+        {
+            PlaylistAudioSourceConfig playlistConfig;
+            convertSlotToPlaylistConfig(slot, playlistConfig);
+            noiseStreamer->playlistSource->initialize(playlistConfig);
+        }
+
+        // cout << "New Playlist Slot: " << endl
         //     << "-----------" << endl
         //     << "Empty: " << slot.empty << endl
         //     << "Day: " << slot.day << endl
         //     << "Start: " << (slot.start / 60) << ":" << (slot.start % 60) << endl
         //     << "End: " << (slot.end / 60) << ":" << (slot.end % 60) << endl
-        //     << "File: " << slot.configFile << endl;
+        //     << "File: " << slot.configFile << endl
+        //     << "Playlist: " << playlistConfig.playlistFilePath << endl
+        //     << "History: " << playlistConfig.historyFilePath << endl
+        //     << "Type: " << playlistConfig.strategyType << endl
+        //     << "Repeat: " << playlistConfig.repeat << endl;
     }
     catch(DomainException& e)
     {
@@ -315,9 +331,11 @@ void NoiseStreamer::initialize()
         scheduler->load(config->schedule);
         scheduler->start();
     }
-
-    // Initialize Audio Source
-    playlistSource->initialize(*playlistConfig);
+    else
+    {
+        // Initialize Audio Source
+        playlistSource->initialize(*playlistConfig);
+    }
 
     // Initialize Encoder
     EncodeContext context;

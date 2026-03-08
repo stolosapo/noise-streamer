@@ -32,6 +32,8 @@ private:
     void loadPlaylist(const PlaylistAudioSourceConfig& config);
     bool hasNext();
     PlaylistItem nextTrack();
+    void archiveTrack(PlaylistItem& track);
+    void problematicArchiveTrack(PlaylistItem& track);
 
     bool decode(PlaylistItem& track);
     string getMetadata(const char* filename, AudioDecoder* decoder);

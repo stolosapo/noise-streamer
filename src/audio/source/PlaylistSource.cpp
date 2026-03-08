@@ -112,6 +112,20 @@ PlaylistItem PlaylistSource::nextTrack()
     return next;
 }
 
+void PlaylistSource::archiveTrack(PlaylistItem& track)
+{
+    _playlistLock.lock();
+    playlist->archiveTrack(track);
+    _playlistLock.unlock();
+}
+
+void PlaylistSource::problematicArchiveTrack(PlaylistItem& track)
+{
+    _playlistLock.lock();
+    playlist->problematicArchiveTrack(track);
+    _playlistLock.unlock();
+}
+
 void PlaylistSource::initialize(const PlaylistAudioSourceConfig& config)
 {
     resetStop();
@@ -155,18 +169,18 @@ void* PlaylistSource::startPlaying(void* playlistSource)
             // Get next track
             PlaylistItem track = self->nextTrack();
             self->logSrv->info("Playing: " + track.getTrack());
+            
+            // Archive it..
+            self->archiveTrack(track);
     
             // Decode file
             bool ok = self->decode(track);
             if (!ok)
             {
                 self->logSrv->warn("Decode error! Skipping Track...");
-                self->playlist->problematicArchiveTrack(track);
+                self->problematicArchiveTrack(track);
                 continue;
             }
-    
-            // Archive it..
-            self->playlist->archiveTrack(track);
         }
 
         if (self->decodedBuffer != NULL)
