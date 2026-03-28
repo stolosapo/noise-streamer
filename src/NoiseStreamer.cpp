@@ -93,6 +93,20 @@ NoiseStreamer::ErrorAppearedEventHandler::~ErrorAppearedEventHandler()
 void NoiseStreamer::ErrorAppearedEventHandler::onEvent(void* sender, EventArgs* e)
 {
     noiseStreamer->healthPolicy->incrementErrorCounter();
+    bool isHealthy = noiseStreamer->healthPolicy->isHealthy();
+
+    if (!isHealthy)
+    {
+        if (noiseStreamer->playlistSource == sender)
+        {
+            noiseStreamer->logSrv->warn("NoiseStreamer is not healthy any more, should stop playlist!");
+            noiseStreamer->playlistSource->stop();
+        }
+        else
+        {
+            noiseStreamer->logSrv->error("NoiseStreamer is not healthy any more, but don't know that is the sender..");
+        }
+    }
 
     if (e != NULL)
     {
@@ -183,18 +197,6 @@ void NoiseStreamer::SchedulerSlotChangedEventHandler::onEvent(void* sender, Even
             convertSlotToPlaylistConfig(slot, playlistConfig);
             noiseStreamer->playlistSource->initialize(playlistConfig);
         }
-
-        // cout << "New Playlist Slot: " << endl
-        //     << "-----------" << endl
-        //     << "Empty: " << slot.empty << endl
-        //     << "Day: " << slot.day << endl
-        //     << "Start: " << (slot.start / 60) << ":" << (slot.start % 60) << endl
-        //     << "End: " << (slot.end / 60) << ":" << (slot.end % 60) << endl
-        //     << "File: " << slot.configFile << endl
-        //     << "Playlist: " << playlistConfig.playlistFilePath << endl
-        //     << "History: " << playlistConfig.historyFilePath << endl
-        //     << "Type: " << playlistConfig.strategyType << endl
-        //     << "Repeat: " << playlistConfig.repeat << endl;
     }
     catch(DomainException& e)
     {

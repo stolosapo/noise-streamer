@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Scheduler mechanism that reads schedule from file and trigger slot changed events
 
+### Fixed
+- Health policy evaluation to stop playlist when limit reached
+
 ## [1.0.1]
 ### Changed
 - Fixed the way that track metadata is parsed

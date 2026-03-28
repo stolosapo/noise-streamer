@@ -17,7 +17,15 @@ NoiseStreamerHealthPolicy::~NoiseStreamerHealthPolicy()
 
 bool NoiseStreamerHealthPolicy::isHealthy()
 {
-    return true;
+    try
+    {
+        assertErrorCounterThresholdReached();
+        return true;
+    }
+    catch (DomainException& e)
+    {
+        return false;
+    }
 }
 
 void NoiseStreamerHealthPolicy::setShoutQueueLenth(int queueLength)
