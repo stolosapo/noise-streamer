@@ -52,9 +52,9 @@ void* PlaylistSource::signalHandler(void* playlistSource)
 {
     PlaylistSource* self = (PlaylistSource*) playlistSource;
 
-    while(!self->sigSrv->gotSigInt())
+    while(!self->sigSrv->gotSigInt() && !self->isStoped())
     {
-        usleep(500);
+        usleep(50000);
     }
 
     self->decodedBuffer->close();
@@ -223,6 +223,7 @@ bool PlaylistSource::decode(PlaylistItem& track)
 
         AudioMetadataChangedEventArgs* args =
             new AudioMetadataChangedEventArgs(metadata);
+
         AudioMetadataChanged.raise(this, args);
 
         ok = decoder->decode();
